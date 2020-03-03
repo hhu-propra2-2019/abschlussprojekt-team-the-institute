@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.2.5.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
+	id 'checkstyle'
 }
 
 group = 'mops'
@@ -30,6 +31,9 @@ repositories {
 
 dependencies {
 	implementation "mops:styequide:1.0.7"
+
+	spotbugsPlugins 'com.h3xstream.findsecbug:findsecbug-plugin:1.7.1'
+
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
