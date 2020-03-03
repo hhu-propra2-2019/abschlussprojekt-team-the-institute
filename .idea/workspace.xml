@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="dec49cdc-fd2c-40f9-acf9-17a8b662a272" name="Default Changelist" comment="Angeben der richtigen Styleguide Version.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/mops/portfolios/InitController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/test.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="dec49cdc-fd2c-40f9-acf9-17a8b662a272" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/mops/portfolios/HelloWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/mops/portfolios/HelloWorld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/mops/portfolios/PortfoliosApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/mops/portfolios/PortfoliosApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/mops/portfolios/PortfoliosApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/mops/portfolios/PortfoliosApplicationTests.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/build/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -44,9 +38,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="277">
+              <caret line="36" column="57" selection-start-line="36" selection-start-column="57" selection-end-line="36" selection-end-column="57" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/mops/portfolios/PortfoliosApplicationTests.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="390">
+              <caret line="26" selection-start-line="26" selection-end-line="26" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -57,8 +61,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/mops/portfolios/PortfoliosApplication.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
+            <state relative-caret-position="90">
               <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/mops/portfolios/InitController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="285">
+              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -94,10 +110,10 @@
         <option value="$PROJECT_DIR$/src/main/java/mops/portfolios/InitController.java" />
         <option value="$PROJECT_DIR$/src/main/java/mops/portfolios/PortfoliosApplication.java" />
         <option value="$PROJECT_DIR$/src/main/java/mops/portfolios/HelloWorld.java" />
-        <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/resources/templates/test.html" />
         <option value="$PROJECT_DIR$/src/test/java/mops/portfolios/InitControllerTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/mops/portfolios/PortfoliosApplicationTests.java" />
+        <option value="$PROJECT_DIR$/build.gradle" />
       </list>
     </option>
   </component>
@@ -336,7 +352,7 @@
       <workItem from="1580415584377" duration="1025000" />
       <workItem from="1583236077025" duration="1983000" />
       <workItem from="1583239251206" duration="1239000" />
-      <workItem from="1583246116986" duration="17000" />
+      <workItem from="1583246116986" duration="299000" />
     </task>
     <task id="LOCAL-00001" summary="Gruppe">
       <created>1580417746838</created>
@@ -387,7 +403,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583239893353</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Erste Test Implementierung.">
+      <created>1583246294285</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1583246294285</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -406,12 +429,16 @@
     <history-entry file="PortfoliosApplicationTests - 2020.03.03 at 15h 33m 40s.xml">
       <configuration name="PortfoliosApplicationTests" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="PortfoliosApplicationTests - 2020.03.03 at 15h 37m 17s.xml">
+      <configuration name="PortfoliosApplicationTests" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8276000" />
+    <option name="totallyTimeSpent" value="8558000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="709" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Web" side_tool="true" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2657512" />
@@ -422,9 +449,10 @@
       <window_info id="UI Designer" order="5" />
       <window_info id="Learn" order="6" />
       <window_info id="Favorites" order="7" side_tool="true" />
+      <window_info anchor="bottom" id="Build" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.4667747" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49919224" weight="0.4667747" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -433,7 +461,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
-      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50080776" side_tool="true" weight="0.32901135" />
+      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50080776" side_tool="true" weight="0.4667747" />
       <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.49919224" weight="0.32901135" />
       <window_info anchor="bottom" id="CheckStyle" order="13" />
       <window_info anchor="bottom" id="Spring" order="14" />
@@ -509,7 +537,8 @@
     <MESSAGE value="Einbinden von Checksytle, PMD und SpotBugs." />
     <MESSAGE value="Einbinden von PMD." />
     <MESSAGE value="Angeben der richtigen Styleguide Version." />
-    <option name="LAST_COMMIT_MESSAGE" value="Angeben der richtigen Styleguide Version." />
+    <MESSAGE value="Erste Test Implementierung." />
+    <option name="LAST_COMMIT_MESSAGE" value="Erste Test Implementierung." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/gruppe.yml">
@@ -546,14 +575,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
+    <entry file="file://$PROJECT_DIR$/src/test/java/mops/portfolios/InitControllerTest.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/resources/templates/test.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="33" column="29" selection-start-line="33" selection-start-column="29" selection-end-line="33" selection-end-column="29" />
+        <state relative-caret-position="270">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/mops/portfolios/InitControllerTest.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/mops/portfolios/PortfoliosApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/mops/portfolios/InitController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -564,10 +603,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/templates/test.html">
+    <entry file="file://$PROJECT_DIR$/src/test/java/mops/portfolios/PortfoliosApplicationTests.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" selection-start-line="18" selection-end-line="18" />
+        <state relative-caret-position="390">
+          <caret line="26" selection-start-line="26" selection-end-line="26" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -578,22 +620,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/mops/portfolios/PortfoliosApplication.java">
+    <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/mops/portfolios/PortfoliosApplicationTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="277">
+          <caret line="36" column="57" selection-start-line="36" selection-start-column="57" selection-end-line="36" selection-end-column="57" />
         </state>
       </provider>
     </entry>
