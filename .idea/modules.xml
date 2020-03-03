@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/abschlussprojekt-team-the-institute.iml" filepath="$PROJECT_DIR$/.idea/abschlussprojekt-team-the-institute.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/portfolios.iml" filepath="$PROJECT_DIR$/.idea/modules/portfolios.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/portfolios.main.iml" filepath="$PROJECT_DIR$/.idea/modules/portfolios.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/portfolios.test.iml" filepath="$PROJECT_DIR$/.idea/modules/portfolios.test.iml" />
     </modules>
   </component>
 </project>

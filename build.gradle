@@ -33,8 +33,6 @@ repositories {
 dependencies {
 	implementation "mops:styequide:2.0.0"
 
-	spotbugsPlugins 'com.h3xstream.findsecbug:findsecbug-plugin:1.7.1'
-
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
