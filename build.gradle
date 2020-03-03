@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-	implementation "mops:styequide:1.0.7"
+	implementation "mops:styequide:2.0.0"
 
 	spotbugsPlugins 'com.h3xstream.findsecbug:findsecbug-plugin:1.7.1'
 
