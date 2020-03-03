@@ -1,5 +1,11 @@
-package main.java.mops.portfolios;
+package mops.portfolios;
 
-public class HelloWorld {
+import org.springframework.stereotype.Service;
 
+@Service
+class HelloWorld {
+
+  String greeting(String s) {
+    return "Hello, " + s + "!";
+  }
 }
