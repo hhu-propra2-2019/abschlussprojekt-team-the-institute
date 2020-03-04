@@ -1,6 +1,5 @@
 package mops.portfolios;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class InitController {
 
-  private final HelloWorld greeter;
+  private transient HelloWorld greeter;
 
   public InitController(HelloWorld greeter) {
     this.greeter = greeter;
