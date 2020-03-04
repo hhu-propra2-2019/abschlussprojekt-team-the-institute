@@ -4,7 +4,7 @@ plugins {
 	id "com.github.spotbugs" version "4.0.0"
 	id 'java'
 	id 'pmd'
-	id 'checkstyle'
+	//id 'checkstyle'
 }
 
 group = 'mops'
@@ -50,7 +50,7 @@ test {
 	useJUnitPlatform()
 }
 
-checkstyle {
-	toolVersion '8.28'
-	configFile = file("${rootDir}/config/checkstyle/checksytle.xml")
-}
+// checkstyle {
+//	toolVersion '8.28'
+//	configFile = file("${rootDir}/config/checkstyle/checksytle.xml")
+// }
