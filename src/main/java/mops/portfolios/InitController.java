@@ -16,7 +16,7 @@ public class InitController {
     this.greeter = greeter;
   }
 
-  private List<Portfolio> portfolioList = Arrays.asList(
+  private transient List<Portfolio> portfolioList = Arrays.asList(
       new Portfolio("Propra 1"),
       new Portfolio("Propra 2"),
       new Portfolio("Algorithmen und Datenstrukturen"));

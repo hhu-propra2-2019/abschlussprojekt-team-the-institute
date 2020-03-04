@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Data
 public class Portfolio {
@@ -18,7 +19,7 @@ public class Portfolio {
 
   public String getLastChangeDate() {
     Date date = new Date(lastChange);
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss", Locale.GERMANY);
     return dateFormat.format(date);
   }
 
