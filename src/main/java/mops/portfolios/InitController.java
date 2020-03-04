@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class InitController {
 
-  @Autowired
-  private HelloWorld greeter = new HelloWorld();
+  private final HelloWorld greeter;
+
+  public InitController(HelloWorld greeter) {
+    this.greeter = greeter;
+  }
 
   @GetMapping("/")
   public String testGreet(Model model) {
