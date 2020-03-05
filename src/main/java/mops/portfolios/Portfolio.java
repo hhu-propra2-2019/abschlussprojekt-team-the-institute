@@ -21,7 +21,7 @@ public class Portfolio {
     return dateFormat.format(date);
   }
 
-  public Portfolio(String course) {
+  Portfolio(String course) {
     this.course = course;
   }
 }
