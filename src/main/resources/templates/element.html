@@ -23,17 +23,13 @@
 </header>
 <main th:fragment="bodycontent">
 
-    <div class="card m-5" th:each="portfolio : ${portfolioList}">
-        <div class="card-header">
-            <b th:text="${portfolio.getCourse()}">Veranstaltung</b>
-        </div>
-        <div class="card-body">
-            <p class="card-title">Titel</p>
-            <p class="card-text">Mitglieder: <b th:text="${portfolio.getStudents().size()}">0</b>
-            <p class="card-text">Letzte Änderung: <b th:text="${portfolio.getLastChangeDate()}">01/01/2000 00:00</b></p>
-            <a th:href="@{/portfolio(course=${portfolio.getCourse()})}" class="btn btn-dark">Anzeigen</a>
-        </div>
-    </div>
+    <p th:text="${portfolio.getCourse()}"></p>
+
+    <ul th:each="student : ${portfolio.getStudents()}">
+
+        <li><p th:text="${student}">Name</p></li>
+
+    </ul>
 
 </main>
 </body>

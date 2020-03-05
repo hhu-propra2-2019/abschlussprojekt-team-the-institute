@@ -3,6 +3,7 @@ package mops.portfolios;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,23 +11,30 @@ import java.util.List;
 @Controller
 public class InitController {
 
-  private transient HelloWorld greeter;
+    @GetMapping("/")
+    public String requestList(Model model) {
+        model.addAttribute("portfolioList", portfolioList);
+        return "test";
+    }
 
-  public InitController(HelloWorld greeter) {
-    this.greeter = greeter;
-  }
+    @GetMapping("/portfolio")
+    public String requestElement(Model model, @RequestParam String course) {
+        model.addAttribute("portfolio", getPortfolioByCourse(course));
+        return "element";
+    }
 
-  private transient List<Portfolio> portfolioList = Arrays.asList(
-      new Portfolio("Propra 1"),
-      new Portfolio("Propra 2"),
-      new Portfolio("Algorithmen und Datenstrukturen"));
+    private transient List<Portfolio> portfolioList = Arrays.asList(
+            new Portfolio("Propra1"),
+            new Portfolio("Propra2"),
+            new Portfolio("Algorithmen_und_Datenstrukturen"));
 
-  @GetMapping("/")
-  public String testGreet(Model model) {
-    model.addAttribute("text", greeter.greeting("Tester"));
-
-    model.addAttribute("portfolioList", portfolioList);
-
-    return "test";
-  }
+    @SuppressWarnings("PMD")
+    private Portfolio getPortfolioByCourse(String course) {
+        for (Portfolio portfolio : portfolioList) {
+            if (portfolio.getCourse().equals(course)) {
+                return portfolio;
+            }
+        }
+        return null;
+    }
 }
