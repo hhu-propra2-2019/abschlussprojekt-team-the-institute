@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<head>
+    <meta charset="utf-8">
+    <title>Test</title>
+    <th:block th:fragment="headcontent">
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li>
+                <a href="/">
+                    <p><i class="fa fa-home fa-lg"></i> Home</p>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div th:fragment="bodycontent">
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#home">Home</a>
+        </li>
+        <li class="nav-item" th:each="portfolio : ${portfolioList}">
+            <a class="nav-link" data-toggle="tab" th:href="'#'+${portfolio.getCourse()}" th:text="${portfolio.getCourse()}">Kurs</a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane container fade show active" id="home">...</div>
+        <div class="tab-pane fade"  th:each="portfolio: ${portfolioList}" th:id="${portfolio.getCourse()}">
+            <div class="card m-5">
+                <div class="card-header">
+                    <b th:text="${portfolio.getCourse()}">Veranstaltung</b>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">Titel</p>
+                    <p class="card-text">Mitglieder: <b th:text="${portfolio.getStudents().size()}">0</b>
+                    <p class="card-text">Letzte Änderung: <b th:text="${portfolio.getLastChangeDate()}">01/01/2000 00:00</b></p>
+                    <a th:href="@{/portfolio(course=${portfolio.getCourse()})}" class="btn btn-dark">Anzeigen</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
