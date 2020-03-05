@@ -1,9 +1,8 @@
 package mops.portfolios;
 
-import lombok.Data;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
+import lombok.Data;
 
 @Data
 public class Portfolio {
