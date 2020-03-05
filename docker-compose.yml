@@ -1,2 +1,13 @@
+# FIXME: Change and move the definitions `MYSQL_*` to `.env` file before release
+
 version: "3.1"
 services:
+  database:
+    image: mysql:5.7
+    volumes:
+      - ./mysql/db/entrypoint:/docker-entrypoint-initdb.d/
+    ports:
+      - "23306:3306"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=password"
+      - "MYSQL_DATABASE=portfolios"
