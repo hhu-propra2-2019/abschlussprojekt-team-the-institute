@@ -1,10 +1,10 @@
 package mops.portfolios;
 
 public class MatrikelNr {
-  int matrikelnr;
+  transient private int value;
 
-  public MatrikelNr(int matrikelnr) {
-    this.matrikelnr = matrikelnr;
+  public MatrikelNr(int value) {
+    this.value = value;
   }
 
 }

@@ -16,7 +16,7 @@ public class HttpClientTest {
 
   @Test
   void testNoneExistentUriLoads() {
-    HttpClientErrorException exception = Assertions.assertThrows(HttpClientErrorException.class, () -> {
+    Assertions.assertThrows(HttpClientErrorException.class, () -> {
       HttpClient httpClient = new HttpClient();
       httpClient.getBody("http://hc.apache.org/haha");
     });

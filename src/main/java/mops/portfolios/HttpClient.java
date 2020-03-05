@@ -1,15 +1,10 @@
 package mops.portfolios;
 
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 public class HttpClient {
-
-  private final CloseableHttpClient httpClient = HttpClients.createDefault();
 
   /**
    * HTTP GET url and return body as String.
@@ -19,9 +14,6 @@ public class HttpClient {
    * @author mkasimd & hanic101
    */
   String getBody(String url) throws HttpClientErrorException {
-
-    HttpGet request = new HttpGet(url);
-
     RestTemplate template = new RestTemplate();
     ResponseEntity<String> entity = template.getForEntity(url, String.class);
     if(entity.getStatusCode().isError())
