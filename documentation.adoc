@@ -1,0 +1,93 @@
+= Dokumentation
+
+== Einführung und Ziele
+
+=== Aufgabenstellung
+
+. Was sind Lernportfolios?
+
+.. Lernportfolios sind digitale Mappen, in denen die Arbeitsprozesse von Studenten festgehalten werden.
+.. Sie dienen dazu Studenten über Fehler und Lernprozesse zu reflektieren.
+.. Sie dienen als indirektes Feedback für Dozenten.
+
+. Wesentliche Features
+
+.. Vorlagen sind durch Dozenten vorgebbar.
+.. Einzelne Journals können aus mehreren Beiträgen bestehen und sind immer einer Veranstaltung zugeordnet.
+
+=== Qualitätsziele
+
+|===
+
+| Qualitätsziel | Erläuterung
+
+| Benutzerfreundlichkeit | intuitives Anlegen von Portfolios
+
+| Übersichtlichkeit | leichtes Zurechtfinden zwischen Einträgen
+
+| Lerneffektivität | über Qualität und Brauchbarkeit des Wissens reflektieren
+
+|===
+
+
+=== Stakeholder
+
+|===
+
+| Wer ? | Welches Interesse?
+
+| Dozenten | Es kann ein Überblick über die Lernprozesse der Studenten erhalten werden. Daher können Studenten fundiert bewertet werden.
+
+| Studenten | Es kann über die Qualität und Brauchbarkeit des Wissens reflektiert werden. Dadurch wird der Lernerfolg erhöht.
+
+|===
+
+== Randbedingungen
+
+=== Technische Randbedingungen
+
+== Kontextabgrenzung
+
+=== Bestandteile des Systems
+. MinIO, damit Anhänge hinzugefügt werden können
+//. Korrekturverteilung
+//.. Code aus Projekt 4 aus ProPra 1 als Vorlage
+//.. Aufteilen der Korrektorengruppe in einzelne Benutzer, dann Zuordnung zu einzelnen Portfolios/Journals
+
+=== Externe Systeme und Schnittstelle
+. Gruppenbildung, damit Gruppenportfolios möglich sind
+. Keycloak: Die Authentifizierung muss eingebunden werden
+
+
+== Lösungsstrategie
+=== Aufbau
+
+image::Diagramm.png[]
+
+=== Integration mit anderen Systemen
+==== Gruppenbildung
+. Wir stellen einen GetRequest an die Schnittstelle der Gruppenbildung
+.. welche Informationen benötigt die Gruppe von uns?
+. Gruppenbildung gibt uns eine GruppenID mit Veranstaltung zurück
+. Gruppenbildung übergibt uns eine Korrektorengruppe
+
+==== Keycloak
+. Die Authentifizierung wird hierüber gemacht.
+. `application.properties`, sowie `KeycloakConfig` haben wir aus der "Keycloak Demo" übernommen.
+. Die `application.properties` haben wir auf unser Projekt angepasst.
+
+== Entscheidungen
+
+=== Probleme
+
+==== Bei der Integration
+
+. Wir hatten erst einmal Probleme das "realm" zu finden.
+. Wie sind die IDs in "keycloak" gespeichert?
+. HttpEntity hat nicht funktioniert, daher haben wir uns entschieden ResponseEntity zu nutzen.
+
+
+== Konzepte
+
+=== Domänenmodell
+
