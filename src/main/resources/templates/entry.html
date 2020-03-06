@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<head>
+    <meta charset="utf-8">
+    <title>Test</title>
+    <th:block th:fragment="headcontent">
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    </th:block>
+</head>
+<body>
+<header>
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li>
+                <a href="/">
+                    <p><i class="fa fa-home fa-lg"></i>Home</p>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="text-center" th:fragment="bodycontent">
+
+    <h1 class="display-4" th:text="${portfolio.getTitle()}">Portfolio title</h1>
+
+    <div class="card mt-4 bg-secondary">
+        <h3 class="card-header" th:text="'Woche - ' + ${entry.getId()}">Entry title</h3>
+        <div class="card-body" th:each="field : ${entry.getFields()}">
+            <h5 class="card-title" th:text="${field.getTitle()}">Field title</h5>
+            <p class="card-text" th:text="${field.getContent()}">Field content</p>
+            <a class="btn btn-primary" th:href="${field.getAttachement()}">Attachement</a>
+            <hr class="my-4">
+        </div>
+        <div class="card-footer">Hier kommt irgendwas hin</div>
+    </div>
+
+</div>
+</body>
+</html>
+
