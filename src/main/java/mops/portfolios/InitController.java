@@ -59,6 +59,7 @@ public class InitController {
   /**
    * returns portfolio with corresponding title
    */
+  @SuppressWarnings("PMD")
   private Portfolio getPortfolioByTitle(String title) {
     for (Portfolio portfolio : portfolioList) {
       if (portfolio.getTitle().equals(title)) {
@@ -71,6 +72,7 @@ public class InitController {
   /**
    * returns entry with corresponding id
    */
+  @SuppressWarnings("PMD")
   private PortfolioEntry getEntryById(Portfolio portfolio, int id) {
     for (PortfolioEntry entry : portfolio.getEntries()) {
       if (entry.getId() == id) {
