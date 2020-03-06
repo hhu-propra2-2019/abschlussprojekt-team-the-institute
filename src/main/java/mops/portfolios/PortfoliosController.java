@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import mops.portfolios.keycloak.Account;
 import org.json.JSONException;
@@ -54,9 +55,10 @@ public class PortfoliosController {
   @GetMapping("/")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String testGreet(KeycloakAuthenticationToken token, Model model) {
-    model.addAttribute("account", createAccountFromPrincipal(token));
+    Account account = createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
     
-    model.addAttribute("text", greeter.greeting("Tester"));
+    model.addAttribute("text", greeter.greeting(account.getName()));
 
     model.addAttribute("portfolioList", portfolioList);
 
@@ -85,6 +87,12 @@ public class PortfoliosController {
 
     List<MatrikelNr> matrikelNrList = new ArrayList<>();
     return matrikelNrList;
+  }
+
+  @GetMapping("/logout")
+  public String logout(HttpServletRequest request) throws Exception {
+    request.logout();
+    return "redirect:/";
   }
 
 }
