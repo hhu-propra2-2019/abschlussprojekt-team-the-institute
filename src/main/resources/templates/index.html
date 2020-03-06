@@ -5,6 +5,16 @@
     <meta charset="utf-8">
     <title>Test</title>
     <th:block th:fragment="headcontent">
+        <style>
+            ul {
+                list-style-type: none;
+            }
+
+            .card_link {
+                float: right;
+            }
+
+        </style>
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta charset="utf-8">
@@ -18,53 +28,211 @@
 <body>
 <header>
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
-        <ul>
-            <li>
-                <a href="/">
-                    <p><i class="fa fa-home fa-lg"></i>Home</p>
-                </a>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#home"><i class="fa fa-home fa-lg"></i>  Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#gruppen"><i class="fa fa-users fa-lg"></i>  Gruppen-Index</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#index"><i class="fa fa-book fa-lg"></i>  Persönlicher Index</a>
             </li>
         </ul>
     </nav>
 </header>
 <div th:fragment="bodycontent">
-
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#home"><i class="fa fa-home fa-lg"></i> Home</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#gruppen"><i class="fa fa-users fa-lg"></i> Gruppen</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#index"><i class="fa fa-book fa-lg"></i> Index</a>
-        </li>
-    </ul>
-
-    <!-- Tab panes -->
     <div class="tab-content">
         <div class="tab-pane container fade show active" id="home">
-            <p>Startseite des Studenten.</p>
-            <ul>Noch hinzuzufügen:
-                <li>Schnellauswahl: Portfolios</li>
-                <li>Schnellauswahl: Gruppen</li>
-                <li>Letztes Modifizertes Portfolio</li>
-                <li>Anstehende Termine?</li>
-            </ul>
+
+            <div class="tab-content">
+                <div class="card m-5 tab-pane container active" id="A">
+                    <div class="card-header">
+                        <b>Eigenes Portfolio A</b>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-title">A</p>
+                        <p class="card-text">Mitglieder: Der Student</p>
+                        <p class="card-text">Letzte Änderung: <b>01/01/2000 00:00</b></p>
+                        <ul>
+                            <li><a class="btn bg-secondary">Portfolio Anzeigen</a></li>
+                            <li class="card_link"><a class="nav-link" data-toggle="tab" href="#B"><i class="fa fa-chevron-circle-right"></i></a></li>
+                            <li class="card_link"><a class="nav-link" data-toggle="tab" href="#"><i class="fa fa-chevron-circle-left"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card m-5 tab-pane container fade" id="B">
+                    <div class="card-header">
+                        <b>Eigenes Portfolio B</b>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-title">B</p>
+                        <p class="card-text">Mitglieder: Der Student</p>
+                        <p class="card-text">Letzte Änderung: <b>01/01/2000 00:00</b></p>
+                        <ul>
+                            <li><a class="btn bg-secondary">Portfolio Anzeigen</a></li>
+                            <li class="card_link"><a class="nav-link" data-toggle="tab" href="#C"><i class="fa fa-chevron-circle-right"></i></a></li>
+                            <li class="card_link"><a class="nav-link" data-toggle="tab" href="#A"><i class="fa fa-chevron-circle-left"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card m-5 tab-pane container fade" id="C">
+                    <div class="card-header">
+                        <b>Eigenes Portfolio C</b>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-title">C</p>
+                        <p class="card-text">Mitglieder: Der Student</p>
+                        <p class="card-text">Letzte Änderung: <b>01/01/2000 00:00</b></p>
+                        <ul>
+                            <li><a class="btn bg-secondary">Portfolio Anzeigen</a></li>
+                            <li class="card_link"><a class="nav-link" data-toggle="tab" href="#"><i class="fa fa-chevron-circle-right"></i></a></li>
+                            <li class="card_link"><a class="nav-linK" data-toggle="tab" href="#B"><i class="fa fa-chevron-circle-left"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content">
+                <div class="card m-5 tab-pane container active" id="D">
+                    <div class="card-header">
+                        <b>Gruppen Portfolio D</b>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-title">D</p>
+                        <p class="card-text">Mitglieder: Der Student</p>
+                        <p class="card-text">Letzte Änderung: <b>01/01/2000 00:00</b></p>
+                        <ul>
+                            <li><a class="btn bg-secondary">Portfolio Anzeigen</a></li>
+                            <li class="card_link"><a class="nav-link" data-toggle="tab" href="#E"><i class="fa fa-chevron-circle-right"></i></a></li>
+                            <li class="card_link"><a class="nav-link" data-toggle="tab" href="#"><i class="fa fa-chevron-circle-left"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card m-5 tab-pane container fade" id="E">
+                    <div class="card-header">
+                        <b>Gruppen Portfolio E</b>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-title">E</p>
+                        <p class="card-text">Mitglieder: Der Student</p>
+                        <p class="card-text">Letzte Änderung: <b>01/01/2000 00:00</b></p>
+                        <ul>
+                            <li><a class="btn bg-secondary">Portfolio Anzeigen</a></li>
+                            <li class="card_link"><a class="nav-link card_link" data-toggle="tab" href="#D"><i class="fa fa-chevron-circle-right"></i></a></li>
+                            <li class="card_link"><a class="nav-link card_link" data-toggle="tab" href="#F"><i class="fa fa-chevron-circle-left"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card m-5 tab-pane container fade" id="F">
+                    <div class="card-header">
+                        <b>Gruppen Portfolio F</b>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-title">F</p>
+                        <p class="card-text">Mitglieder: Der Student</p>
+                        <p class="card-text">Letzte Änderung: <b>01/01/2000 00:00</b></p>
+                        <ul>
+                            <li><a class="btn bg-secondary">Portfolio Anzeigen</a></li>
+                            <li class="card_link"><a class="nav-link" data-toggle="tab" href="#"><i class="fa fa-chevron-circle-right"></i></a></li>
+                            <li class="card_link"><a class="nav-link" data-toggle="tab" href="#E"><i class="fa fa-chevron-circle-left"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card m-5">
+                <div class="card-header">
+                    <b>Letztes Portfolio</b>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">XYZ</p>
+                    <p class="card-text">Mitglieder: Der Student</p>
+                    <p class="card-text">Letzte Änderung: <b>01/01/2000 00:00</b></p>
+                    <a class="btn bg-secondary">Portfolio Anzeigen</a>
+                </div>
+            </div>
+
         </div>
         <div class="tab-pane fade" id="index">
             <p>Hier findet der Stundent eine Übersicht aller seiner Portfolios, aufgeteilt in seine und Gruppen-Portfolios, welche Alphabetisch sortiert sind.</p>
-            <ul>Noch hinzuzufügen:
-                <li>Lege fest, in welcher Form die Portfolios aufgelistet werden sollen</li>
-                <li>etwaige Optionen</li>
-            </ul>
+            <div class="card m-5">
+                <div class="card-header">
+                    <b>Eigenes Portfolio A</b>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">A</p>
+                    <p class="card-text">Mitglieder: Der Student</p>
+                    <p class="card-text">Letzte Änderung: <b>01/01/2000 00:00</b></p>
+                    <a class="btn bg-secondary">Portfolio Anzeigen</a>
+                </div>
+            </div>
+
+            <div class="card m-5 tab-pane">
+                <div class="card-header">
+                    <b>Eigenes Portfolio B</b>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">B</p>
+                    <p class="card-text">Mitglieder: Der Student</p>
+                    <p class="card-text">Letzte Änderung: <b>01/01/2000 00:00</b></p>
+                    <a class="btn bg-secondary">Portfolio Anzeigen</a>
+                </div>
+            </div>
+
+            <div class="card m-5">
+                <div class="card-header">
+                    <b>Eigenes Portfolio C</b>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">C</p>
+                    <p class="card-text">Mitglieder: Der Student</p>
+                    <p class="card-text">Letzte Änderung: <b>01/01/2000 00:00</b></p>
+                    <a class="btn bg-secondary">Portfolio Anzeigen</a>
+                </div>
+            </div>
         </div>
         <div class="tab-pane fade" id="gruppen">
             <p>Hier findet der Student alle Portfolios der Gruppen, zu denen er gehört.</p>
-            <ul>Noch hinzuzufügen:
-                <li>Lege fest, in welcher Form die Portfolios aufgelistet werden sollen</li>
-                <li>etwaige Optionen</li>
-            </ul>
+            <div class="card m-5">
+                <div class="card-header">
+                    <b>Gruppen Portfolio D</b>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">D</p>
+                    <p class="card-text">Mitglieder: Der Student</p>
+                    <p class="card-text">Letzte Änderung: <b>01/01/2000 00:00</b></p>
+                    <a class="btn bg-secondary">Portfolio Anzeigen</a>
+                </div>
+            </div>
+
+            <div class="card m-5">
+                <div class="card-header">
+                    <b>Gruppen Portfolio E</b>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">E</p>
+                    <p class="card-text">Mitglieder: Der Student</p>
+                    <p class="card-text">Letzte Änderung: <b>01/01/2000 00:00</b></p>
+                    <a class="btn bg-secondary card_link">Portfolio Anzeigen</a>
+                </div>
+            </div>
+
+            <div class="card m-5">
+                <div class="card-header">
+                    <b>Gruppen Portfolio F</b>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">F</p>
+                    <p class="card-text">Mitglieder: Der Student</p>
+                    <p class="card-text">Letzte Änderung: <b>01/01/2000 00:00</b></p>
+                    <a class="btn bg-secondary">Portfolio Anzeigen</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
