@@ -2,6 +2,9 @@ package mops.portfolios;
 
 import java.util.Arrays;
 import java.util.List;
+
+import mops.portfolios.objects.Portfolio;
+import mops.portfolios.objects.PortfolioEntry;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +20,35 @@ public class InitController {
   }
 
   @GetMapping("/portfolio")
-  public String requestElement(Model model, @RequestParam String course) {
-    model.addAttribute("portfolio", getPortfolioByCourse(course));
-    return "element";
+  public String clickPortfolio(Model model, @RequestParam String title) {
+
+    Portfolio portfolio = getPortfolioByTitle(title);
+    if (portfolio == null) {
+      return null;
+    }
+
+    model.addAttribute("portfolio", portfolio);
+
+    return "portfolio";
+  }
+
+  @GetMapping("/entry")
+  public String clickEntry(Model model,@RequestParam String title, @RequestParam int id) {
+
+    Portfolio portfolio = getPortfolioByTitle(title);
+    if (portfolio == null) {
+      return null;
+    }
+
+    PortfolioEntry entry = getEntryById(portfolio, id);
+    if (entry == null) {
+      return null;
+    }
+
+    model.addAttribute("portfolio", portfolio);
+    model.addAttribute("entry", entry);
+
+    return "entry";
   }
 
   private transient List<Portfolio> portfolioList = Arrays.asList(
@@ -27,11 +56,27 @@ public class InitController {
       new Portfolio("Propra2"),
       new Portfolio("Algorithmen_und_Datenstrukturen"));
 
+  /**
+   * returns portfolio with corresponding title
+   */
   @SuppressWarnings("PMD")
-  private Portfolio getPortfolioByCourse(String course) {
+  private Portfolio getPortfolioByTitle(String title) {
     for (Portfolio portfolio : portfolioList) {
-      if (portfolio.getCourse().equals(course)) {
+      if (portfolio.getTitle().equals(title)) {
         return portfolio;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * returns entry with corresponding id
+   */
+  @SuppressWarnings("PMD")
+  private PortfolioEntry getEntryById(Portfolio portfolio, int id) {
+    for (PortfolioEntry entry : portfolio.getEntries()) {
+      if (entry.getId() == id) {
+        return entry;
       }
     }
     return null;

@@ -3,7 +3,7 @@
       th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Portfolio</title>
+    <title>Test</title>
     <th:block th:fragment="headcontent">
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -21,28 +21,44 @@
         <ul>
             <li>
                 <a href="/">
-                    <p><i class="fa fa-home fa-lg"></i> Home</p>
+                    <p><i class="fa fa-home fa-lg"></i>Home</p>
                 </a>
             </li>
         </ul>
     </nav>
 </header>
-<div th:fragment="bodycontent">
+<div class="text-center" th:fragment="bodycontent">
 
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#home">Home</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#portfolios">Portfolios</a>
-        </li>
-    </ul>
+    <h1 class="display-4" th:text="'Portfolioübersicht - ' + ${portfolio.getTitle()}">Portfolio title</h1>
 
-    <!-- Tab panes -->
-    <div class="tab-content">
-        <div class="tab-pane container fade show active" id="home">Hier findet man die Kurs-Informationen</div>
-        <div class="tab-pane fade"  id="portfolios">Hier kommen die Portfolios hin</div>
+    <div class="card mt-4 bg-secondary" th:each="entry : ${portfolio.getEntries()}">
+        <h3 class="card-header" th:text="'Woche ' + ${entry.getId()}">Entry title</h3>
+        <div class="card-body">
+            <h5 class="card-title">Irgendein Titel?</h5>
+            <p class="card-text">Das ist ein text. lalala la abccccccccccccccccccc</p>
+            <a class="btn btn-primary" th:href="@{/entry(title=${portfolio.getTitle()},id=${entry.getId()})}">Anzeigen</a>
+        </div>
+        <div class="card-footer" th:text="'Erstellt vor ' + ${entry.getDaysSince()} + ' Tagen'">Date</div>
     </div>
+
+    <!--
+        <div class="card text-center">
+            <div class="card-header" th:text="${portfolio.getCourse()}">Title</div>
+            <div class="card-body">
+                <div th:each="entry : ${portfolio.getEntries()}">
+                    <h5 class="card-title" th:text="${entry.getTitle()}">Title</h5>
+                    <p class="card-text" th:text="${entry.getContent()}">Content</p>
+                    <a class="btn btn-primary" th:href="${entry.getAttachement()}">Attachement</a>
+                    <hr class="my-4">
+                </div>
+            </div>
+            <div class="card-footer text-muted" th:text="${portfolio.getLastChangeDate()}">
+                2 days ago
+            </div>
+        </div>
+        -->
+
 </div>
 </body>
 </html>
+
