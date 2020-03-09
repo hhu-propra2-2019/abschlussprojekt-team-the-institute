@@ -39,6 +39,7 @@ public class PortfoliosController {
    * @param model The Spring Model to add the attributes to
    * @return The page to load
    */
+  @SuppressWarnings("PMD")
   @GetMapping("/")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestList(Model model, KeycloakAuthenticationToken token) {
@@ -55,6 +56,7 @@ public class PortfoliosController {
    * @return The page to load
    */
 
+  @SuppressWarnings("PMD")
   @GetMapping("/portfolio")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String clickPortfolio(Model model, @RequestParam String title) {
@@ -77,6 +79,7 @@ public class PortfoliosController {
    * @return The page to load
    */
 
+  @SuppressWarnings("PMD")
   @GetMapping("/entry")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String clickEntry(Model model,@RequestParam String title, @RequestParam int id) {
@@ -97,6 +100,7 @@ public class PortfoliosController {
     return "entry";
   }
 
+  @SuppressWarnings("PMD")
   @GetMapping("/logout")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String logout(HttpServletRequest request) throws Exception {
