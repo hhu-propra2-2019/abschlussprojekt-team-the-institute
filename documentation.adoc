@@ -87,7 +87,7 @@ image::Diagramm.png[]
 . HttpEntity hat nicht funktioniert, daher haben wir uns entschieden ResponseEntity zu nutzen.
 
 === Beim Bau des Frontends / dder Website
-. In unserem Mock haben wir Bootstrap verwendet, um neue Elemente anzeigen zu lassen. Dabei traten Probleme auf, was uns dazu gebracht hat, doch Jaba Script zu verwenden.
+. In unserem Mock haben wir Bootstrap verwendet, um neue Elemente anzeigen zu lassen. Dabei traten Probleme auf, was für uns ein Hinweis war, dass wir unser Design vereinfachen sollten.
 
 
 == Konzepte
