@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-	implementation "mops:styleguide:2.0.0"
+	implementation "mops:styleguide:2.1.0"
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
