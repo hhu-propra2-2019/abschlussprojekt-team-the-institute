@@ -3,8 +3,26 @@
       th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Index</title>
+    <title>Test</title>
     <th:block th:fragment="headcontent">
+        <style>
+            ul {
+                list-style-type: none;
+            }
+
+            .card_link {
+                float: right;
+            }
+
+            .card {
+                display: none;
+            }
+
+            .card#1{
+                display: block;
+            }
+
+        </style>
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta charset="utf-8">
@@ -21,7 +39,12 @@
         <ul>
             <li>
                 <a href="/">
-                    <p><i class="fa fa-home fa-lg"></i> Home</p>
+                    <p><i class="fa fa-home fa-lg"></i> Startseite</p>
+                </a>
+            </li>
+            <li>
+                <a href="/index">
+                    <p><i class="fa fa-home fa-lg"></i> Index</p>
                 </a>
             </li>
         </ul>
@@ -29,17 +52,22 @@
 </header>
 <div th:fragment="bodycontent">
     <div class="content">
-        <ul>
-            <li>
-                <p>--- Hier kommen ALLE Vorlesungen des Studenten rein ---</p>
-            </li>
-        </ul>
-
-        <ul>
-            <li>
-                <p>--- Hier kommen ALLE Gruppen des Studenten rein ---</p>
-            </li>
-        </ul>
+        <div id="last">
+            <p>Setzte hier deine Arbeit fort: <a href="#">Zuletzt bearbeiteste Portfolio TM</a></p>
+        </div>
+        <div id="this_semester">
+            <ul> Für dieses Semester:
+                <li id="gruppen">
+                    <p>--- Hier kommen alle Gruppen des Studenten rein ---</p>
+                </li>
+                <li>
+                    <p>--- Hier kommen alle Vorlesungen des Studenten rein---</p>
+                </li>
+                <li>
+                    <p>--- Hier kommen die Privaten Portfolios rein ---</p>
+                </li>
+            </ul>
+        </div>
     </div>
     <script>
 
