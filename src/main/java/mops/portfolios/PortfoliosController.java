@@ -44,13 +44,19 @@ public class PortfoliosController {
    * @param model The Spring Model to add the attributes to
    * @return The page to load
    */
-   @GetMapping("/")
+  @GetMapping("/")
   public String requestList(Model model) {
+    model.addAttribute("portfolioList", portfolioList);
+    return "startseite";
+  }
+
+  @GetMapping("/index")
+  public String requestIndex(Model model) {
     model.addAttribute("portfolioList", portfolioList);
     return "index";
   }
   
-    @GetMapping("/portfolio")
+  @GetMapping("/portfolio")
   public String clickPortfolio(Model model, @RequestParam String title) {
 
     Portfolio portfolio = getPortfolioByTitle(title);
