@@ -2,24 +2,55 @@ package mops.portfolios;
 
 import java.util.Arrays;
 import java.util.List;
-
 import mops.portfolios.objects.Portfolio;
 import mops.portfolios.objects.PortfolioEntry;
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import mops.portfolios.keycloak.Account;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class InitController {
+@AllArgsConstructor
+public class PortfoliosController {
 
-  @GetMapping("/")
+  private transient Group group;
+
+
+  /**
+   * Takes the auth-token from Keycloak and generates an AccounDTO for the views.
+   *
+   * @param token the auth-token from Keycloak
+   * @return new Account to be used in the templates
+   */
+  private Account createAccountFromPrincipal(KeycloakAuthenticationToken token) {
+    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+    return new Account(
+            principal.getName(),
+            principal.getKeycloakSecurityContext().getIdToken().getEmail(),
+            null,
+            token.getAccount().getRoles());
+  }
+
+  /**
+   * Root mapping for GET requests.
+   * @param model The Spring Model to add the attributes to
+   * @return The page to load
+   */
+   @GetMapping("/")
   public String requestList(Model model) {
     model.addAttribute("portfolioList", portfolioList);
     return "index";
   }
-
-  @GetMapping("/portfolio")
+  
+    @GetMapping("/portfolio")
   public String clickPortfolio(Model model, @RequestParam String title) {
 
     Portfolio portfolio = getPortfolioByTitle(title);
@@ -51,7 +82,14 @@ public class InitController {
     return "entry";
   }
 
-  private transient List<Portfolio> portfolioList = Arrays.asList(
+  @GetMapping("/logout")
+  public String logout(HttpServletRequest request) throws Exception {
+    request.logout();
+    return "redirect:/";
+  }
+  
+  
+    private transient List<Portfolio> portfolioList = Arrays.asList(
       new Portfolio("Propra1"),
       new Portfolio("Propra2"),
       new Portfolio("Algorithmen_und_Datenstrukturen"));
@@ -81,4 +119,5 @@ public class InitController {
     }
     return null;
   }
+
 }
