@@ -19,9 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @AllArgsConstructor
 public class PortfoliosController {
 
-  private transient Group group;
-
-
   /**
    * Takes the auth-token from Keycloak and generates an AccountDTO for the views.
    *
