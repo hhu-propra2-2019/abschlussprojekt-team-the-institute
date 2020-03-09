@@ -43,7 +43,6 @@ public class PortfoliosController {
    * @return The page to load
    */
   @GetMapping("/")
-  @RolesAllowed({"ROLE_orga", "ROLE_studi"})
   public String requestList(Model model) {
     model.addAttribute("portfolioList", portfolioList);
     return "index";
