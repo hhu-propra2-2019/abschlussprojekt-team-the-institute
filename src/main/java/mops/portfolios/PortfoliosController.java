@@ -43,7 +43,10 @@ public class PortfoliosController {
    * @return The page to load
    */
   @GetMapping("/")
-  public String requestList(Model model) {
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String requestList(Model model, KeycloakAuthenticationToken token) {
+    Account account = createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
     model.addAttribute("portfolioList", portfolioList);
     return "index";
   }
@@ -56,7 +59,7 @@ public class PortfoliosController {
    */
 
   @GetMapping("/portfolio")
-  @RolesAllowed({"ROLE_orga", "ROLE_studi"})
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String clickPortfolio(Model model, @RequestParam String title) {
 
     Portfolio portfolio = getPortfolioByTitle(title);
@@ -78,7 +81,7 @@ public class PortfoliosController {
    */
 
   @GetMapping("/entry")
-  @RolesAllowed({"ROLE_orga", "ROLE_studi"})
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String clickEntry(Model model,@RequestParam String title, @RequestParam int id) {
 
     Portfolio portfolio = getPortfolioByTitle(title);
@@ -98,7 +101,7 @@ public class PortfoliosController {
   }
 
   @GetMapping("/logout")
-  @RolesAllowed({"ROLE_orga", "ROLE_studi"})
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String logout(HttpServletRequest request) throws Exception {
     request.logout();
     return "redirect:/";
