@@ -1,20 +1,22 @@
-package mops.portfolios.Portfolio;
+package mops.portfolios.EntryField;
 
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Data
 @RequiredArgsConstructor
-public class Portfolio {
+public class EntryField {
     private @Id @GeneratedValue @Getter Long id;
 
-    private @Column(nullable = false) String title;
+    private @Setter String title;
 
-    private @Getter String userId;
+    private @Setter String content;
 
-    private @Getter Long groupId;
+    private @Setter String attachment;
+
 }
