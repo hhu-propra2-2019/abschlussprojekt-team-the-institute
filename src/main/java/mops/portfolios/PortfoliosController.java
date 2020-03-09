@@ -46,25 +46,21 @@ public class PortfoliosController {
    */
   @GetMapping("/")
   public String requestList(Model model) {
-    model.addAttribute("portfolioList", portfolioList);
     return "startseite";
   }
 
   @GetMapping("/index")
   public String requestIndex(Model model) {
-    model.addAttribute("portfolioList", portfolioList);
     return "index";
   }
 
   @GetMapping("/gruppen")
   public String requestGruppen(Model model) {
-    model.addAttribute("portfolioList", portfolioList);
     return "gruppen";
   }
 
   @GetMapping("/privat")
   public String requestPrivate(Model model) {
-    model.addAttribute("portfolioList", portfolioList);
     return "privat";
   }
   
