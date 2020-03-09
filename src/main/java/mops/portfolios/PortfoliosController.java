@@ -1,14 +1,11 @@
 package mops.portfolios;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import mops.portfolios.keycloak.Account;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.slf4j.Logger;
@@ -28,8 +25,6 @@ public class PortfoliosController {
       new Portfolio("Propra 1"),
       new Portfolio("Propra 2"),
       new Portfolio("Algorithmen und Datenstrukturen"));
-
-  private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
 
 
   /**
@@ -63,30 +58,6 @@ public class PortfoliosController {
     model.addAttribute("portfolioList", portfolioList);
 
     return "test";
-  }
-
-  /**
-   * Use this method to get a List containing a List out of all MatrikelNr in a group.
-   * @param matrikelnr The MatrikelNr of the student to get the group members of
-   * @return List of the MatrikelNr of each group member
-   */
-  List<MatrikelNr> getGroupmembers(MatrikelNr matrikelnr) {
-    HttpClient httpClient = new HttpClient();
-    String responseBody = httpClient.getBody("/gruppen2/groupmembers");
-
-    // Content-Type von gruppen2 ist JSON
-    JSONObject jsonObject;
-    try {
-      jsonObject = new JSONObject(responseBody);
-    } catch (JSONException err) {
-      logger.error("Error: " + err.toString());
-      //TODO ERROR!!!!!!!!!!!
-    }
-
-    // TODO genaues URI mit gruppen2 absprechen
-
-    List<MatrikelNr> matrikelNrList = new ArrayList<>();
-    return matrikelNrList;
   }
 
   @GetMapping("/logout")

@@ -15,7 +15,7 @@ public class HttpClient {
    * @throws HttpClientErrorException if an HTTP error occured
    * @author mkasimd & hanic101
    */
-  String getBody(String url) throws HttpClientErrorException {
+  String get(String url) throws HttpClientErrorException {
     RestTemplate template = new RestTemplate();
     ResponseEntity<String> response = template.getForEntity(url, String.class);
     if (response.getStatusCode().isError()) {
