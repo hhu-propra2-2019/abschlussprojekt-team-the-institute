@@ -2,16 +2,14 @@ package mops.portfolios;
 
 import java.util.Arrays;
 import java.util.List;
-import mops.portfolios.objects.Portfolio;
-import mops.portfolios.objects.PortfolioEntry;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import mops.portfolios.keycloak.Account;
+import mops.portfolios.objects.Portfolio;
+import mops.portfolios.objects.PortfolioEntry;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +23,7 @@ public class PortfoliosController {
 
 
   /**
-   * Takes the auth-token from Keycloak and generates an AccounDTO for the views.
+   * Takes the auth-token from Keycloak and generates an AccountDTO for the views.
    *
    * @param token the auth-token from Keycloak
    * @return new Account to be used in the templates
@@ -44,13 +42,22 @@ public class PortfoliosController {
    * @param model The Spring Model to add the attributes to
    * @return The page to load
    */
-   @GetMapping("/")
+  @GetMapping("/")
+  @RolesAllowed({"ROLE_orga", "ROLE_studi"})
   public String requestList(Model model) {
     model.addAttribute("portfolioList", portfolioList);
     return "index";
   }
-  
-    @GetMapping("/portfolio")
+
+  /**
+   * Portfolio mapping for GET requests.
+   * @param model The Spring Model to the add attributes to
+   * @param title The name of the portfolio
+   * @return The page to load
+   */
+
+  @GetMapping("/portfolio")
+  @RolesAllowed({"ROLE_orga", "ROLE_studi"})
   public String clickPortfolio(Model model, @RequestParam String title) {
 
     Portfolio portfolio = getPortfolioByTitle(title);
@@ -63,7 +70,16 @@ public class PortfoliosController {
     return "portfolio";
   }
 
+  /**
+   * Entry mapping for GET request.
+   * @param model The Spring model to add the attributes to.
+   * @param title The name of the entry
+   * @param id The id of the entry
+   * @return The page to load
+   */
+
   @GetMapping("/entry")
+  @RolesAllowed({"ROLE_orga", "ROLE_studi"})
   public String clickEntry(Model model,@RequestParam String title, @RequestParam int id) {
 
     Portfolio portfolio = getPortfolioByTitle(title);
@@ -83,19 +99,20 @@ public class PortfoliosController {
   }
 
   @GetMapping("/logout")
+  @RolesAllowed({"ROLE_orga", "ROLE_studi"})
   public String logout(HttpServletRequest request) throws Exception {
     request.logout();
     return "redirect:/";
   }
   
   
-    private transient List<Portfolio> portfolioList = Arrays.asList(
+  private transient List<Portfolio> portfolioList = Arrays.asList(
       new Portfolio("Propra1"),
       new Portfolio("Propra2"),
       new Portfolio("Algorithmen_und_Datenstrukturen"));
 
   /**
-   * returns portfolio with corresponding title
+   * returns portfolio with corresponding title.
    */
   @SuppressWarnings("PMD")
   private Portfolio getPortfolioByTitle(String title) {
@@ -108,7 +125,7 @@ public class PortfoliosController {
   }
 
   /**
-   * returns entry with corresponding id
+   * returns entry with corresponding id.
    */
   @SuppressWarnings("PMD")
   private PortfolioEntry getEntryById(Portfolio portfolio, int id) {
