@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
+
 <head>
     <meta charset="utf-8">
-    <title>Test</title>
+    <title>Startseite</title>
     <th:block th:fragment="headcontent">
         <style>
             ul {
@@ -37,33 +38,8 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     </th:block>
 </head>
+
 <body>
-<header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
-        <ul>
-            <li>
-                <a href="/">
-                    <p><i class="fa fa-home fa-lg"></i> Startseite</p>
-                </a>
-            </li>
-            <li>
-                <a href="/index">
-                    <p><i class="fa fa-home fa-lg"></i> Index aller Portfolios</p>
-                </a>
-            </li>
-            <li>
-                <a href="/gruppen">
-                    <p><i class="fa fa-home fa-lg"></i> Gruppen-Portfolios</p>
-                </a>
-            </li>
-            <li>
-                <a href="/privat">
-                    <p><i class="fa fa-home fa-lg"></i> Eigene Portfolios</p>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</header>
 <div th:fragment="bodycontent">
     <div class="content">
         <div id="this_semester">
@@ -117,4 +93,5 @@
     </script>
 </div>
 </body>
+
 </html>
