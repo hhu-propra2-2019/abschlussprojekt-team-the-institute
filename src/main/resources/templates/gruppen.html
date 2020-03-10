@@ -3,13 +3,8 @@
       th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Test</title>
+    <title>gruppenIndex</title>
     <th:block th:fragment="headcontent">
-        <style>
-            ul {
-                list-style-type: none;
-            }
-        </style>
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta charset="utf-8">
@@ -49,22 +44,7 @@
 </header>
 <div th:fragment="bodycontent">
     <div class="content">
-        <div id="this_semester">
-            <ul> Für dieses Semester:
-                <li id="last">
-                    <p>--- Setzte hier deine Arbeit fort: <a href="#">Zuletzt bearbeiteste Portfolio<sup>TM</sup></a> ---</p>
-                </li>
-                <li id="gruppen">
-                    <p>--- Hier kommen alle Gruppen des Studenten rein ---</p>
-                </li>
-                <li id="vorlesungen">
-                    <p>--- Hier kommen alle Vorlesungen des Studenten rein ---</p>
-                </li>
-                <li id="privat">
-                    <p>--- Hier kommen die Privaten Portfolios rein ---</p>
-                </li>
-            </ul>
-        </div>
+
     </div>
     <script>
 
