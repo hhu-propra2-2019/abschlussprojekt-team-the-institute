@@ -1,4 +1,4 @@
-package mops.portfolios;
+package mops.portfolios.keycloak;
 
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.springframework.context.annotation.Bean;
