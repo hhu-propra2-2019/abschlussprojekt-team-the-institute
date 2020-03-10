@@ -76,7 +76,7 @@
                     -->
                     <ul>
                         <li>
-                            <p><i class="fas fa-book-open"></i> Setzte hier deine Arbeit fort: </p>
+                            <p> Setzte hier deine Arbeit fort: </p>
                             <a th:text="${last[1]}" href="#">Letztes Portfolio</a>
                         </li>
                     </ul>
@@ -90,9 +90,8 @@
                     --- Hier kommen alle Gruppen-Portfolios des Studenten rein ---
 
                     -->
-                    <ul th:each="gruppe : ${gruppen}">
-                        <li>
-                            <i class="fas fa-chalkboard"></i>
+                    <ul> Schnellzugriff auf die Gruppen-Portfolios:
+                        <li th:each="gruppe : ${gruppen}">
                             <a th:text="${gruppe[1]}" href="#">Gruppe 1</a>
                         </li>
                     </ul>
@@ -103,9 +102,9 @@
 
                     --- Hier kommen alle Vorlesungs-Portfolios des Studenten rein ---
                     -->
-                    <ul th:each="vorlesung : ${vorlesungen}">
-                        <li>
-                            <i class="fas fa-book-open"></i>
+
+                    <ul>Schnellzugriff auf die privaten Portfolios:
+                        <li th:each="vorlesung : ${vorlesungen}">
                             <a th:text="${vorlesung[1]}" href="#">Portfolio 1</a>
                         </li>
                     </ul>
