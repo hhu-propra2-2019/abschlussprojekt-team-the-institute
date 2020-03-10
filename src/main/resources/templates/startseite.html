@@ -50,9 +50,14 @@
 <div th:fragment="bodycontent">
     <div class="content">
         <div id="this_semester">
-            <ul> Für dieses Semester:
+            <p>Willkommen beim Portfolioservice des MOPS.</p>
+            <p>Hier eine schnelle Übersicht deiner Portoflios aus diesem Semester:</p>
+            <ul>
                 <li id="last">
-                    <p>--- Setzte hier deine Arbeit fort: <a href="#">Letztes Portfolio<sup>TM</sup></a> ---</p>
+                    <!--
+                    given idu = user.id, find portfolio with smallest || right now - portfolio.date_last_modified||
+                    -->
+                    <p>--- Setzte hier deine Arbeit fort: <a href="#">Letztes Portfolio</a> ---</p>
                 </li>
                 <li id="gruppen">
                     <!--
