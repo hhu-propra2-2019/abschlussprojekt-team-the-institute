@@ -56,6 +56,7 @@ public class PortfoliosController {
    */
   @GetMapping("/")
   public String requestList(Model model) {
+
     return "startseite";
   }
 

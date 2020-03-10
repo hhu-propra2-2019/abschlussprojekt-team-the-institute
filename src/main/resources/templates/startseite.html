@@ -9,6 +9,19 @@
             ul {
                 list-style-type: none;
             }
+
+            .sep {
+                padding-top: 0.5em;
+                border-color: black;
+                border-width: 0.05em;
+                border-radius: 0.1em;
+                border-style: solid;
+            }
+
+            .sep li{
+                padding: 0.3em;
+            }
+
         </style>
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -53,13 +66,13 @@
             <p>Willkommen beim Portfolioservice des MOPS.</p>
             <p>Hier eine schnelle Übersicht deiner Portoflios aus diesem Semester:</p>
             <ul>
-                <li id="last">
+                <li class="sep" id="last">
                     <!--
                     given idu = user.id, find portfolio with smallest || right now - portfolio.date_last_modified||
                     -->
                     <p>--- Setzte hier deine Arbeit fort: <a href="#">Letztes Portfolio</a> ---</p>
                 </li>
-                <li id="gruppen">
+                <li class="sep" id="gruppen">
                     <!--
                     given user.id find every idg = group.id. s.t. there exists user_group with user.id && group.id
                     &&
@@ -75,7 +88,7 @@
                         </li>
                     </ul>
                 </li>
-                <li id="vorlesungen">
+                <li class="sep" id="vorlesungen">
                     <!--
                     given idu = user.id display every portfolio with user.id = idu && right now - date created < 6 months
 
