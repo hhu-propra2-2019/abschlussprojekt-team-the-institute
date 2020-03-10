@@ -52,16 +52,38 @@
         <div id="this_semester">
             <ul> Für dieses Semester:
                 <li id="last">
-                    <p>--- Setzte hier deine Arbeit fort: <a href="#">Zuletzt bearbeiteste Portfolio<sup>TM</sup></a> ---</p>
+                    <p>--- Setzte hier deine Arbeit fort: <a href="#">Letztes Portfolio<sup>TM</sup></a> ---</p>
                 </li>
                 <li id="gruppen">
-                    <p>--- Hier kommen alle Gruppen des Studenten rein ---</p>
+                    <!--
+                    given user.id find every idg = group.id. s.t. there exists user_group with user.id && group.id
+                    &&
+                    display every portfolio with group.id = idg && right now - date created < 6 months
+                     -->
+                    <p>--- Hier kommen alle Gruppen-Portfolios des Studenten rein ---</p>
+                    <ul>
+                        <li>
+                            <a href="#">Gruppe 1</a>
+                        </li>
+                        <li>
+                            <a href="#">Gruppe 2</a>
+                        </li>
+                    </ul>
                 </li>
                 <li id="vorlesungen">
-                    <p>--- Hier kommen alle Vorlesungen des Studenten rein ---</p>
-                </li>
-                <li id="privat">
-                    <p>--- Hier kommen die Privaten Portfolios rein ---</p>
+                    <!--
+                    given idu = user.id display every portfolio with user.id = idu && right now - date created < 6 months
+
+                    -->
+                    <p>--- Hier kommen alle Vorlesungs-Portfolios des Studenten rein ---</p>
+                    <ul>
+                        <li>
+                            <a href="#">Portfolio 1</a>
+                        </li>
+                        <li>
+                            <a href="#">Portfolio 2</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
