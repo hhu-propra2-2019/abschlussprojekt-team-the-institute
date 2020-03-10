@@ -39,8 +39,11 @@ public class PortfoliosController {
     return new Account(
         principal.getName(),
         principal.getKeycloakSecurityContext().getIdToken().getEmail(),
-        null,
-        token.getAccount().getRoles());
+        ((KeycloakPrincipal) token.getPrincipal()).getKeycloakSecurityContext().getIdToken()
+                    .getPicture(),
+        token.getAccount().getRoles(),
+        ((KeycloakPrincipal) token.getPrincipal()).getKeycloakSecurityContext().getIdToken()
+                 .getSubject());
   }
 
   /**
@@ -144,7 +147,7 @@ public class PortfoliosController {
 
   @SuppressWarnings("PMD")
   @PostMapping("/view")
-  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  @RolesAllowed({"ROLE_orga"})
   public String uploadFile(Model model, @RequestParam("file") MultipartFile uploadedFile) {
 
     System.out.println("RECEIVED FILE " + uploadedFile.getOriginalFilename());
