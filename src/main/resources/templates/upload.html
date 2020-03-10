@@ -3,7 +3,7 @@
       th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 <head>
     <meta charset="utf-8">
-    <title>Test</title>
+    <title>Index</title>
     <th:block th:fragment="headcontent">
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -21,34 +21,26 @@
         <ul>
             <li>
                 <a href="/">
-                    <p><i class="fa fa-home fa-lg"></i> Startseite</p>
-                </a>
-            </li>
-            <li>
-                <a href="/index">
-                    <p><i class="fa fa-home fa-lg"></i> Index aller Portfolios</p>
-                </a>
-            </li>
-            <li>
-                <a href="/gruppen">
-                    <p><i class="fa fa-home fa-lg"></i> Gruppen-Portfolios</p>
-                </a>
-            </li>
-            <li>
-                <a href="/privat">
-                    <p><i class="fa fa-home fa-lg"></i> Eigene Portfolios</p>
+                    <p><i class="fa fa-home fa-lg"></i> Home</p>
                 </a>
             </li>
         </ul>
     </nav>
 </header>
 <div th:fragment="bodycontent">
-    <div class="content">
 
-    </div>
-    <script>
+    <h1 class="display-4">Portfolio Vorlage hochladen</h1>
 
-    </script>
+    <form class="input-group mb-3" method="POST" enctype="multipart/form-data" action="/view">
+        <div class="custom-file">
+            <input class="custom-file-input" type="file" name="file" id="INPUT_FILE" accept=".adoc,.asciidoc,.asc">
+            <label class="custom-file-label" for="INPUT_FILE">AsciiDoc Datei auswählen</label>
+        </div>
+        <div class="input-group-append">
+            <button class="input-group-text" type="submit">Hochladen</button>
+        </div>
+    </form>
+
 </div>
 </body>
 </html>

@@ -1,13 +1,20 @@
 package mops.portfolios;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+
 import mops.portfolios.objects.Portfolio;
 import mops.portfolios.objects.PortfolioEntry;
+
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.AllArgsConstructor;
 import mops.portfolios.keycloak.Account;
+import org.asciidoctor.Asciidoctor;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.slf4j.Logger;
@@ -15,7 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @AllArgsConstructor
@@ -33,24 +42,39 @@ public class PortfoliosController {
   private Account createAccountFromPrincipal(KeycloakAuthenticationToken token) {
     KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     return new Account(
-            principal.getName(),
-            principal.getKeycloakSecurityContext().getIdToken().getEmail(),
-            null,
-            token.getAccount().getRoles());
+        principal.getName(),
+        principal.getKeycloakSecurityContext().getIdToken().getEmail(),
+        null,
+        token.getAccount().getRoles());
   }
 
   /**
    * Root mapping for GET requests.
+   *
    * @param model The Spring Model to add the attributes to
    * @return The page to load
    */
-   @GetMapping("/")
+  @GetMapping("/")
   public String requestList(Model model) {
-    model.addAttribute("portfolioList", portfolioList);
+    return "startseite";
+  }
+
+  @GetMapping("/index")
+  public String requestIndex(Model model) {
     return "index";
   }
-  
-    @GetMapping("/portfolio")
+
+  @GetMapping("/gruppen")
+  public String requestGruppen(Model model) {
+    return "gruppen";
+  }
+
+  @GetMapping("/privat")
+  public String requestPrivate(Model model) {
+    return "privat";
+  }
+
+  @GetMapping("/portfolio")
   public String clickPortfolio(Model model, @RequestParam String title) {
 
     Portfolio portfolio = getPortfolioByTitle(title);
@@ -64,7 +88,7 @@ public class PortfoliosController {
   }
 
   @GetMapping("/entry")
-  public String clickEntry(Model model,@RequestParam String title, @RequestParam int id) {
+  public String clickEntry(Model model, @RequestParam String title, @RequestParam int id) {
 
     Portfolio portfolio = getPortfolioByTitle(title);
     if (portfolio == null) {
@@ -82,14 +106,37 @@ public class PortfoliosController {
     return "entry";
   }
 
+  @GetMapping("/upload")
+  public String upload(Model model) {
+    return "upload";
+  }
+
+  @PostMapping("/view")
+  public String uploadFile(Model model, @RequestParam("file") MultipartFile uploadedFile) {
+
+    System.out.println("RECEIVED FILE " + uploadedFile.getOriginalFilename());
+
+    try {
+      String text = new String(uploadedFile.getBytes(), StandardCharsets.UTF_8);
+      String html = convertAsciiDocTextToHTML(text);
+      model.addAttribute("html", html);
+      System.out.println("GOT TEXT" + html);
+    } catch (IOException e) {
+      e.printStackTrace();
+      System.out.println("GOT ERROR");
+    }
+
+    return "view";
+  }
+
+
   @GetMapping("/logout")
   public String logout(HttpServletRequest request) throws Exception {
     request.logout();
     return "redirect:/";
   }
-  
-  
-    private transient List<Portfolio> portfolioList = Arrays.asList(
+
+  private transient List<Portfolio> portfolioList = Arrays.asList(
       new Portfolio("Propra1"),
       new Portfolio("Propra2"),
       new Portfolio("Algorithmen_und_Datenstrukturen"));
@@ -118,6 +165,17 @@ public class PortfoliosController {
       }
     }
     return null;
+  }
+
+  /**
+   * convert ascii to html
+   */
+  @SuppressWarnings("PMD")
+  private String convertAsciiDocTextToHTML(String asciiDocText) {
+    Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+    String html = asciidoctor.convert(asciiDocText, new HashMap<>());
+    asciidoctor.close();
+    return html;
   }
 
 }
