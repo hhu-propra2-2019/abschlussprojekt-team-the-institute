@@ -10,6 +10,10 @@
                 list-style-type: none;
             }
 
+            .content {
+                font-style: italic;
+            }
+
             .sep {
                 padding-top: 0.5em;
                 border-color: black;
@@ -70,21 +74,26 @@
                     <!--
                     given idu = user.id, find portfolio with smallest || right now - portfolio.date_last_modified||
                     -->
-                    <p>--- Setzte hier deine Arbeit fort: <a href="#">Letztes Portfolio</a> ---</p>
+                    <ul>
+                        <li>
+                            <p><i class="fas fa-book-open"></i> Setzte hier deine Arbeit fort: </p>
+                            <a th:text="${last[1]}" href="#">Letztes Portfolio</a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="sep" id="gruppen">
                     <!--
                     given user.id find every idg = group.id. s.t. there exists user_group with user.id && group.id
                     &&
                     display every portfolio with group.id = idg && right now - date created < 6 months
-                     -->
-                    <p>--- Hier kommen alle Gruppen-Portfolios des Studenten rein ---</p>
-                    <ul>
+
+                    --- Hier kommen alle Gruppen-Portfolios des Studenten rein ---
+
+                    -->
+                    <ul th:each="gruppe : ${gruppen}">
                         <li>
-                            <a href="#">Gruppe 1</a>
-                        </li>
-                        <li>
-                            <a href="#">Gruppe 2</a>
+                            <i class="fas fa-chalkboard"></i>
+                            <a th:text="${gruppe[1]}" href="#">Gruppe 1</a>
                         </li>
                     </ul>
                 </li>
@@ -92,14 +101,12 @@
                     <!--
                     given idu = user.id display every portfolio with user.id = idu && right now - date created < 6 months
 
+                    --- Hier kommen alle Vorlesungs-Portfolios des Studenten rein ---
                     -->
-                    <p>--- Hier kommen alle Vorlesungs-Portfolios des Studenten rein ---</p>
-                    <ul>
+                    <ul th:each="vorlesung : ${vorlesungen}">
                         <li>
-                            <a href="#">Portfolio 1</a>
-                        </li>
-                        <li>
-                            <a href="#">Portfolio 2</a>
+                            <i class="fas fa-book-open"></i>
+                            <a th:text="${vorlesung[1]}" href="#">Portfolio 1</a>
                         </li>
                     </ul>
                 </li>

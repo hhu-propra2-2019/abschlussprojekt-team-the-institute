@@ -56,8 +56,27 @@ public class PortfoliosController {
    */
   @GetMapping("/")
   public String requestList(Model model) {
-
+    int user_id = getUserId();
+    model.addAttribute("last", getLastPortfolio(user_id));
+    model.addAttribute("gruppen", getGruppenPortfolios(user_id));
+    model.addAttribute("vorlesungen", getVorlesungPortfolios(user_id));
     return "startseite";
+  }
+
+  private int getUserId() {
+    return 0;
+  }
+
+  private String[] getLastPortfolio(int user_id) {
+    return new String[]{"0", "Software Entwicklung im Team", ""+user_id, null};
+  }
+
+  private String[][] getGruppenPortfolios(int user_id) {
+    return new String[][]{{"1", "Praktiukm", null, ""+user_id}};
+  }
+
+  private String[][] getVorlesungPortfolios(int user_id) {
+    return new String[][]{{"0", "Software Entwicklung im Team", ""+user_id, null},{"2", "Machine Learning", ""+user_id, null}};
   }
 
   @GetMapping("/index")
