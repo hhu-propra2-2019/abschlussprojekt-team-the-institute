@@ -185,7 +185,7 @@ public class PortfoliosController {
       }
     }
      */
-    return null;
+    return new Entry("0", null);
   }
 
   /**
