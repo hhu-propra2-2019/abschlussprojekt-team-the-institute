@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{fragments/navigation :: navigationFragment}, bodycontent=~{:: bodycontent})}">
 
 <head>
-    <meta charset="utf-8">
     <title>Startseite</title>
-    <th:block th:fragment="headcontent">
+
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment">
         <style>
             ul {
                 list-style-type: none;
@@ -23,75 +23,66 @@
                 border-style: solid;
             }
 
-            .sep li{
+            .sep li {
                 padding: 0.3em;
             }
 
         </style>
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     </th:block>
 </head>
 
-<body>
-<div th:fragment="bodycontent">
-    <div class="content">
-        <div id="this_semester">
-            <p>Willkommen beim Portfolioservice des MOPS.</p>
-            <p>Hier eine schnelle Übersicht deiner Portoflios aus diesem Semester:</p>
-            <ul>
-                <li class="sep" id="last">
-                    <!--
-                    given idu = user.id, find portfolio with smallest || right now - portfolio.date_last_modified||
-                    -->
-                    <ul>
-                        <li>
-                            <p> Setzte hier deine Arbeit fort: </p>
-                            <a th:text="${last[1]}" href="#">Letztes Portfolio</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sep" id="gruppen">
-                    <!--
-                    given user.id find every idg = group.id. s.t. there exists user_group with user.id && group.id
-                    &&
-                    display every portfolio with group.id = idg && right now - date created < 6 months
+<body th:fragment="bodycontent">
 
-                    --- Hier kommen alle Gruppen-Portfolios des Studenten rein ---
+<div class="content">
+    <div id="this_semester">
+        <p>Willkommen beim Portfolioservice des MOPS.</p>
+        <p>Hier eine schnelle Übersicht deiner Portoflios aus diesem Semester:</p>
+        <ul>
+            <li class="sep" id="last">
+                <!--
+                given idu = user.id, find portfolio with smallest || right now - portfolio.date_last_modified||
+                -->
+                <ul>
+                    <li>
+                        <p> Setzte hier deine Arbeit fort: </p>
+                        <a th:text="${last[1]}" href="#">Letztes Portfolio</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="sep" id="gruppen">
+                <!--
+                given user.id find every idg = group.id. s.t. there exists user_group with user.id && group.id
+                &&
+                display every portfolio with group.id = idg && right now - date created < 6 months
 
-                    -->
-                    <ul> Schnellzugriff auf die Gruppen-Portfolios:
-                        <li th:each="gruppe : ${gruppen}">
-                            <a th:text="${gruppe[1]}" href="#">Gruppe 1</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sep" id="vorlesungen">
-                    <!--
-                    given idu = user.id display every portfolio with user.id = idu && right now - date created < 6 months
+                --- Hier kommen alle Gruppen-Portfolios des Studenten rein ---
 
-                    --- Hier kommen alle Vorlesungs-Portfolios des Studenten rein ---
-                    -->
+                -->
+                <ul> Schnellzugriff auf die Gruppen-Portfolios:
+                    <li th:each="gruppe : ${gruppen}">
+                        <a th:text="${gruppe[1]}" href="#">Gruppe 1</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="sep" id="vorlesungen">
+                <!--
+                given idu = user.id display every portfolio with user.id = idu && right now - date created < 6 months
 
-                    <ul>Schnellzugriff auf die privaten Portfolios:
-                        <li th:each="vorlesung : ${vorlesungen}">
-                            <a th:text="${vorlesung[1]}" href="#">Portfolio 1</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+                --- Hier kommen alle Vorlesungs-Portfolios des Studenten rein ---
+                -->
+
+                <ul>Schnellzugriff auf die privaten Portfolios:
+                    <li th:each="vorlesung : ${vorlesungen}">
+                        <a th:text="${vorlesung[1]}" href="#">Portfolio 1</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
     </div>
-    <script>
-
-    </script>
 </div>
-</body>
+<script>
 
+</script>
+
+</body>
 </html>
