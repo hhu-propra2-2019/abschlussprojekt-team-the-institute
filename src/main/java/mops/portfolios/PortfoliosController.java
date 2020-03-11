@@ -74,7 +74,13 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    return "index";
+    if (getOrgaRole(token).contains("orga")) {
+      return "index";
+    } else if (userSecurity.hasUserId(getUserId(token))) {
+      return "index";
+    } else {
+      return "redirect://localhost:8080";
+    }
   }
 
   /**
