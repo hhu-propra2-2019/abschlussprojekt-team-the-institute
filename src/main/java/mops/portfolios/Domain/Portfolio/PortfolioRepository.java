@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface PortfolioRepository extends CrudRepository<Portfolio, Long> {
     
-    List<Portfolio> findAllByUserId(UUID userId);
+    List<Portfolio> findByUserId(UUID userId);
 
     List<Portfolio> findAllByGroupId(Long groupId);
 
