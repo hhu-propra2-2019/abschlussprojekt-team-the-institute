@@ -1,15 +1,11 @@
 package mops.portfolios.Portfolio;
 
-import jdk.internal.jline.internal.Nullable;
 import lombok.*;
 import mops.portfolios.Entry.Entry;
-import mops.portfolios.objects.PortfolioField;
 
 import javax.persistence.*;
-import javax.sound.sampled.Port;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 public class Portfolio {
