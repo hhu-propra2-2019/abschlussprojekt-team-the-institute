@@ -25,8 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class PortfoliosController {
 
-  private transient Group group;
-
+  private transient UserSecurity userSecurity;
 
   /**
    * Takes the auth-token from Keycloak and generates an AccounDTO for the views.
@@ -43,6 +42,19 @@ public class PortfoliosController {
         token.getAccount().getRoles());
   }
 
+  private void authorize(Model model, KeycloakAuthenticationToken token) {
+    Account account = createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
+  }
+
+  private String getUserId(KeycloakAuthenticationToken token) {
+    return token.getAccount().getKeycloakSecurityContext().getIdToken().getId();
+  }
+
+  private String getOrgaRole(KeycloakAuthenticationToken token) {
+    return token.getAccount().getRoles().toString();
+  }
+
   /**
    * Root mapping for GET requests.
    *
@@ -53,30 +65,57 @@ public class PortfoliosController {
   @GetMapping("/")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestList(Model model, KeycloakAuthenticationToken token) {
-    Account account = createAccountFromPrincipal(token);
-    model.addAttribute("account", account);
+    authorize(model, token);
     return "startseite";
   }
 
   @SuppressWarnings("PMD")
   @GetMapping("/index")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String requestIndex(Model model) {
+  public String requestIndex(Model model, KeycloakAuthenticationToken token) {
+    authorize(model, token);
     return "index";
   }
+
+  /**
+   * Group mapping for GET requests.
+   *
+   * @return The page to load
+   */
 
   @SuppressWarnings("PMD")
   @GetMapping("/gruppen")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String requestGruppen(Model model) {
-    return "gruppen";
+  public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
+    authorize(model, token);
+
+    if (getOrgaRole(token).equals("[orga, offline_access, uma_authorization]")) {
+      return "gruppen";
+    } else if (userSecurity.hasGroupId(getUserId(token))) {
+      return "gruppen";
+    } else {
+      return "redirect://localhost:8080";
+    }
   }
+
+  /**
+   * Own portfolios mapping for GET requests.
+   *
+   */
 
   @SuppressWarnings("PMD")
   @GetMapping("/privat")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String requestPrivate(Model model) {
-    return "privat";
+  public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
+    authorize(model, token);
+
+    if (getOrgaRole(token).equals("[orga, offline_access, uma_authorization]")) {
+      return "privat";
+    } else if (userSecurity.hasUserId(getUserId(token))) {
+      return "privat";
+    } else {
+      return "redirect://localhost:8080";
+    }
   }
 
   /**
@@ -89,7 +128,8 @@ public class PortfoliosController {
   @SuppressWarnings("PMD")
   @GetMapping("/portfolio")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String clickPortfolio(Model model, @RequestParam String title) {
+  public String clickPortfolio(Model model, @RequestParam String title, KeycloakAuthenticationToken token) {
+    authorize(model, token);
 
     Portfolio portfolio = getPortfolioByTitle(title);
     if (portfolio == null) {
@@ -112,7 +152,8 @@ public class PortfoliosController {
   @SuppressWarnings("PMD")
   @GetMapping("/entry")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String clickEntry(Model model, @RequestParam String title, @RequestParam int id) {
+  public String clickEntry(Model model, @RequestParam String title, @RequestParam int id, KeycloakAuthenticationToken token) {
+    authorize(model, token);
 
     Portfolio portfolio = getPortfolioByTitle(title);
     if (portfolio == null) {
@@ -132,8 +173,9 @@ public class PortfoliosController {
 
   @SuppressWarnings("PMD")
   @GetMapping("/upload")
-  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String upload(Model model) {
+  @RolesAllowed({"ROLE_orga"})
+  public String upload(Model model, KeycloakAuthenticationToken token) {
+    authorize(model, token);
     return "upload";
   }
 
@@ -144,7 +186,7 @@ public class PortfoliosController {
 
   @SuppressWarnings("PMD")
   @PostMapping("/view")
-  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  @RolesAllowed({"ROLE_orga"})
   public String uploadFile(Model model, @RequestParam("file") MultipartFile uploadedFile) {
 
     System.out.println("RECEIVED FILE " + uploadedFile.getOriginalFilename());
