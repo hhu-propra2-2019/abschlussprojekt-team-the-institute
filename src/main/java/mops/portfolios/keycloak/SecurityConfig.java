@@ -1,4 +1,4 @@
-package mops.portfolios;
+package mops.portfolios.keycloak;
 
 import javax.servlet.http.HttpServletRequest;
 import org.keycloak.KeycloakPrincipal;

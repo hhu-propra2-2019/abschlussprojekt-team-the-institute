@@ -1,6 +1,6 @@
 package mops.portfolios;
 
-/**
+/*
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONException;
@@ -21,12 +21,11 @@ public class Group {
     return this;
   } //TODO
 
-  /**
+  /*
    * Use this method to get the updates from Gruppenbildung regarding groups.
    * @param matrikelnr The MatrikelNr of the student to get the group members of
    * @return List of the MatrikelNr of each group member
    */
-
   /* List<MatrikelNr> getGroupmembers(MatrikelNr matrikelnr) {
      HttpClient httpClient = new HttpClient();
     // TODO genaues URI mit gruppen2 absprechen

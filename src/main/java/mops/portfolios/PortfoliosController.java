@@ -8,16 +8,15 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-
 import lombok.AllArgsConstructor;
 import mops.portfolios.Entry.Entry;
 import mops.portfolios.Portfolio.*;
 import mops.portfolios.keycloak.Account;
+import mops.portfolios.objects.Portfolio;
+import mops.portfolios.objects.PortfolioEntry;
 import org.asciidoctor.Asciidoctor;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,8 +52,11 @@ public class PortfoliosController {
    * @param model The Spring Model to add the attributes to
    * @return The page to load
    */
+  @SuppressWarnings("PMD")
   @GetMapping("/")
-  public String requestList(Model model) {
+  public String requestList(Model model, KeycloakAuthenticationToken token) {
+    Account account = createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
     int user_id = getUserId();
     model.addAttribute("last", getLastPortfolio(user_id));
     model.addAttribute("gruppen", getGruppenPortfolios(user_id));
@@ -78,22 +80,37 @@ public class PortfoliosController {
     return new String[][]{{"0", "Software Entwicklung im Team", ""+user_id, null},{"2", "Machine Learning", ""+user_id, null}};
   }
 
+  @SuppressWarnings("PMD")
   @GetMapping("/index")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestIndex(Model model) {
     return "index";
   }
 
+  @SuppressWarnings("PMD")
   @GetMapping("/gruppen")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestGruppen(Model model) {
     return "gruppen";
   }
 
+  @SuppressWarnings("PMD")
   @GetMapping("/privat")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestPrivate(Model model) {
     return "privat";
   }
 
+  /**
+   * Portfolio mapping for GET requests.
+   * @param model The spring model to add the attributes to
+   * @param title The name of the portfolio
+   * @return The page to load
+   */
+
+  @SuppressWarnings("PMD")
   @GetMapping("/portfolio")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String clickPortfolio(Model model, @RequestParam String title) {
     Portfolio portfolio = new Portfolio("Praktikum", new User("Test123"));
 
@@ -102,25 +119,44 @@ public class PortfoliosController {
     return "portfolio";
   }
 
+  /**
+   * Entry mapping for GET requests.
+   * @param model The spring model to add the attributes to
+   * @param title The name of the entry
+   * @param id The id of the entry
+   * @return The page to load
+   */
+
+  @SuppressWarnings("PMD")
   @GetMapping("/entry")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String clickEntry(Model model, @RequestParam String title, @RequestParam int id) {
 
     return "entry";
   }
 
+  @SuppressWarnings("PMD")
   @GetMapping("/upload")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String upload(Model model) {
     return "upload";
   }
 
+  /**
+   * View mapping for GET requests.
+   *
+   */
+
+  @SuppressWarnings("PMD")
   @PostMapping("/view")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String uploadFile(Model model, @RequestParam("file") MultipartFile uploadedFile) {
 
     System.out.println("RECEIVED FILE " + uploadedFile.getOriginalFilename());
 
     try {
       String text = new String(uploadedFile.getBytes(), StandardCharsets.UTF_8);
-      String html = convertAsciiDocTextToHTML(text);
+      String html = convertAsciiDocTextToHtml(text);
       model.addAttribute("html", html);
       System.out.println("GOT TEXT" + html);
     } catch (IOException e) {
@@ -131,20 +167,20 @@ public class PortfoliosController {
     return "view";
   }
 
-
+  @SuppressWarnings("PMD")
   @GetMapping("/logout")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String logout(HttpServletRequest request) throws Exception {
     request.logout();
     return "redirect:/";
   }
 
-  private transient List<Portfolio> portfolioList = Arrays.asList(
-      new Portfolio(),
-      new Portfolio(),
-      new Portfolio());
+  /**
+   * convert ascii to html.
+   */
 
   @SuppressWarnings("PMD")
-  private String convertAsciiDocTextToHTML(String asciiDocText) {
+  private String convertAsciiDocTextToHtml(String asciiDocText) {
     Asciidoctor asciidoctor = Asciidoctor.Factory.create();
     String html = asciidoctor.convert(asciiDocText, new HashMap<>());
     asciidoctor.close();

@@ -18,11 +18,11 @@ public class Portfolio {
     private @Getter Long groupId;
 
     @OneToMany(
-        cascade = CascadeType.ALL,
-        orphanRemoval = true
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
+    private List<Entry> entries = new ArrayList<>();
 
-    private @Getter List<Entry> entries = new ArrayList<>();
 
     public Portfolio(){};
 
@@ -38,7 +38,6 @@ public class Portfolio {
         this.groupId = group.getId();
     }
 
-}
 
 class Test {
     static User u = new User("USER_ID_DUMMY");
