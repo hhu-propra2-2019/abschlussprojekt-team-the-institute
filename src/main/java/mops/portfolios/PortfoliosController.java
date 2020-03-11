@@ -105,7 +105,7 @@ public class PortfoliosController {
   }
 
   /**
-   * Own portfolios mapping for GET requests.
+   * Individual portfolios mapping for GET requests.
    *
    */
 
@@ -195,8 +195,8 @@ public class PortfoliosController {
   @SuppressWarnings("PMD")
   @PostMapping("/view")
   @RolesAllowed({"ROLE_orga"})
-  public String uploadFile(Model model, @RequestParam("file") MultipartFile uploadedFile) {
-
+  public String uploadFile(Model model, @RequestParam("file") MultipartFile uploadedFile, KeycloakAuthenticationToken token) {
+    authorize(model, token);
     System.out.println("RECEIVED FILE " + uploadedFile.getOriginalFilename());
 
     try {
