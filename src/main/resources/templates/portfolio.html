@@ -30,7 +30,7 @@
             <a class="btn btn-primary"
                th:href="@{/entry(title=${portfolio.getTitle()},id=${entry.getId()})}">Anzeigen</a>
         </div>
-        <div class="card-footer" th:text="'Erstellt vor ' + ${entry.getDaysSince()} + ' Tagen'">Date</div>
+        <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()} + ' Tagen'">Date</div>
     </div>
 </div>
 </body>

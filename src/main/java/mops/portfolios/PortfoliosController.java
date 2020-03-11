@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import lombok.AllArgsConstructor;
 import mops.portfolios.Entry.Entry;
-import mops.portfolios.Portfolio.Portfolio;
+import mops.portfolios.Portfolio.*;
 import mops.portfolios.keycloak.Account;
 import org.asciidoctor.Asciidoctor;
 import org.keycloak.KeycloakPrincipal;
@@ -95,11 +95,7 @@ public class PortfoliosController {
 
   @GetMapping("/portfolio")
   public String clickPortfolio(Model model, @RequestParam String title) {
-
-    Portfolio portfolio = getPortfolioByTitle(title);
-    if (portfolio == null) {
-      return null;
-    }
+    Portfolio portfolio = new Portfolio("Praktikum", new User("Test123"));
 
     model.addAttribute("portfolio", portfolio);
 
@@ -108,19 +104,6 @@ public class PortfoliosController {
 
   @GetMapping("/entry")
   public String clickEntry(Model model, @RequestParam String title, @RequestParam int id) {
-
-    Portfolio portfolio = getPortfolioByTitle(title);
-    if (portfolio == null) {
-      return null;
-    }
-
-    Entry entry = getEntryById(portfolio, id);
-    if (entry == null) {
-      return null;
-    }
-
-    model.addAttribute("portfolio", portfolio);
-    model.addAttribute("entry", entry);
 
     return "entry";
   }
@@ -160,37 +143,6 @@ public class PortfoliosController {
       new Portfolio(),
       new Portfolio());
 
-  /**
-   * returns portfolio with corresponding title
-   */
-  @SuppressWarnings("PMD")
-  private Portfolio getPortfolioByTitle(String title) {
-    for (Portfolio portfolio : portfolioList) {
-      if (portfolio.getTitle().equals(title)) {
-        return portfolio;
-      }
-    }
-    return null;
-  }
-
-  /**
-   * returns entry with corresponding id
-   */
-  @SuppressWarnings("PMD")
-  private Entry getEntryById(Portfolio portfolio, int id) {
-    /*
-    for (Entry entry : portfolio) {
-      if (entry.getId() == id) {
-        return entry;
-      }
-    }
-     */
-    return new Entry("0", null);
-  }
-
-  /**
-   * convert ascii to html
-   */
   @SuppressWarnings("PMD")
   private String convertAsciiDocTextToHTML(String asciiDocText) {
     Asciidoctor asciidoctor = Asciidoctor.Factory.create();

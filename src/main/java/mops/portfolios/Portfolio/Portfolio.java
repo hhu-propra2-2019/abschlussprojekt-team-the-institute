@@ -21,7 +21,8 @@ public class Portfolio {
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
-    private List<Entry> entries = new ArrayList<>();
+
+    private @Getter List<Entry> entries = new ArrayList<>();
 
     public Portfolio(){};
 
@@ -37,24 +38,6 @@ public class Portfolio {
         this.groupId = group.getId();
     }
 
-}
-
-// FIXME: Dummy
-class User {
-    private @Getter String id;
-
-    User(String id) {
-        this.id = id;
-    }
-}
-
-// FIXME: Dummy
-class Group {
-    private @Getter Long id;
-
-    Group(Long id) {
-        this.id = id;
-    }
 }
 
 class Test {
