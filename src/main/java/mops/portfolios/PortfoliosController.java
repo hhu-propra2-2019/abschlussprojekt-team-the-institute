@@ -12,8 +12,6 @@ import lombok.AllArgsConstructor;
 import mops.portfolios.Entry.Entry;
 import mops.portfolios.Portfolio.*;
 import mops.portfolios.keycloak.Account;
-import mops.portfolios.objects.Portfolio;
-import mops.portfolios.objects.PortfolioEntry;
 import org.asciidoctor.Asciidoctor;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
