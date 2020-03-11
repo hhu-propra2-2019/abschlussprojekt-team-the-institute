@@ -52,6 +52,7 @@ public class PortfoliosController {
    */
   @SuppressWarnings("PMD")
   @GetMapping("/")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     Account account = createAccountFromPrincipal(token);
     model.addAttribute("account", account);
