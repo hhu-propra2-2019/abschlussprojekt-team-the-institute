@@ -89,7 +89,7 @@ public class PortfoliosController {
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    if (getOrgaRole(token).equals("[orga, offline_access, uma_authorization]")) {
+    if (getOrgaRole(token).contains("orga")) {
       return "gruppen";
     } else if (userSecurity.hasGroupId(getUserId(token))) {
       return "gruppen";
@@ -109,7 +109,9 @@ public class PortfoliosController {
   public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    if (getOrgaRole(token).equals("[orga, offline_access, uma_authorization]")) {
+    System.out.println(getOrgaRole(token));
+
+    if (getOrgaRole(token).contains("orga")) {
       return "privat";
     } else if (userSecurity.hasUserId(getUserId(token))) {
       return "privat";
