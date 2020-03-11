@@ -18,6 +18,6 @@ class PortfoliosApplicationTests {
 
   @Test
   void contextLoads() throws Exception {
-    mockMvc.perform(get("/")).andExpect(MockMvcResultMatchers.status().is(200));
+    mockMvc.perform(get("/")).andExpect(MockMvcResultMatchers.status().is(302));
   }
 }
