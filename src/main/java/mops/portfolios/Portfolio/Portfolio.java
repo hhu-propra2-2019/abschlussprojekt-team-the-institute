@@ -1,9 +1,7 @@
 package mops.portfolios.Portfolio;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import jdk.internal.jline.internal.Nullable;
+import lombok.*;
 import mops.portfolios.Entry.Entry;
 import mops.portfolios.objects.PortfolioField;
 
@@ -11,12 +9,13 @@ import javax.persistence.*;
 import javax.sound.sampled.Port;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Portfolio {
     private @Id @GeneratedValue @Getter Long id;
 
-    private @NonNull @Column(nullable = false) String title;
+    private @Column(nullable = false) @Getter @Setter String title;
 
     private @Getter String userId;
 
@@ -34,13 +33,11 @@ public class Portfolio {
     {
         this.title = title;
         this.userId = user.getId();
-        this.groupId = null;
     }
 
     public Portfolio(String title, Group group)
     {
         this.title = title;
-        this.userId = null;
         this.groupId = group.getId();
     }
 
@@ -65,9 +62,9 @@ class Group {
 }
 
 class Test {
-    User u = new User("USER_ID_DUMMY");
-    Group g = new Group(new Long(999));
-    Portfolio userPortfolio = new Portfolio("Title here", u);
-    Portfolio groupPortfolio = new Portfolio("Title here", g);
-    String i = userPortfolio.getUserId();
+    static User u = new User("USER_ID_DUMMY");
+    static Group g = new Group(999L);
+    static Portfolio userPortfolio = new Portfolio("Title here", u);
+    static Portfolio groupPortfolio = new Portfolio("Title here", g);
+    static String i = userPortfolio.getUserId();
 }
