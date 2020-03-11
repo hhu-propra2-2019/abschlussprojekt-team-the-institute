@@ -33,7 +33,7 @@ public class Group {
   }
 
   private List<String> getFromLocalDatabase(String userId) {
-    // TODO List<Group> groups = findGroupsByUserId(userId);
+    // TODO List<Group> groups = getUserGroupById(userId);
     return null; // FIXME this is a filler
   }
 

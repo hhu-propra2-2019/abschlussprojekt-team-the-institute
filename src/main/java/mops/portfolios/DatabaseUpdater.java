@@ -2,11 +2,14 @@ package mops.portfolios;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 public class DatabaseUpdater implements Runnable {
+  private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
 
   @Override
   public void run() {
@@ -55,7 +58,7 @@ public class DatabaseUpdater implements Runnable {
     if (jsonObject == null) {
       // FIXME: Keep this only while in development
       logger.error("An error occured while parsing the JSON data "
-              + "received by the service Gruppenbildung ", jsonErr);
+              + "received by the service Gruppenbildung");
       throw new RuntimeException("JSON Object is null");
     }
 
