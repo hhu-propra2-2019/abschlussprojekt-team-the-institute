@@ -1,7 +1,7 @@
-package mops.portfolios.Portfolio;
+package mops.portfolios.Domain.Portfolio;
 
 import lombok.*;
-import mops.portfolios.Entry.Entry;
+import mops.portfolios.Domain.Entry.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;

@@ -1,9 +1,11 @@
 package mops.portfolios.Domain.UserGroup;
 
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+
 @Entity
+@Data
 @AllArgsConstructor
 public class UserGroup {
     private @Id @GeneratedValue Long id;
@@ -11,4 +13,6 @@ public class UserGroup {
     private String userId;
     @Column(nullable = false)
     private Long groupId;
+    @Column(nullable = false)
+    private String groupTitle;
 }
