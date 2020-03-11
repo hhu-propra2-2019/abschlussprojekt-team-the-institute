@@ -1,33 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{fragments/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
+
 <head>
-    <meta charset="utf-8">
-    <title>Test</title>
-    <th:block th:fragment="headcontent">
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <title>Portfolio</title>
+
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment">
     </th:block>
 </head>
-<body>
-<header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
-        <ul>
-            <li>
-                <a href="/">
-                    <p><i class="fa fa-home fa-lg"></i>Home</p>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</header>
-<div class="text-center" th:fragment="bodycontent">
+
+<body th:fragment="bodycontent">
+
+<div class="text-center">
 
     <h1 class="display-4" th:text="'Portfolioübersicht - ' + ${portfolio.getTitle()}">Portfolio title</h1>
 
@@ -36,29 +20,13 @@
         <div class="card-body">
             <h5 class="card-title">Irgendein Titel?</h5>
             <p class="card-text">Das ist ein text. lalala la abccccccccccccccccccc</p>
-            <a class="btn btn-primary" th:href="@{/entry(title=${portfolio.getTitle()},id=${entry.getId()})}">Anzeigen</a>
+            <a class="btn btn-primary"
+               th:href="@{/entry(title=${portfolio.getTitle()},id=${entry.getId()})}">Anzeigen</a>
         </div>
-        <div class="card-footer" th:text="'Erstellt vor ' + ${entry.getDaysSince()} + ' Tagen'">Date</div>
+        <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()} + ' Tagen'">Date</div>
     </div>
-
-    <!--
-        <div class="card text-center">
-            <div class="card-header" th:text="${portfolio.getCourse()}">Title</div>
-            <div class="card-body">
-                <div th:each="entry : ${portfolio.getEntries()}">
-                    <h5 class="card-title" th:text="${entry.getTitle()}">Title</h5>
-                    <p class="card-text" th:text="${entry.getContent()}">Content</p>
-                    <a class="btn btn-primary" th:href="${entry.getAttachement()}">Attachement</a>
-                    <hr class="my-4">
-                </div>
-            </div>
-            <div class="card-footer text-muted" th:text="${portfolio.getLastChangeDate()}">
-                2 days ago
-            </div>
-        </div>
-        -->
-
 </div>
 </body>
+
 </html>
 

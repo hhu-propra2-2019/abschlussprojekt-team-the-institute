@@ -1,46 +1,51 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{fragments/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
+
 <head>
-    <meta charset="utf-8">
-    <title>Index</title>
-    <th:block th:fragment="headcontent">
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <title>Upload</title>
+
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment">
     </th:block>
 </head>
-<body>
-<header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
-        <ul>
-            <li>
-                <a href="/">
-                    <p><i class="fa fa-home fa-lg"></i> Home</p>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</header>
-<div th:fragment="bodycontent">
 
-    <h1 class="display-4">Portfolio Vorlage hochladen</h1>
+<body th:fragment="bodycontent">
 
-    <form class="input-group mb-3" method="POST" enctype="multipart/form-data" action="/view">
-        <div class="custom-file">
-            <input class="custom-file-input" type="file" name="file" id="INPUT_FILE" accept=".adoc,.asciidoc,.asc">
-            <label class="custom-file-label" for="INPUT_FILE">AsciiDoc Datei auswählen</label>
-        </div>
-        <div class="input-group-append">
-            <button class="input-group-text" type="submit">Hochladen</button>
-        </div>
-    </form>
+<h1 class="display-4">Portfolio Vorlage hochladen</h1>
 
-</div>
+<br>
+
+<form class="input-group w-50" method="POST" enctype="multipart/form-data" action="/view">
+    <div class="custom-file">
+        <input id="INPUT_FILE" class="custom-file-input" name="file" type="file" accept=".adoc,.asciidoc,.asc,.txt"
+               oninput="handleUpload()">
+        <label id="LABEL_FILE" class="custom-file-label" for="INPUT_FILE">AsciiDoc Datei auswählen</label>
+    </div>
+    <div class="input-group-append">
+        <button id="BUTTON_UPLOAD" class="input-group-text btn" type="submit" disabled>Hochladen</button>
+    </div>
+</form>
+
+<script>
+
+    function handleUpload() {
+
+        let INPUT_FILE = document.getElementById("INPUT_FILE");
+        if (INPUT_FILE.files.length == 0) {
+            return;
+        }
+
+        let file = INPUT_FILE.files[0];
+
+        let LABEL_FILE = document.getElementById("LABEL_FILE");
+        LABEL_FILE.innerHTML = "Datei " + file.name.bold() + " ausgewählt";
+
+        let BUTTON_UPLOAD = document.getElementById("BUTTON_UPLOAD");
+        BUTTON_UPLOAD.disabled = false;
+        BUTTON_UPLOAD.classList.add("btn-primary")
+    }
+
+</script>
+
 </body>
 </html>

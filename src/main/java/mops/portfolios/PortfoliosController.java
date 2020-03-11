@@ -5,12 +5,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import mops.portfolios.Entry.Entry;
+import mops.portfolios.Portfolio.*;
 import mops.portfolios.keycloak.Account;
-import mops.portfolios.objects.Portfolio;
-import mops.portfolios.objects.PortfolioEntry;
 import org.asciidoctor.Asciidoctor;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -55,7 +56,27 @@ public class PortfoliosController {
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     Account account = createAccountFromPrincipal(token);
     model.addAttribute("account", account);
+    int user_id = getUserId();
+    model.addAttribute("last", getLastPortfolio(user_id));
+    model.addAttribute("gruppen", getGruppenPortfolios(user_id));
+    model.addAttribute("vorlesungen", getVorlesungPortfolios(user_id));
     return "startseite";
+  }
+
+  private int getUserId() {
+    return 0;
+  }
+
+  private String[] getLastPortfolio(int user_id) {
+    return new String[]{"0", "Software Entwicklung im Team", ""+user_id, null};
+  }
+
+  private String[][] getGruppenPortfolios(int user_id) {
+    return new String[][]{{"1", "Praktiukm", null, ""+user_id}};
+  }
+
+  private String[][] getVorlesungPortfolios(int user_id) {
+    return new String[][]{{"0", "Software Entwicklung im Team", ""+user_id, null},{"2", "Machine Learning", ""+user_id, null}};
   }
 
   @SuppressWarnings("PMD")
@@ -90,11 +111,7 @@ public class PortfoliosController {
   @GetMapping("/portfolio")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String clickPortfolio(Model model, @RequestParam String title) {
-
-    Portfolio portfolio = getPortfolioByTitle(title);
-    if (portfolio == null) {
-      return null;
-    }
+    Portfolio portfolio = new Portfolio("Praktikum", new User("Test123"));
 
     model.addAttribute("portfolio", portfolio);
 
@@ -113,19 +130,6 @@ public class PortfoliosController {
   @GetMapping("/entry")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String clickEntry(Model model, @RequestParam String title, @RequestParam int id) {
-
-    Portfolio portfolio = getPortfolioByTitle(title);
-    if (portfolio == null) {
-      return null;
-    }
-
-    PortfolioEntry entry = getEntryById(portfolio, id);
-    if (entry == null) {
-      return null;
-    }
-
-    model.addAttribute("portfolio", portfolio);
-    model.addAttribute("entry", entry);
 
     return "entry";
   }
@@ -170,40 +174,10 @@ public class PortfoliosController {
     return "redirect:/";
   }
 
-  private transient List<Portfolio> portfolioList = Arrays.asList(
-      new Portfolio("Propra1"),
-      new Portfolio("Propra2"),
-      new Portfolio("Algorithmen_und_Datenstrukturen"));
-
-  /**
-   * returns portfolio with corresponding title.
-   */
-  @SuppressWarnings("PMD")
-  private Portfolio getPortfolioByTitle(String title) {
-    for (Portfolio portfolio : portfolioList) {
-      if (portfolio.getTitle().equals(title)) {
-        return portfolio;
-      }
-    }
-    return null;
-  }
-
-  /**
-   * returns entry with corresponding id.
-   */
-  @SuppressWarnings("PMD")
-  private PortfolioEntry getEntryById(Portfolio portfolio, int id) {
-    for (PortfolioEntry entry : portfolio.getEntries()) {
-      if (entry.getId() == id) {
-        return entry;
-      }
-    }
-    return null;
-  }
-
   /**
    * convert ascii to html.
    */
+
   @SuppressWarnings("PMD")
   private String convertAsciiDocTextToHtml(String asciiDocText) {
     Asciidoctor asciidoctor = Asciidoctor.Factory.create();
