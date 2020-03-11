@@ -6,13 +6,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import mops.portfolios.objects.Portfolio;
-import mops.portfolios.objects.PortfolioEntry;
-
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.AllArgsConstructor;
+import mops.portfolios.Entry.Entry;
+import mops.portfolios.Portfolio.Portfolio;
 import mops.portfolios.keycloak.Account;
 import org.asciidoctor.Asciidoctor;
 import org.keycloak.KeycloakPrincipal;
@@ -115,7 +114,7 @@ public class PortfoliosController {
       return null;
     }
 
-    PortfolioEntry entry = getEntryById(portfolio, id);
+    Entry entry = getEntryById(portfolio, id);
     if (entry == null) {
       return null;
     }
@@ -157,9 +156,9 @@ public class PortfoliosController {
   }
 
   private transient List<Portfolio> portfolioList = Arrays.asList(
-      new Portfolio("Propra1"),
-      new Portfolio("Propra2"),
-      new Portfolio("Algorithmen_und_Datenstrukturen"));
+      new Portfolio(),
+      new Portfolio(),
+      new Portfolio());
 
   /**
    * returns portfolio with corresponding title
@@ -178,12 +177,14 @@ public class PortfoliosController {
    * returns entry with corresponding id
    */
   @SuppressWarnings("PMD")
-  private PortfolioEntry getEntryById(Portfolio portfolio, int id) {
-    for (PortfolioEntry entry : portfolio.getEntries()) {
+  private Entry getEntryById(Portfolio portfolio, int id) {
+    /*
+    for (Entry entry : portfolio) {
       if (entry.getId() == id) {
         return entry;
       }
     }
+     */
     return null;
   }
 
