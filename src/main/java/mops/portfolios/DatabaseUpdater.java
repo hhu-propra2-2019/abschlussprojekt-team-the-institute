@@ -1,5 +1,7 @@
 package mops.portfolios;
 
+import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -8,17 +10,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 @Service
+@AllArgsConstructor
 public class DatabaseUpdater {
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
-  private DatabaseUpdaterThread databaseUpdaterThread = new DatabaseUpdaterThread();
+
+  /** The URL to retrieve the data from. */
+  private String url;
 
   /**
    * The thread to run the updates.
    */
+  @AllArgsConstructor
   private class DatabaseUpdaterThread implements Runnable {
+    private long timeout;
+
+    @SneakyThrows
     @Override
     public void run() {
-      updateDatabaseEvents();
+      while (true) {
+        updateDatabaseEvents();
+        Thread.sleep(10_000); // 10 seconds interval
+      }
     }
   }
 
@@ -29,36 +41,36 @@ public class DatabaseUpdater {
    The interrupted status of the current thread is cleared when this exception is thrown.
    */
   public void updateDatabase(long timeout) throws InterruptedException {
-    while (true) {
-      databaseUpdaterThread.wait(timeout);
-      databaseUpdaterThread.run();
-    }
+    DatabaseUpdaterThread databaseUpdaterThread = new DatabaseUpdaterThread(timeout);
+    databaseUpdaterThread.run();
   }
 
   /**
    * Use this method to get the updates from Gruppenbildung regarding groups.
    */
-  private void updateDatabaseEvents() {
+  void updateDatabaseEvents() {
     HttpClient httpClient = new HttpClient();
-    String url = "/gruppen2/groupmembers";
-    updateDatabaseEvents(httpClient, url);
+    updateDatabaseEvents(httpClient);
   }
 
   /**
    * This method updates the database using an injected HttpClient and url, easing up testing.
    * @param httpClient The HttpClient to use
-   * @param url The URL to retrieve the data from
    */
-  private void updateDatabaseEvents(HttpClient httpClient, String url) {
+  void updateDatabaseEvents(IHttpClient httpClient) {
     String responseBody = null;
 
     // try to receive data from service Gruppenbildung
     try {
       // TODO: genaues URI mit gruppen2 absprechen
-      responseBody = httpClient.get(url);
+      responseBody = httpClient.get(this.url);
     } catch (HttpClientErrorException clientErr) { // if status 4xx or 5xx returned
-      logger.warn("The service Gruppenbildung is not reachable ", clientErr);
-      // keep responseBody null or empty here
+      logger.warn("The service Gruppenbildung is not reachable: " + clientErr.getRawStatusCode()
+              + " " + clientErr.getStatusText());
+    // keep responseBody null or empty here
+    } catch (IllegalArgumentException argException) {
+      logger.error(argException.getMessage()); // Most likely URL formatted wrong
+      throw new RuntimeException(argException);
     }
 
     updateDatabaseEvents(responseBody);
@@ -68,7 +80,7 @@ public class DatabaseUpdater {
    * This method updates the database using the injected JSON String, easing up testing.
    * @param jsonUpdate The String containing the JSON data to update the database
    */
-  private void updateDatabaseEvents(String jsonUpdate) {
+  void updateDatabaseEvents(String jsonUpdate) {
     // if couldn't retrieve data or not modified, keep the current state
     if (jsonUpdate == null || jsonUpdate.isEmpty()) {
       // TODO: use data from local database
@@ -84,7 +96,8 @@ public class DatabaseUpdater {
       logger.error("An error occured while parsing the JSON data "
               + "received by the service Gruppenbildung ", jsonErr);
       // FIXME: keep this only while in development
-      throw new RuntimeException("Error while trying to parse HTTP response to JSON object");
+      throw new RuntimeException("Error while trying to parse HTTP response to JSON object: "
+              + jsonErr.getMessage());
     }
     if (jsonObject == null) {
       // FIXME: Keep this only while in development

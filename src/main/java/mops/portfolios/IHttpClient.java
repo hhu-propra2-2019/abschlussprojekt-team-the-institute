@@ -23,6 +23,6 @@ public interface IHttpClient {
    * @throws HttpClientErrorException if an HTTP error occured
    * @author mkasimd & hanic101
    */
-  public String postRequest(String url, String requestBody, HttpHeaders headers)
+  public String post(String url, String requestBody, HttpHeaders headers)
           throws HttpClientErrorException;
 }

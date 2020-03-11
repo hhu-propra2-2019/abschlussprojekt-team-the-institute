@@ -26,7 +26,7 @@ public class HttpClient implements IHttpClient {
   }
 
   @Override
-  public String postRequest(String url, String requestBody, HttpHeaders headers)
+  public String post(String url, String requestBody, HttpHeaders headers)
           throws HttpClientErrorException {
     RestTemplate template = new RestTemplate();
 
