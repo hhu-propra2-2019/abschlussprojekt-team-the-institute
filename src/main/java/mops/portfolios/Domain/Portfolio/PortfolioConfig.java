@@ -1,8 +1,8 @@
-// TODO Research if proxy objected would be needed
+ package mops.portfolios.Domain.Portfolio;
 
-// package mops.portfolios.Portfolio;
+ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-// import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
-// @EnableJpaRepositories
-// class Config{}
+ @EnableJpaRepositories
+ @EnableTransactionManagement
+ class Config{}
