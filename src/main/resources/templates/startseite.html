@@ -35,16 +35,14 @@
 
 <div class="content">
     <div id="this_semester">
-        <p>Willkommen beim Portfolioservice des MOPS.</p>
-        <p>Hier eine schnelle Übersicht deiner Portoflios aus diesem Semester:</p>
-        <ul>
+        <p>Willkommen beim Portfolioservice des MOPS!</p>
+        <ul>Hier eine schnelle Übersicht deiner Portoflios aus diesem Semester:
             <li class="sep" id="last">
                 <!--
                 given idu = user.id, find portfolio with smallest || right now - portfolio.date_last_modified||
                 -->
-                <ul>
+                <ul> Setzte hier deine Arbeit fort:
                     <li>
-                        <p> Setzte hier deine Arbeit fort: </p>
                         <a th:text="${last.getTitle()}" href="#">Letztes Portfolio</a>
                     </li>
                 </ul>
@@ -60,7 +58,7 @@
                 -->
                 <ul> Schnellzugriff auf die Gruppen-Portfolios:
                     <li th:each="gruppe : ${gruppen}">
-                        <a th:text="${gruppe.getTitel()}" href="#">Gruppe 1</a>
+                        <a th:text="${gruppe.getTitle()}" href="#">Gruppe 1</a>
                     </li>
                 </ul>
             </li>
