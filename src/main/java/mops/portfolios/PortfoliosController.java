@@ -54,6 +54,34 @@ public class PortfoliosController {
     return token.getAccount().getRoles().toString();
   }
 
+  private String getUserId() {
+    return "";
+  }
+
+  private String[] getLastPortfolio(String userId) {
+    return new String[]{"0", "Software Entwicklung im Team", "" + userId, null};
+  }
+
+  private String[][] getGruppenPortfolios(String userId) {
+    return new String[][]{{"1", "Praktikum", null, "" + userId}};
+  }
+
+  private String[][] getVorlesungPortfolios(String userId) {
+    return new String[][]{{"0", "Software Entwicklung im Team", "" + userId, null},{"2", "Machine Learning", "" + userId, null}};
+  }
+
+  /**
+   * convert ascii to html.
+   */
+
+  @SuppressWarnings("PMD")
+  private String convertAsciiDocTextToHtml(String asciiDocText) {
+    Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+    String html = asciidoctor.convert(asciiDocText, new HashMap<>());
+    asciidoctor.close();
+    return html;
+  }
+
   /**
    * Root mapping for GET requests.
    *
@@ -70,22 +98,6 @@ public class PortfoliosController {
     model.addAttribute("gruppen", getGruppenPortfolios(userId));
     model.addAttribute("vorlesungen", getVorlesungPortfolios(userId));
     return "startseite";
-  }
-
-  private String getUserId() {
-    return "";
-  }
-
-  private String[] getLastPortfolio(String userId) {
-    return new String[]{"0", "Software Entwicklung im Team", "" + userId, null};
-  }
-
-  private String[][] getGruppenPortfolios(String userId) {
-    return new String[][]{{"1", "Praktikum", null, "" + userId}};
-  }
-
-  private String[][] getVorlesungPortfolios(String userId) {
-    return new String[][]{{"0", "Software Entwicklung im Team", "" + userId, null},{"2", "Machine Learning", "" + userId, null}};
   }
 
   /**
@@ -219,18 +231,6 @@ public class PortfoliosController {
   public String logout(HttpServletRequest request) throws Exception {
     request.logout();
     return "redirect:/";
-  }
-
-  /**
-   * convert ascii to html.
-   */
-
-  @SuppressWarnings("PMD")
-  private String convertAsciiDocTextToHtml(String asciiDocText) {
-    Asciidoctor asciidoctor = Asciidoctor.Factory.create();
-    String html = asciidoctor.convert(asciiDocText, new HashMap<>());
-    asciidoctor.close();
-    return html;
   }
 
 }
