@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Edit Template', headcontent=~{:: headcontent}, navigation=~{fragments/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
+
+<head>
+    <th:block th:fragment="headcontent">
+        <th:block th:insert="fragments/dependencies :: dependencyFragment"></th:block>
+    </th:block>
+</head>
+
+<body th:fragment="bodycontent">
+
+<h1 class="display-5">Portfolio Vorlage bearbeiten</h1>
+
+<br>
+
+</body>
+</html>
