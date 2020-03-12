@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{fragments/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
+
+<head>
+    <title>Portfolio</title>
+
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment">
+    </th:block>
+</head>
+
+<body th:fragment="bodycontent">
+
+<div class="text-center">
+
+    <h1 class="display-4" th:text="'Portfolioübersicht - ' + ${portfolio.getTitle()}">Portfolio title</h1>
+
+    <div class="card mt-4 bg-secondary" th:each="entry : ${portfolio.getEntries()}">
+        <h3 class="card-header" th:text="'Woche ' + ${entry.getId()}">Entry title</h3>
+        <div class="card-body">
+            <h5 class="card-title">Irgendein Titel?</h5>
+            <p class="card-text">Das ist ein text. lalala la abccccccccccccccccccc</p>
+            <a class="btn btn-primary"
+               th:href="@{/entry(title=${portfolio.getTitle()},id=${entry.getId()})}">Anzeigen</a>
+        </div>
+        <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()} + ' Tagen'">Date</div>
+    </div>
+</div>
+</body>
+
+</html>
+
