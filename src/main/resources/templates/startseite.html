@@ -1,11 +1,33 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{fragments/navigation :: navigationFragment}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Startseite', headcontent=~{:: headcontent}, navigation=~{fragments/navigation :: navigationFragment}, bodycontent=~{:: bodycontent})}">
 
 <head>
-    <title>Startseite</title>
+    <th:block th:fragment="headcontent">
+        <th:block th:insert="fragments/dependencies :: dependencyFragment"></th:block>
 
-    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment">
+        <style>
+            ul {
+                list-style-type: none;
+            }
+
+            .content {
+                font-style: italic;
+            }
+
+            .sep {
+                padding-top: 0.5em;
+                border-color: black;
+                border-width: 0.05em;
+                border-radius: 0.1em;
+                border-style: solid;
+            }
+
+            .sep li {
+                padding: 0.3em;
+            }
+
+        </style>
     </th:block>
 </head>
 
