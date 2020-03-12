@@ -30,10 +30,6 @@ public class PortfoliosController {
     return new User("Mocked", "abc@gmail.com", null, Collections.singleton("Student"), "1");
   }
 
-  private Group getMockGroup() {
-    return new Group();
-  }
-
   private List<Portfolio> getMockPortfolios() {
     User user = getMockUser();
     return Arrays.asList(
@@ -44,7 +40,6 @@ public class PortfoliosController {
 
   private List<Portfolio> getMockGroupPortfolios() {
     User user = getMockUser();
-    Group group = getMockGroup();
     return Arrays.asList(
         new Portfolio("Elektronik", user),
         new Portfolio("Praktikum", user)

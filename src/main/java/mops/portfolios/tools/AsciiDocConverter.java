@@ -8,7 +8,7 @@ import java.util.HashMap;
 @Service
 public class AsciiDocConverter {
 
-  private Asciidoctor asciiDoctor = Asciidoctor.Factory.create();
+  private transient Asciidoctor asciiDoctor = Asciidoctor.Factory.create();
 
   /**
    * Convert AsciiDoc to HTML
