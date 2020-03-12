@@ -7,9 +7,12 @@ import java.util.HashMap;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import mops.portfolios.Domain.Entry.Entry;
+import mops.portfolios.Domain.Entry.EntryField;
 import mops.portfolios.Domain.Portfolio.Portfolio;
 import mops.portfolios.Domain.UserGroup.User;
 import mops.portfolios.keycloak.Account;
+import mops.portfolios.tools.AsciiDocConverter;
 import org.asciidoctor.Asciidoctor;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -19,12 +22,56 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
 public class PortfoliosController {
 
   private transient UserSecurity userSecurity;
+  private User getMockUser() {
+    return new User("Mocked", "abc@gmail.com", null, Collections.singleton("Student"), "1");
+  }
+
+  private List<Portfolio> getMockPortfolios() {
+    User user = getMockUser();
+    return Arrays.asList(
+        new Portfolio("Machine Learning", user),
+        new Portfolio("Softwareentwicklung", user)
+    );
+  }
+
+  private List<Portfolio> getMockGroupPortfolios() {
+    User user = getMockUser();
+    return Arrays.asList(
+        new Portfolio("Elektronik", user),
+        new Portfolio("Praktikum", user)
+    );
+  }
+
+  private List<Entry> getMockEntry() {
+    Entry e = new Entry();
+    e.setTitle("Test123");
+    e.setFields(getMockEntryFields());
+
+    Entry f = new Entry();
+    f.setTitle("Test456");
+    f.setFields(getMockEntryFields());
+
+    return Arrays.asList(e, f);
+  }
+
+  private List<EntryField> getMockEntryFields() {
+    EntryField first = new EntryField();
+    first.setTitle("First");
+    first.setContent("Lore Ipsum");
+    EntryField second = new EntryField();
+    second.setTitle("Second");
+    second.setContent("Veni, vidi, vici");
+
+    return Arrays.asList(first, second);
+  }
 
   /**
    * Takes the auth-token from Keycloak and generates an AccounDTO for the views.
@@ -92,6 +139,15 @@ public class PortfoliosController {
   @GetMapping("/")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestList(Model model, KeycloakAuthenticationToken token) {
+    Account account = createAccountFromPrincipal(token);
+    model.addAttribute("account", account);
+
+    List<Portfolio> p = getMockPortfolios();
+    List<Portfolio> q = getMockGroupPortfolios();
+
+    model.addAttribute("last", q.get(1));
+    model.addAttribute("gruppen", q);
+    model.addAttribute("vorlesungen", p);
     authorize(model, token);
     String userId = getUserId();
     model.addAttribute("last", getLastPortfolio(userId));
@@ -111,7 +167,10 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-
+    List<Portfolio> p = getMockPortfolios();
+    List<Portfolio> q = getMockGroupPortfolios();
+    model.addAttribute("gruppen", q);
+    model.addAttribute("vorlesungen", p);
     return "index";
 
   }
@@ -128,6 +187,8 @@ public class PortfoliosController {
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
+    List<Portfolio> q = getMockGroupPortfolios();
+    model.addAttribute("gruppen", q);
     return "gruppen";
 
   }
@@ -143,12 +204,16 @@ public class PortfoliosController {
   public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
+    List<Portfolio> p = getMockPortfolios();
+    model.addAttribute("vorlesungen", p);
+
     return "privat";
 
   }
 
   /**
    * Portfolio mapping for GET requests.
+   *
    * @param model The spring model to add the attributes to
    * @param title The name of the portfolio
    * @return The page to load
@@ -160,11 +225,25 @@ public class PortfoliosController {
   public String clickPortfolio(Model model, @RequestParam String title, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    Set<String> roles = new HashSet<>(Arrays.asList("student"));
-    User user1 = new User("User Name", "mail@example.com", null, roles, "UUID-1234-1234");
-    Portfolio portfolio = new Portfolio("Praktikum", user1);
+    List<Portfolio> p = getMockPortfolios();
+    List<Portfolio> q = getMockGroupPortfolios();
+
+    Portfolio portfolio = null;
+
+    for (Portfolio r : p) {
+      if (r.getTitle().equals(title)) {
+        portfolio = r;
+      }
+    }
+
+    for (Portfolio r : q) {
+      if (r.getTitle().equals(title)) {
+        portfolio = r;
+      }
+    }
 
     model.addAttribute("portfolio", portfolio);
+    model.addAttribute("entries", getMockEntry());
 
     if (getOrgaRole(token).contains("orga")) {
       return "portfolio";
@@ -177,9 +256,10 @@ public class PortfoliosController {
 
   /**
    * Entry mapping for GET requests.
+   *
    * @param model The spring model to add the attributes to
    * @param title The name of the entry
-   * @param id The id of the entry
+   * @param id    The id of the entry
    * @return The page to load
    */
 
@@ -192,37 +272,64 @@ public class PortfoliosController {
     return "entry";
   }
 
+  /**
+   * Edit mapping for GET requests.
+   *
+   * @param model The spring model to add the attributes to
+   * @return The page to load
+   */
+
   @SuppressWarnings("PMD")
-  @GetMapping("/upload")
-  @RolesAllowed({"ROLE_orga"})
-  public String upload(Model model, KeycloakAuthenticationToken token) {
-    authorize(model, token);
-    return "upload";
+  @GetMapping("/edit")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String editTemplate(Model model) {
+    return "edit_template";
   }
 
   /**
-   * View mapping for GET requests.
+   * Upload mapping for GET requests.
    *
+   * @param model The spring model to add the attributes to
+   * @return The page to load
    */
+
+  @SuppressWarnings("PMD")
+  @GetMapping("/upload")
+  @RolesAllowed({"ROLE_orga"})
+  public String uploadTemplate(Model model, KeycloakAuthenticationToken token) {
+    authorize(model, token);
+
+    return "upload_template";
+  }
+
+  /**
+   * View mapping for POST requests.
+   *
+   * @param model The spring model to add the attributes to
+   * @param file The uploaded (AsciiDoc) template file
+   * @return The page to load
+   */
+
+  private transient AsciiDocConverter asciiConverter;
 
   @SuppressWarnings("PMD")
   @PostMapping("/view")
   @RolesAllowed({"ROLE_orga"})
-  public String uploadFile(Model model, @RequestParam("file") MultipartFile uploadedFile, KeycloakAuthenticationToken token) {
+  public String viewUploadedTemplate(Model model, @RequestParam("file") MultipartFile file, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    System.out.println("RECEIVED FILE " + uploadedFile.getOriginalFilename());
-
+    byte[] fileBytes;
     try {
-      String text = new String(uploadedFile.getBytes(), StandardCharsets.UTF_8);
-      String html = convertAsciiDocTextToHtml(text);
-      model.addAttribute("html", html);
-      System.out.println("GOT TEXT" + html);
+      fileBytes = file.getBytes();
     } catch (IOException e) {
       e.printStackTrace();
-      System.out.println("GOT ERROR");
+      return "upload_template";
     }
 
-    return "view";
+    String text = new String(fileBytes, StandardCharsets.UTF_8);
+    String html = asciiConverter.convertToHTML(text);
+    model.addAttribute("html", html);
+
+    return "view_template";
   }
 
   @SuppressWarnings("PMD")
