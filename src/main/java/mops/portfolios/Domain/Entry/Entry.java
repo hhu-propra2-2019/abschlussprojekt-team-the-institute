@@ -27,9 +27,9 @@ public class Entry {
     
     private @LastModifiedDate Date LastModifiedDate;
     
-    private final String userId = null;
+    private String userId;
 
-    private final Long groupId = null;
+    private Long groupId;
 
     @OneToMany(
         cascade = CascadeType.ALL,
@@ -38,4 +38,16 @@ public class Entry {
         orphanRemoval = true
     )
     private List<EntryField> fields = new ArrayList<>();
+
+    public Entry(String title, String userId) {
+        this.title = title;
+        this.userId = userId;
+        this.groupId = null;
+    }
+
+    public Entry(String title, Long groupId) {
+       this.title = title;
+       this.userId = null;
+       this.groupId = groupId;
+    }
 }
