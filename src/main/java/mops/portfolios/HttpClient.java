@@ -17,9 +17,11 @@ public class HttpClient implements IHttpClient {
       throw new HttpClientErrorException(response.getStatusCode());
     }
 
-    String body = response.getBody();
+    String body;
     if (response.getStatusCode().equals(HttpStatus.NOT_MODIFIED)) {
-      body = "";
+      body = new String();  // empty String
+    } else {
+      body = response.getBody();
     }
 
     return  body;

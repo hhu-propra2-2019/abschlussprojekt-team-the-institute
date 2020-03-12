@@ -2,6 +2,7 @@ package mops.portfolios;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.jruby.RubyProcess;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -10,12 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 @Service
-@AllArgsConstructor
+@SuppressWarnings("PMD")
 public class DatabaseUpdater {
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
-
-  /** The URL to retrieve the data from. */
-  private String url;
+  transient String url = "/gruppen2/groupmembers";
 
   /**
    * The thread to run the updates.
@@ -29,7 +28,7 @@ public class DatabaseUpdater {
     public void run() {
       while (true) {
         updateDatabaseEvents();
-        Thread.sleep(10_000); // 10 seconds interval
+        Thread.sleep(timeout); // 10 seconds interval
       }
     }
   }
@@ -50,24 +49,25 @@ public class DatabaseUpdater {
    */
   void updateDatabaseEvents() {
     HttpClient httpClient = new HttpClient();
-    updateDatabaseEvents(httpClient);
+    updateDatabaseEvents(httpClient, this.url);
   }
 
   /**
    * This method updates the database using an injected HttpClient and url, easing up testing.
    * @param httpClient The HttpClient to use
    */
-  void updateDatabaseEvents(IHttpClient httpClient) {
-    String responseBody = null;
+  @SuppressWarnings("PMD")
+  void updateDatabaseEvents(IHttpClient httpClient, String url) {
+    String responseBody;
 
     // try to receive data from service Gruppenbildung
     try {
       // TODO: genaues URI mit gruppen2 absprechen
-      responseBody = httpClient.get(this.url);
+      responseBody = httpClient.get(url);
     } catch (HttpClientErrorException clientErr) { // if status 4xx or 5xx returned
       logger.warn("The service Gruppenbildung is not reachable: " + clientErr.getRawStatusCode()
               + " " + clientErr.getStatusText());
-    // keep responseBody null or empty here
+      responseBody = "";
     } catch (IllegalArgumentException argException) {
       logger.error(argException.getMessage()); // Most likely URL formatted wrong
       throw new RuntimeException(argException);
@@ -80,9 +80,10 @@ public class DatabaseUpdater {
    * This method updates the database using the injected JSON String, easing up testing.
    * @param jsonUpdate The String containing the JSON data to update the database
    */
+  @SuppressWarnings("PMD")
   void updateDatabaseEvents(String jsonUpdate) {
     // if couldn't retrieve data or not modified, keep the current state
-    if (jsonUpdate == null || jsonUpdate.isEmpty()) {
+    if (jsonUpdate.isEmpty()) {
       // TODO: use data from local database
       logger.info("Database not modified");
       return; // no need to update local database

@@ -1,5 +1,6 @@
 package mops.portfolios;
 
+import java.util.List;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import manifold.ext.api.Jailbreak;
@@ -9,29 +10,31 @@ import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class DatabaseUpdaterTest {
 
-  @Jailbreak DatabaseUpdater databaseUpdater;
+  @Jailbreak private transient DatabaseUpdater databaseUpdater;
 
   /** The url to retrieve the data from */
-  private String url = "/gruppen2/groupmembers";
+  private transient String url = "/gruppen2/groupmembers";
+  private transient static final Logger logger = (Logger) LoggerFactory.getLogger(PortfoliosApplication.class);
+
+  @BeforeEach
+  public void init() {
+    databaseUpdater = new DatabaseUpdater();
+  }
 
   @Test
   public void testClientError() {
-    databaseUpdater = new DatabaseUpdater("400");
     ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
-    Logger logger = (Logger) LoggerFactory.getLogger(PortfoliosApplication.class);
 
     listAppender.start();
     logger.addAppender(listAppender);
     IHttpClient httpClient = new FakeHttpClient();
-    databaseUpdater.updateDatabaseEvents(httpClient);
+    databaseUpdater.updateDatabaseEvents(httpClient, "400");
     listAppender.stop();
 
     List<ILoggingEvent> logsList = listAppender.list;
@@ -44,13 +47,10 @@ public class DatabaseUpdaterTest {
 
   @Test
   public void testEmptyJson() {
-    databaseUpdater = new DatabaseUpdater(this.url);
     ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
-    Logger logger = (Logger) LoggerFactory.getLogger(PortfoliosApplication.class);
 
     listAppender.start();
     logger.addAppender(listAppender);
-    IHttpClient httpClient = new FakeHttpClient();
     databaseUpdater.updateDatabaseEvents("");
     listAppender.stop();
 
@@ -62,14 +62,18 @@ public class DatabaseUpdaterTest {
 
   @Test
   public void objectNotJson() {
-    databaseUpdater = new DatabaseUpdater(this.url);
     assertThrows(RuntimeException.class, () -> databaseUpdater.updateDatabaseEvents("blabla"));
   }
 
   @Test
   public void testUpdateDatabaseEventsIllegalArgument() {
-    databaseUpdater = new DatabaseUpdater("/bla/bla");
+    databaseUpdater.url = "/bla/bla";
     assertThrows(RuntimeException.class, () -> databaseUpdater.updateDatabaseEvents());
+  }
+  @Test
+  public void testSuccessfulRequest() {
+    IHttpClient httpClient = new FakeHttpClient();
+    databaseUpdater.updateDatabaseEvents(httpClient, this.url); // takes mocked JSON from the FakeHttpClient
   }
 
 

@@ -9,17 +9,7 @@ public class FakeHttpClient implements IHttpClient {
   /**
    * Feel free to set this differently
    */
-  public String response = "HTTP/1.1 200 OK\n" +
-          "Content-Type: application/json; charset=UTF-8\n" +
-          "Date: Wed, 11 Mar 2020 15:11:06 GMT\n" +
-          "Expires: Fri, 10 Apr 2020 15:11:06 GMT\n" +
-          "Cache-Control: public, max-age=2592000\n" +
-          "Server: nothing\n" +
-          "Content-Length: 8\n" +
-          "X-XSS-Protection: 0\n" +
-          "X-Frame-Options: SAMEORIGIN\n" +
-          "\n" +
-          "[{null}]";
+  public transient String response = "{'key': 'value'}";
 
   @Override
   public String get(String url) throws HttpClientErrorException {
