@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Entity
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserGroup {
     private @Id @GeneratedValue Long id;
     @Column(nullable = false)
@@ -15,4 +16,10 @@ public class UserGroup {
     private Long groupId;
     @Column(nullable = false)
     private String groupTitle;
+
+    public UserGroup(String userId, Long groupId, String title) {
+        this.userId = userId;
+        this.groupId = groupId;
+        this.groupTitle = title;
+    }
 }

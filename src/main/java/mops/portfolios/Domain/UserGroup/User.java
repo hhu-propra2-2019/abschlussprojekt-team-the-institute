@@ -11,9 +11,9 @@ public class User {
   private final String email;
   private final String image;
   private final Set<String> roles;
-  private final UUID id;
+  private final String id;
 
-  public User(String name, String email, String image, Set<String> roles, UUID id) {
+  public User(String name, String email, String image, Set<String> roles, String id) {
     this.name = name;
     this.email = email;
     this.image = image;
