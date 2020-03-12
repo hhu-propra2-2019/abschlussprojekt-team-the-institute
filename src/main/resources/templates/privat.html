@@ -12,11 +12,13 @@
 <body th:fragment="bodycontent">
 
 <div class="content">
-
+    <ul>
+        <li th:each="vorlesung : ${vorlesungen}" class="sep">
+            <p>Vorlesung: <a th:text="${vorlesung.getTitle()}" href="#">Titel</a></p>
+            <br>
+        </li>
+    </ul>
 </div>
-<script>
-
-</script>
 
 </body>
 </html>

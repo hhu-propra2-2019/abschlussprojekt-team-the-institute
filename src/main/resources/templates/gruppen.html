@@ -10,6 +10,13 @@
 </head>
 
 <body th:fragment="bodycontent">
-
+<div class="content">
+    <ul>
+        <li th:each="gruppe : ${gruppen}" class="sep">
+            <p>Gruppe: <a th:text="${gruppe.getTitle()}" href="#">Titel</a></p>
+            <br>
+        </li>
+    </ul>
+</div>
 </body>
 </html>

@@ -13,14 +13,16 @@
 
 <div class="content">
     <ul>
-        <li>
-            <p>--- Hier kommen ALLE Vorlesungen des Studenten rein ---</p>
+        <li th:each="vorlesung : ${vorlesungen}" class="sep">
+            <p>Vorlesung: <a th:text="${vorlesung.getTitle()}" href="#">Titel</a></p>
+            <br>
         </li>
     </ul>
 
     <ul>
-        <li>
-            <p>--- Hier kommen ALLE Gruppen des Studenten rein ---</p>
+        <li th:each="gruppe : ${gruppen}" class="sep">
+            <p>Gruppe: <a th:text="${gruppe.getTitle()}" href="#">Titel</a></p>
+            <br>
         </li>
     </ul>
 </div>

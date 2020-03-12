@@ -90,6 +90,10 @@ public class PortfoliosController {
   @GetMapping("/index")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestIndex(Model model) {
+    List<Portfolio> p = getMockPortfolios();
+    List<Portfolio> q = getMockGroupPortfolios();
+    model.addAttribute("gruppen", q);
+    model.addAttribute("vorlesungen", p);
     return "index";
   }
 
@@ -97,6 +101,8 @@ public class PortfoliosController {
   @GetMapping("/gruppen")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestGruppen(Model model) {
+    List<Portfolio> q = getMockGroupPortfolios();
+    model.addAttribute("gruppen", q);
     return "gruppen";
   }
 
@@ -104,6 +110,8 @@ public class PortfoliosController {
   @GetMapping("/privat")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestPrivate(Model model) {
+    List<Portfolio> p = getMockPortfolios();
+    model.addAttribute("vorlesungen", p);
     return "privat";
   }
 
