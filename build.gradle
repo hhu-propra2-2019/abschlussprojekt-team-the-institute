@@ -9,7 +9,7 @@ plugins {
 
 group = 'mops'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 
 configurations {
 	developmentOnly
@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-	implementation "mops:styleguide:2.1.0"
+	implementation "mops:styleguide:2.2.0"
 
 	compile	"org.asciidoctor:asciidoctorj:2.2.0"
 
