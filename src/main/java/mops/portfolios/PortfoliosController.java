@@ -1,18 +1,10 @@
 package mops.portfolios;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import mops.portfolios.Entry.Entry;
-import mops.portfolios.Portfolio.*;
+import mops.portfolios.Portfolio.Portfolio;
+import mops.portfolios.Portfolio.User;
 import mops.portfolios.keycloak.Account;
-import org.asciidoctor.Asciidoctor;
+import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -21,6 +13,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -117,6 +116,7 @@ public class PortfoliosController {
 
   /**
    * Portfolio mapping for GET requests.
+   *
    * @param model The spring model to add the attributes to
    * @param title The name of the portfolio
    * @return The page to load
@@ -135,9 +135,10 @@ public class PortfoliosController {
 
   /**
    * Entry mapping for GET requests.
+   *
    * @param model The spring model to add the attributes to
    * @param title The name of the entry
-   * @param id The id of the entry
+   * @param id    The id of the entry
    * @return The page to load
    */
 
@@ -149,36 +150,62 @@ public class PortfoliosController {
     return "entry";
   }
 
+  /**
+   * Edit mapping for GET requests.
+   *
+   * @param model The spring model to add the attributes to
+   * @return The page to load
+   */
+
   @SuppressWarnings("PMD")
-  @GetMapping("/upload")
+  @GetMapping("/edit")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String upload(Model model) {
-    return "upload";
+  public String editTemplate(Model model) {
+    return "edit_template";
   }
 
   /**
-   * View mapping for GET requests.
+   * Upload mapping for GET requests.
    *
+   * @param model The spring model to add the attributes to
+   * @return The page to load
    */
+
+  @SuppressWarnings("PMD")
+  @GetMapping("/upload")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String uploadTemplate(Model model) {
+    return "upload_template";
+  }
+
+  /**
+   * View mapping for POST requests.
+   *
+   * @param model The spring model to add the attributes to
+   * @param file The uploaded (AsciiDoc) template file
+   * @return The page to load
+   */
+
+  private transient AsciiDocConverter asciiConverter;
 
   @SuppressWarnings("PMD")
   @PostMapping("/view")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String uploadFile(Model model, @RequestParam("file") MultipartFile uploadedFile) {
+  public String viewUploadedTemplate(Model model, @RequestParam("file") MultipartFile file) {
 
-    System.out.println("RECEIVED FILE " + uploadedFile.getOriginalFilename());
-
+    byte[] fileBytes;
     try {
-      String text = new String(uploadedFile.getBytes(), StandardCharsets.UTF_8);
-      String html = convertAsciiDocTextToHtml(text);
-      model.addAttribute("html", html);
-      System.out.println("GOT TEXT" + html);
+      fileBytes = file.getBytes();
     } catch (IOException e) {
       e.printStackTrace();
-      System.out.println("GOT ERROR");
+      return "upload_template";
     }
 
-    return "view";
+    String text = new String(fileBytes, StandardCharsets.UTF_8);
+    String html = asciiConverter.convertToHTML(text);
+    model.addAttribute("html", html);
+
+    return "view_template";
   }
 
   @SuppressWarnings("PMD")
@@ -188,17 +215,4 @@ public class PortfoliosController {
     request.logout();
     return "redirect:/";
   }
-
-  /**
-   * convert ascii to html.
-   */
-
-  @SuppressWarnings("PMD")
-  private String convertAsciiDocTextToHtml(String asciiDocText) {
-    Asciidoctor asciidoctor = Asciidoctor.Factory.create();
-    String html = asciidoctor.convert(asciiDocText, new HashMap<>());
-    asciidoctor.close();
-    return html;
-  }
-
 }
