@@ -151,22 +151,7 @@ public class PortfoliosController {
   @GetMapping("/portfolio")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String clickPortfolio(Model model, @RequestParam String title) {
-    List<Portfolio> p = getMockPortfolios();
-    List<Portfolio> q = getMockGroupPortfolios();
-
-    Portfolio portfolio = null;
-
-    for (Portfolio r : p) {
-      if (r.getTitle().equals(title)) {
-        portfolio = r;
-      }
-    }
-
-    for (Portfolio r : q) {
-      if (r.getTitle().equals(title)) {
-        portfolio = r;
-      }
-    }
+    Portfolio portfolio = getPortfolioByTitle(title);
 
     model.addAttribute("portfolio", portfolio);
     model.addAttribute("entries", getMockEntry());
@@ -178,16 +163,31 @@ public class PortfoliosController {
    *
    * @param model The spring model to add the attributes to
    * @param title The name of the entry
-   * @param id    The id of the entry
+   * @param entry_title The title of the entry
    * @return The page to load
    */
 
   @SuppressWarnings("PMD")
   @GetMapping("/entry")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String clickEntry(Model model, @RequestParam String title, @RequestParam int id) {
+  public String clickEntry(Model model, @RequestParam String title, @RequestParam String entry_title) {
+    Portfolio portfolio = getPortfolioByTitle(title);
+    Entry entry = getEntryByTitle(entry_title);
 
+    model.addAttribute("portfolio", portfolio);
+    model.addAttribute("entry", entry);
     return "entry";
+  }
+
+  @SuppressWarnings("PMD")
+  private Entry getEntryByTitle(String title) {
+    List<Entry> entries = getMockEntry();
+    for (Entry e : entries){
+      if(e.getTitle().equals(title)){
+        return e;
+      }
+    }
+    return null;
   }
 
   /**
@@ -254,5 +254,26 @@ public class PortfoliosController {
   public String logout(HttpServletRequest request) throws Exception {
     request.logout();
     return "redirect:/";
+  }
+
+  @SuppressWarnings("PMD")
+  private Portfolio getPortfolioByTitle(String title) {
+    List<Portfolio> p = getMockPortfolios();
+    List<Portfolio> q = getMockGroupPortfolios();
+
+    Portfolio portfolio = null;
+
+    for (Portfolio r : p) {
+      if (r.getTitle().equals(title)) {
+        portfolio = r;
+      }
+    }
+
+    for (Portfolio r : q) {
+      if (r.getTitle().equals(title)) {
+        portfolio = r;
+      }
+    }
+    return portfolio;
   }
 }
