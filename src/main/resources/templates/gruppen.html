@@ -12,7 +12,7 @@
 <div class="content">
     <ul>
         <li th:each="gruppe : ${gruppen}" class="sep">
-            <p>Gruppe: <a th:text="${gruppe.getTitle()}" th:href="@{/portfolio(titel=${gruppe.getTitle()})}">Titel</a></p>
+            <p>Gruppe: <a th:text="${gruppe.getTitle()}" th:href="@{/portfolio(title=${gruppe.getTitle()})}">Titel</a></p>
             <br>
         </li>
     </ul>

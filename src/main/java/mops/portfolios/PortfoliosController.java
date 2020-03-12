@@ -7,6 +7,8 @@ import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import mops.portfolios.Domain.Entry.Entry;
+import mops.portfolios.Domain.Entry.EntryField;
 import mops.portfolios.Domain.Portfolio.Portfolio;
 import mops.portfolios.Domain.UserGroup.User;
 import mops.portfolios.keycloak.Account;
@@ -25,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class PortfoliosController {
 
   private User getMockUser() {
-    return new User("Mocked");
+    return new User("Mocked", "abc@gmail.com", null, Collections.singleton("Student"), "1");
   }
 
   private Group getMockGroup() {
@@ -47,6 +49,29 @@ public class PortfoliosController {
         new Portfolio("Elektronik", user),
         new Portfolio("Praktikum", user)
     );
+  }
+
+  private List<Entry> getMockEntry() {
+    Entry e = new Entry();
+    e.setTitle("Test123");
+    e.setFields(getMockEntryFields());
+
+    Entry f = new Entry();
+    f.setTitle("Test456");
+    f.setFields(getMockEntryFields());
+
+    return Arrays.asList(e, f);
+  }
+
+  private List<EntryField> getMockEntryFields() {
+    EntryField first = new EntryField();
+    first.setTitle("First");
+    first.setContent("Lore Ipsum");
+    EntryField second = new EntryField();
+    second.setTitle("Second");
+    second.setContent("Veni, vidi, vici");
+
+    return Arrays.asList(first, second);
   }
 
   /**
@@ -76,8 +101,10 @@ public class PortfoliosController {
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     Account account = createAccountFromPrincipal(token);
     model.addAttribute("account", account);
+
     List<Portfolio> p = getMockPortfolios();
     List<Portfolio> q = getMockGroupPortfolios();
+
     model.addAttribute("last", q.get(1));
     model.addAttribute("gruppen", q);
     model.addAttribute("vorlesungen", p);
@@ -124,12 +151,25 @@ public class PortfoliosController {
   @GetMapping("/portfolio")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String clickPortfolio(Model model, @RequestParam String title) {
-    Set<String> roles = new HashSet<>(Arrays.asList("student"));
-    User user1 = new User("User Name", "mail@example.com", null, roles, "UUID-1234-1234");
-    Portfolio portfolio = new Portfolio("Praktikum", user1);
+    List<Portfolio> p = getMockPortfolios();
+    List<Portfolio> q = getMockGroupPortfolios();
+
+    Portfolio portfolio = null;
+
+    for (Portfolio r : p) {
+      if (r.getTitle().equals(title)){
+        portfolio = r;
+      }
+    }
+
+    for (Portfolio r : q) {
+      if (r.getTitle().equals(title)){
+        portfolio = r;
+      }
+    }
 
     model.addAttribute("portfolio", portfolio);
-
+    model.addAttribute("entries", getMockEntry());
     return "portfolio";
   }
 

@@ -13,14 +13,14 @@
 <div class="content">
     <ul>
         <li th:each="vorlesung : ${vorlesungen}" class="sep">
-            <p>Vorlesung: <a th:text="${vorlesung.getTitle()}" th:href="@{/portfolio(titel=${vorlesung.getTitle()})}">Titel</a></p>
+            <p>Vorlesung: <a th:text="${vorlesung.getTitle()}" th:href="@{/portfolio(title=${vorlesung.getTitle()})}">Titel</a></p>
             <br>
         </li>
     </ul>
 
     <ul>
         <li th:each="gruppe : ${gruppen}" class="sep">
-            <p>Gruppe: <a th:text="${gruppe.getTitle()}" th:href="@{/portfolio(titel=${gruppe.getTitle()})}">Titel</a></p>
+            <p>Gruppe: <a th:text="${gruppe.getTitle()}" th:href="@{/portfolio(title=${gruppe.getTitle()})}">Titel</a></p>
             <br>
         </li>
     </ul>
