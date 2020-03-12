@@ -163,7 +163,7 @@ public class PortfoliosController {
    *
    * @param model The spring model to add the attributes to
    * @param title The name of the entry
-   * @param id    The id of the entry
+   * @param entry_title The title of the entry
    * @return The page to load
    */
 
