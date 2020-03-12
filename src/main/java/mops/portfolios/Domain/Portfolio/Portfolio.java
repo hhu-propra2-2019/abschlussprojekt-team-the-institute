@@ -1,7 +1,9 @@
-package mops.portfolios.Portfolio;
+package mops.portfolios.Domain.Portfolio;
 
 import lombok.*;
-import mops.portfolios.Entry.Entry;
+import mops.portfolios.Domain.Entry.*;
+import mops.portfolios.Domain.UserGroup.Group;
+import mops.portfolios.Domain.UserGroup.User;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -32,10 +34,7 @@ public class Portfolio {
     private List<Entry> entries = new ArrayList<>();
 
 
-    public Portfolio() {
-    }
-
-    ;
+    public Portfolio() {}
 
     public Portfolio(String title, User user) {
         this.title = title;
@@ -46,12 +45,4 @@ public class Portfolio {
         this.title = title;
         this.groupId = group.getId();
     }
-}
-
-class Test {
-    static User u = new User("USER_ID_DUMMY");
-    static Group g = new Group(999L);
-    static Portfolio userPortfolio = new Portfolio("Title here", u);
-    static Portfolio groupPortfolio = new Portfolio("Title here", g);
-    static String i = userPortfolio.getUserId();
 }

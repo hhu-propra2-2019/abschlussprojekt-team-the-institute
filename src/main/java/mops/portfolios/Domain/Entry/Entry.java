@@ -1,4 +1,4 @@
-package mops.portfolios.Entry;
+package mops.portfolios.Domain.Entry;
 
 import lombok.Data;
 import lombok.Getter;
@@ -8,13 +8,12 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import javax.persistence.*;
 
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.CreatedDate;
-
-import mops.portfolios.EntryField.EntryField;
 
 @Entity
 @Data
@@ -28,14 +27,14 @@ public class Entry {
     
     private @LastModifiedDate Date LastModifiedDate;
     
-    // @SuppressWarnings("unused")
-    private final String userId;
+    private final String userId = null;
 
-    // @SuppressWarnings("unused")
-    private final Long groupId;
+    private final Long groupId = null;
 
     @OneToMany(
         cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY,
+        mappedBy = "entry",
         orphanRemoval = true
     )
     private List<EntryField> fields = new ArrayList<>();

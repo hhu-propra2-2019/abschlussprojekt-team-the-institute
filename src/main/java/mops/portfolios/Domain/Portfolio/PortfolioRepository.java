@@ -1,4 +1,4 @@
-package mops.portfolios.Portfolio;
+package mops.portfolios.Domain.Portfolio;
 
 import java.util.List;
 
@@ -6,8 +6,8 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface PortfolioRepository extends CrudRepository<Portfolio, Long> {
     
-    List<Portfolio> findByUserId(Long userId);
+    List<Portfolio> findByUserId(String userId);
 
-    List<Portfolio> findByGroupId(Long groupId);
+    List<Portfolio> findAllByGroupId(Long groupId);
 
 }
