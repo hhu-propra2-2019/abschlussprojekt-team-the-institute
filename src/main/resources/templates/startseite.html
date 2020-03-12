@@ -6,28 +6,6 @@
     <title>Startseite</title>
 
     <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment">
-        <style>
-            ul {
-                list-style-type: none;
-            }
-
-            .content {
-                font-style: italic;
-            }
-
-            .sep {
-                padding-top: 0.5em;
-                border-color: black;
-                border-width: 0.05em;
-                border-radius: 0.1em;
-                border-style: solid;
-            }
-
-            .sep li {
-                padding: 0.3em;
-            }
-
-        </style>
     </th:block>
 </head>
 
@@ -45,7 +23,7 @@
                 <ul>
                     <li>
                         <p> Setzte hier deine Arbeit fort: </p>
-                        <a th:text="${last[1]}" href="#">Letztes Portfolio</a>
+                        <a th:text="${last.getTitle()}" href="#">Letztes Portfolio</a>
                     </li>
                 </ul>
             </li>
@@ -60,7 +38,7 @@
                 -->
                 <ul> Schnellzugriff auf die Gruppen-Portfolios:
                     <li th:each="gruppe : ${gruppen}">
-                        <a th:text="${gruppe[1]}" href="#">Gruppe 1</a>
+                        <a th:text="${gruppe.getTitel()}" href="#">Gruppe 1</a>
                     </li>
                 </ul>
             </li>
@@ -73,7 +51,7 @@
 
                 <ul>Schnellzugriff auf die privaten Portfolios:
                     <li th:each="vorlesung : ${vorlesungen}">
-                        <a th:text="${vorlesung[1]}" href="#">Portfolio 1</a>
+                        <a th:text="${vorlesung.getTitle()}" href="#">Portfolio 1</a>
                     </li>
                 </ul>
             </li>

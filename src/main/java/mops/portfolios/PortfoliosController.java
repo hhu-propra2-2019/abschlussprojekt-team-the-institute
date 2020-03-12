@@ -26,8 +26,24 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class PortfoliosController {
 
-  private transient Group group;
+  private User getMockUser() {
+    return new User("Mocked");
+  }
 
+  private Group getMockGroup() {
+    return new Group();
+  }
+
+  private List<Portfolio> getMockPortfolios() {
+    User user = getMockUser();
+    Group group = getMockGroup();
+    List<Portfolio> p = Arrays.asList(
+        new Portfolio("Machine Learning", user),
+        new Portfolio("Softwareentwicklung", user),
+        new Portfolio("Praktikum", user)
+    );
+    return p;
+  }
 
   /**
    * Takes the auth-token from Keycloak and generates an AccounDTO for the views.
@@ -57,9 +73,10 @@ public class PortfoliosController {
     Account account = createAccountFromPrincipal(token);
     model.addAttribute("account", account);
     int user_id = getUserId();
-    model.addAttribute("last", getLastPortfolio(user_id));
-    model.addAttribute("gruppen", getGruppenPortfolios(user_id));
-    model.addAttribute("vorlesungen", getVorlesungPortfolios(user_id));
+    List<Portfolio> p = getMockPortfolios();
+    model.addAttribute("last", p.get(2));
+    model.addAttribute("gruppen", null);
+    model.addAttribute("vorlesungen", p);
     return "startseite";
   }
 
