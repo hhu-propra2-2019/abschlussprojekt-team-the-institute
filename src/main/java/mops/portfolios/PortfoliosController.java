@@ -179,6 +179,7 @@ public class PortfoliosController {
     return "entry";
   }
 
+  @SuppressWarnings("PMD")
   private Entry getEntryByTitle(String title) {
     List<Entry> entries = getMockEntry();
     for (Entry e : entries){
@@ -255,7 +256,8 @@ public class PortfoliosController {
     return "redirect:/";
   }
 
-  private Portfolio getPortfolioByTitle(@RequestParam String title) {
+  @SuppressWarnings("PMD")
+  private Portfolio getPortfolioByTitle(String title) {
     List<Portfolio> p = getMockPortfolios();
     List<Portfolio> q = getMockGroupPortfolios();
 
