@@ -27,7 +27,7 @@ public class Entry {
     
     private @LastModifiedDate Date LastModifiedDate;
     
-    private final UUID userId = null;
+    private final String userId = null;
 
     private final Long groupId = null;
 
