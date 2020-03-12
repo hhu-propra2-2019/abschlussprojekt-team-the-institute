@@ -139,8 +139,7 @@ public class PortfoliosController {
   @GetMapping("/")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestList(Model model, KeycloakAuthenticationToken token) {
-    Account account = createAccountFromPrincipal(token);
-    model.addAttribute("account", account);
+    authorize(model, token);
 
     List<Portfolio> p = getMockPortfolios();
     List<Portfolio> q = getMockGroupPortfolios();
@@ -282,7 +281,9 @@ public class PortfoliosController {
   @SuppressWarnings("PMD")
   @GetMapping("/edit")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String editTemplate(Model model) {
+  public String editTemplate(Model model, KeycloakAuthenticationToken token) {
+    authorize(model, token);
+
     return "edit_template";
   }
 
@@ -317,6 +318,7 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga"})
   public String viewUploadedTemplate(Model model, @RequestParam("file") MultipartFile file, KeycloakAuthenticationToken token) {
     authorize(model, token);
+
     byte[] fileBytes;
     try {
       fileBytes = file.getBytes();
