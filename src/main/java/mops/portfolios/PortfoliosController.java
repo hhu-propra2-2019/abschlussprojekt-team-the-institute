@@ -2,14 +2,10 @@ package mops.portfolios;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import mops.portfolios.Entry.Entry;
 import mops.portfolios.Portfolio.*;
 import mops.portfolios.keycloak.Account;
 import org.asciidoctor.Asciidoctor;
@@ -67,42 +63,43 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    int user_id = getUserId();
-    model.addAttribute("last", getLastPortfolio(user_id));
-    model.addAttribute("gruppen", getGruppenPortfolios(user_id));
-    model.addAttribute("vorlesungen", getVorlesungPortfolios(user_id));
-    authorize(model, token);
+    String userId = getUserId();
+    model.addAttribute("last", getLastPortfolio(userId));
+    model.addAttribute("gruppen", getGruppenPortfolios(userId));
+    model.addAttribute("vorlesungen", getVorlesungPortfolios(userId));
     return "startseite";
   }
 
-  private int getUserId() {
-    return 0;
+  private String getUserId() {
+    return "";
   }
 
-  private String[] getLastPortfolio(int user_id) {
-    return new String[]{"0", "Software Entwicklung im Team", ""+user_id, null};
+  private String[] getLastPortfolio(String userId) {
+    return new String[]{"0", "Software Entwicklung im Team", "" + userId, null};
   }
 
-  private String[][] getGruppenPortfolios(int user_id) {
-    return new String[][]{{"1", "Praktiukm", null, ""+user_id}};
+  private String[][] getGruppenPortfolios(String userId) {
+    return new String[][]{{"1", "Praktikum", null, "" + userId}};
   }
 
-  private String[][] getVorlesungPortfolios(int user_id) {
-    return new String[][]{{"0", "Software Entwicklung im Team", ""+user_id, null},{"2", "Machine Learning", ""+user_id, null}};
+  private String[][] getVorlesungPortfolios(String userId) {
+    return new String[][]{{"0", "Software Entwicklung im Team", "" + userId, null},{"2", "Machine Learning", "" + userId, null}};
   }
+
+  /**
+   * Index mapping for GET requests.
+   *
+   * @return The page to load
+   */
 
   @SuppressWarnings("PMD")
   @GetMapping("/index")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    if (getOrgaRole(token).contains("orga")) {
-      return "index";
-    } else if (userSecurity.hasUserId(getUserId(token))) {
-      return "index";
-    } else {
-      return "redirect://localhost:8080";
-    }
+
+    return "index";
+
   }
 
   /**
@@ -117,13 +114,8 @@ public class PortfoliosController {
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    if (getOrgaRole(token).contains("orga")) {
-      return "gruppen";
-    } else if (userSecurity.hasGroupId(getUserId(token))) {
-      return "gruppen";
-    } else {
-      return "redirect://localhost:8080";
-    }
+    return "gruppen";
+
   }
 
   /**
@@ -137,15 +129,8 @@ public class PortfoliosController {
   public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    System.out.println(getOrgaRole(token));
+    return "privat";
 
-    if (getOrgaRole(token).contains("orga")) {
-      return "privat";
-    } else if (userSecurity.hasUserId(getUserId(token))) {
-      return "privat";
-    } else {
-      return "redirect://localhost:8080";
-    }
   }
 
   /**
@@ -160,11 +145,18 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String clickPortfolio(Model model, @RequestParam String title, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    Portfolio portfolio = new Portfolio("Praktikum", new User("Test123"));
 
+    Portfolio portfolio = new Portfolio("Praktikum", new User("Test123"));
     model.addAttribute("portfolio", portfolio);
 
-    return "portfolio";
+    if (getOrgaRole(token).contains("orga")) {
+      return "portfolio";
+    } else if (userSecurity.hasGroupId(getUserId(token))) {
+      return "portfolio";
+    } else {
+      return "redirect://localhost:8080";
+    }
+
   }
 
   /**
