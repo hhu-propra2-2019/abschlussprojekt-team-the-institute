@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{fragments/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='View', headcontent=~{:: headcontent}, navigation=~{fragments/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
 
 <head>
-    <title>View</title>
-
-    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment">
+    <th:block th:fragment="headcontent">
+        <th:block th:insert="fragments/dependencies :: dependencyFragment"></th:block>
     </th:block>
 </head>
 
