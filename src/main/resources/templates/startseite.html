@@ -1,74 +1,88 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{fragments/navigation :: navigationFragment}, bodycontent=~{:: bodycontent})}">
+
 <head>
-    <meta charset="utf-8">
-    <title>Test</title>
-    <th:block th:fragment="headcontent">
+    <title>Startseite</title>
+
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment">
         <style>
             ul {
                 list-style-type: none;
             }
+
+            .content {
+                font-style: italic;
+            }
+
+            .sep {
+                padding-top: 0.5em;
+                border-color: black;
+                border-width: 0.05em;
+                border-radius: 0.1em;
+                border-style: solid;
+            }
+
+            .sep li {
+                padding: 0.3em;
+            }
+
         </style>
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     </th:block>
 </head>
-<body>
-<header>
-    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+
+<body th:fragment="bodycontent">
+
+<div class="content">
+    <div id="this_semester">
+        <p>Willkommen beim Portfolioservice des MOPS.</p>
+        <p>Hier eine schnelle Übersicht deiner Portoflios aus diesem Semester:</p>
         <ul>
-            <li>
-                <a href="/">
-                    <p><i class="fa fa-home fa-lg"></i> Startseite</p>
-                </a>
+            <li class="sep" id="last">
+                <!--
+                given idu = user.id, find portfolio with smallest || right now - portfolio.date_last_modified||
+                -->
+                <ul>
+                    <li>
+                        <p> Setzte hier deine Arbeit fort: </p>
+                        <a th:text="${last[1]}" href="#">Letztes Portfolio</a>
+                    </li>
+                </ul>
             </li>
-            <li>
-                <a href="/index">
-                    <p><i class="fa fa-home fa-lg"></i> Index aller Portfolios</p>
-                </a>
+            <li class="sep" id="gruppen">
+                <!--
+                given user.id find every idg = group.id. s.t. there exists user_group with user.id && group.id
+                &&
+                display every portfolio with group.id = idg && right now - date created < 6 months
+
+                --- Hier kommen alle Gruppen-Portfolios des Studenten rein ---
+
+                -->
+                <ul> Schnellzugriff auf die Gruppen-Portfolios:
+                    <li th:each="gruppe : ${gruppen}">
+                        <a th:text="${gruppe[1]}" href="#">Gruppe 1</a>
+                    </li>
+                </ul>
             </li>
-            <li>
-                <a href="/gruppen">
-                    <p><i class="fa fa-home fa-lg"></i> Gruppen-Portfolios</p>
-                </a>
-            </li>
-            <li>
-                <a href="/privat">
-                    <p><i class="fa fa-home fa-lg"></i> Eigene Portfolios</p>
-                </a>
+            <li class="sep" id="vorlesungen">
+                <!--
+                given idu = user.id display every portfolio with user.id = idu && right now - date created < 6 months
+
+                --- Hier kommen alle Vorlesungs-Portfolios des Studenten rein ---
+                -->
+
+                <ul>Schnellzugriff auf die privaten Portfolios:
+                    <li th:each="vorlesung : ${vorlesungen}">
+                        <a th:text="${vorlesung[1]}" href="#">Portfolio 1</a>
+                    </li>
+                </ul>
             </li>
         </ul>
-    </nav>
-</header>
-<div th:fragment="bodycontent">
-    <div class="content">
-        <div id="this_semester">
-            <ul> Für dieses Semester:
-                <li id="last">
-                    <p>--- Setzte hier deine Arbeit fort: <a href="#">Zuletzt bearbeiteste Portfolio<sup>TM</sup></a> ---</p>
-                </li>
-                <li id="gruppen">
-                    <p>--- Hier kommen alle Gruppen des Studenten rein ---</p>
-                </li>
-                <li id="vorlesungen">
-                    <p>--- Hier kommen alle Vorlesungen des Studenten rein ---</p>
-                </li>
-                <li id="privat">
-                    <p>--- Hier kommen die Privaten Portfolios rein ---</p>
-                </li>
-            </ul>
-        </div>
     </div>
-    <script>
-
-    </script>
 </div>
+<script>
+
+</script>
+
 </body>
 </html>
