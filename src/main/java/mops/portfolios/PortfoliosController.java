@@ -8,8 +8,10 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.AllArgsConstructor;
 import mops.portfolios.Entry.Entry;
+import mops.portfolios.EntryField.EntryField;
 import mops.portfolios.Portfolio.*;
 import mops.portfolios.keycloak.Account;
 import org.asciidoctor.Asciidoctor;
@@ -49,6 +51,29 @@ public class PortfoliosController {
         new Portfolio("Elektronik", user),
         new Portfolio("Praktikum", user)
     );
+  }
+
+  private List<Entry> getMockEntry() {
+    Entry e = new Entry("ABC", null);
+    e.setTitle("Test123");
+    e.setFields(getMockEntryFields());
+
+    Entry f = new Entry("ABC", null);
+    f.setTitle("Test456");
+    f.setFields(getMockEntryFields());
+
+    return Arrays.asList(e, f);
+  }
+
+  private List<EntryField> getMockEntryFields() {
+    EntryField first = new EntryField();
+    first.setTitle("First");
+    first.setContent("Lore Ipsum");
+    EntryField second = new EntryField();
+    second.setTitle("Second");
+    second.setContent("Veni, vidi, vici");
+
+    return Arrays.asList(first, second);
   }
 
   /**
@@ -118,18 +143,32 @@ public class PortfoliosController {
   /**
    * Portfolio mapping for GET requests.
    * @param model The spring model to add the attributes to
-   * @param title The name of the portfolio
    * @return The page to load
    */
 
   @SuppressWarnings("PMD")
   @GetMapping("/portfolio")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String clickPortfolio(Model model, @RequestParam String title) {
-    Portfolio portfolio = new Portfolio("Praktikum", new User("Test123"));
+  public String clickPortfolio(Model model, @RequestParam String titel) {
+    List<Portfolio> p = getMockPortfolios();
+    List<Portfolio> q = getMockGroupPortfolios();
+
+    Portfolio portfolio = null;
+
+    for (Portfolio r : p) {
+      if (r.getTitle().equals(titel)){
+        portfolio = r;
+      }
+    }
+
+    for (Portfolio r : q) {
+      if (r.getTitle().equals(titel)){
+        portfolio = r;
+      }
+    }
 
     model.addAttribute("portfolio", portfolio);
-
+    model.addAttribute("entries", getMockEntry());
     return "portfolio";
   }
 

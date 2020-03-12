@@ -43,7 +43,7 @@
                 -->
                 <ul> Setzte hier deine Arbeit fort:
                     <li>
-                        <a th:text="${last.getTitle()}" href="#">Letztes Portfolio</a>
+                        <a th:text="${last.getTitle()}" th:href="@{/portfolio(titel=${last.getTitle()})}">Letztes Portfolio</a>
                     </li>
                 </ul>
             </li>
@@ -58,7 +58,7 @@
                 -->
                 <ul> Schnellzugriff auf die Gruppen-Portfolios:
                     <li th:each="gruppe : ${gruppen}">
-                        <a th:text="${gruppe.getTitle()}" href="#">Gruppe 1</a>
+                        <a th:text="${gruppe.getTitle()}" th:href="@{/portfolio(titel=${gruppe.getTitle()})}">Gruppe 1</a>
                     </li>
                 </ul>
             </li>
@@ -71,7 +71,7 @@
 
                 <ul>Schnellzugriff auf die privaten Portfolios:
                     <li th:each="vorlesung : ${vorlesungen}">
-                        <a th:text="${vorlesung.getTitle()}" href="#">Portfolio 1</a>
+                        <a th:text="${vorlesung.getTitle()}" th:href="@{/portfolio(titel=${vorlesung.getTitle()})}">Portfolio 1</a>
                     </li>
                 </ul>
             </li>

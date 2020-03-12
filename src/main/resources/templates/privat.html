@@ -13,7 +13,7 @@
 <div class="content">
     <ul>
         <li th:each="vorlesung : ${vorlesungen}" class="sep">
-            <p>Vorlesung: <a th:text="${vorlesung.getTitle()}" href="#">Titel</a></p>
+            <p>Vorlesung: <a th:text="${vorlesung.getTitle()}" th:href="@{/portfolio(titel=${vorlesung.getTitle()})}">Titel</a></p>
             <br>
         </li>
     </ul>

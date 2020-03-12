@@ -14,8 +14,8 @@
 
     <h1 class="display-4" th:text="'Portfolioübersicht - ' + ${portfolio.getTitle()}">Portfolio title</h1>
 
-    <div class="card mt-4 bg-secondary" th:each="entry : ${portfolio.getEntries()}">
-        <h3 class="card-header" th:text="'Woche ' + ${entry.getId()}">Entry title</h3>
+    <div class="card mt-4 bg-secondary" th:each="entry : ${entries}">
+        <h3 class="card-header" th:text="'Woche ' + ${entry.getTitle()}">Entry title</h3>
         <div class="card-body">
             <h5 class="card-title">Irgendein Titel?</h5>
             <p class="card-text">Das ist ein text. lalala la abccccccccccccccccccc</p>
