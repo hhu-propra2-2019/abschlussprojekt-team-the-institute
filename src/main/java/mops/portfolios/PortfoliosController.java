@@ -151,7 +151,7 @@ public class PortfoliosController {
 
     if (getOrgaRole(token).contains("orga")) {
       return "portfolio";
-    } else if (userSecurity.hasGroupId(getUserId(token))) {
+    } else if (userSecurity.hasUserId(getUserId(token))) {
       return "portfolio";
     } else {
       return "redirect://localhost:8080";
