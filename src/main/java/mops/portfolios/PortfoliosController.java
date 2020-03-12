@@ -2,15 +2,13 @@ package mops.portfolios;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import mops.portfolios.Entry.Entry;
-import mops.portfolios.Portfolio.*;
+import mops.portfolios.Domain.Portfolio.Portfolio;
+import mops.portfolios.Domain.UserGroup.User;
 import mops.portfolios.keycloak.Account;
 import org.asciidoctor.Asciidoctor;
 import org.keycloak.KeycloakPrincipal;
@@ -111,7 +109,9 @@ public class PortfoliosController {
   @GetMapping("/portfolio")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String clickPortfolio(Model model, @RequestParam String title) {
-    Portfolio portfolio = new Portfolio("Praktikum", new User("Test123"));
+    Set<String> roles = new HashSet<>(Arrays.asList("student"));
+    User user1 = new User("User Name", "mail@example.com", null, roles, "UUID-1234-1234");
+    Portfolio portfolio = new Portfolio("Praktikum", user1);
 
     model.addAttribute("portfolio", portfolio);
 
