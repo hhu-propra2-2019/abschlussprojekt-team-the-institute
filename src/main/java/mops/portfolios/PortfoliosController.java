@@ -118,18 +118,6 @@ public class PortfoliosController {
   }
 
   /**
-   * convert ascii to html.
-   */
-
-  @SuppressWarnings("PMD")
-  private String convertAsciiDocTextToHtml(String asciiDocText) {
-    Asciidoctor asciidoctor = Asciidoctor.Factory.create();
-    String html = asciidoctor.convert(asciiDocText, new HashMap<>());
-    asciidoctor.close();
-    return html;
-  }
-
-  /**
    * Root mapping for GET requests.
    *
    * @param model The Spring Model to add the attributes to
@@ -147,11 +135,6 @@ public class PortfoliosController {
     model.addAttribute("last", q.get(1));
     model.addAttribute("gruppen", q);
     model.addAttribute("vorlesungen", p);
-    authorize(model, token);
-    String userId = getUserId();
-    model.addAttribute("last", getLastPortfolio(userId));
-    model.addAttribute("gruppen", getGruppenPortfolios(userId));
-    model.addAttribute("vorlesungen", getVorlesungPortfolios(userId));
     return "startseite";
   }
 
