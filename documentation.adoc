@@ -82,11 +82,20 @@ image::Diagramm.png[]
 
 ==== Bei der Integration
 
+===== Gruppenbildung
+
 . Wir hatten erst einmal Probleme das "realm" zu finden.
-. Wie sind die IDs in "keycloak" gespeichert?
 . HttpEntity hat nicht funktioniert, daher haben wir uns entschieden ResponseEntity zu nutzen.
 
-=== Beim Bau des Frontends / dder Website
+===== Security
+
+. Wie sind die IDs in "keycloak" gespeichert?
+. Der Test `AccessRestriction` hat mit einem einfachen MockUser nicht funktioniert. Wir wurden dann durch ein 'TodayILearned' in Rocketchat auf `WithMockKeycloakAuth` aufmerksam.
+.. Bei dem Einbau der dependency gab es Probleme, da wir JDK8 genutzt haben.
+.. Wir sind dann auf JDK11 umgestiegen. Damit lief der Test durch. Die Applikation funktionierte weiterhin.
+.. Gradle build funktionierte lokal, aber nicht beim push in github. Daher haben wir noch die github actions in JDK11 geändert.
+
+==== Beim Bau des Frontends / der Website
 . In unserem Mock haben wir Bootstrap verwendet, um neue Elemente anzeigen zu lassen. Dabei traten Probleme auf, was für uns ein Hinweis war, dass wir unser Design vereinfachen sollten.
 
 
