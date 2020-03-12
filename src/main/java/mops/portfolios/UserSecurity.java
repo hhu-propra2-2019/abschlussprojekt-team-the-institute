@@ -1,6 +1,6 @@
 package mops.portfolios;
 
-import mops.portfolios.Portfolio.Portfolio;
+import mops.portfolios.Domain.Portfolio.Portfolio;
 import org.springframework.stereotype.Service;
 
 @Service

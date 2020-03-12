@@ -1,4 +1,4 @@
-package mops.portfolios.EntryField;
+package mops.portfolios.Domain.Entry;
 
 import org.springframework.data.repository.CrudRepository;
 
