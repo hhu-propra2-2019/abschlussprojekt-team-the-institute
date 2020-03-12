@@ -31,7 +31,7 @@ public class Portfolio {
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
-    private List<Entry> entries = new ArrayList<>();
+    private @Getter List<Entry> entries = new ArrayList<>();
 
 
     public Portfolio() {}
