@@ -36,13 +36,19 @@ public class PortfoliosController {
 
   private List<Portfolio> getMockPortfolios() {
     User user = getMockUser();
-    Group group = getMockGroup();
-    List<Portfolio> p = Arrays.asList(
+    return Arrays.asList(
         new Portfolio("Machine Learning", user),
-        new Portfolio("Softwareentwicklung", user),
+        new Portfolio("Softwareentwicklung", user)
+    );
+  }
+
+  private List<Portfolio> getMockGroupPortfolios() {
+    User user = getMockUser();
+    Group group = getMockGroup();
+    return Arrays.asList(
+        new Portfolio("Elektronik", user),
         new Portfolio("Praktikum", user)
     );
-    return p;
   }
 
   /**
@@ -72,28 +78,12 @@ public class PortfoliosController {
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     Account account = createAccountFromPrincipal(token);
     model.addAttribute("account", account);
-    int user_id = getUserId();
     List<Portfolio> p = getMockPortfolios();
-    model.addAttribute("last", p.get(2));
-    model.addAttribute("gruppen", null);
+    List<Portfolio> q = getMockGroupPortfolios();
+    model.addAttribute("last", q.get(1));
+    model.addAttribute("gruppen", q);
     model.addAttribute("vorlesungen", p);
     return "startseite";
-  }
-
-  private int getUserId() {
-    return 0;
-  }
-
-  private String[] getLastPortfolio(int user_id) {
-    return new String[]{"0", "Software Entwicklung im Team", ""+user_id, null};
-  }
-
-  private String[][] getGruppenPortfolios(int user_id) {
-    return new String[][]{{"1", "Praktiukm", null, ""+user_id}};
-  }
-
-  private String[][] getVorlesungPortfolios(int user_id) {
-    return new String[][]{{"0", "Software Entwicklung im Team", ""+user_id, null},{"2", "Machine Learning", ""+user_id, null}};
   }
 
   @SuppressWarnings("PMD")
