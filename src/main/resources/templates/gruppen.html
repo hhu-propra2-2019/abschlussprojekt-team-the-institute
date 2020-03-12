@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{fragments/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Gruppen', headcontent=~{:: headcontent}, navigation=~{fragments/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
 
 <head>
-    <title>Gruppen</title>
-
-    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment">
+    <th:block th:fragment="headcontent">
+        <th:block th:insert="fragments/dependencies :: dependencyFragment"></th:block>
     </th:block>
 </head>
 
 <body th:fragment="bodycontent">
-
+<div class="content">
+    <ul>
+        <li th:each="gruppe : ${gruppen}" class="sep">
+            <p>Gruppe: <a th:text="${gruppe.getTitle()}" th:href="@{/portfolio(title=${gruppe.getTitle()})}">Titel</a></p>
+            <br>
+        </li>
+    </ul>
+</div>
 </body>
 </html>

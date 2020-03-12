@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', headcontent=~{:: headcontent}, navigation=~{fragments/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Upload Template', headcontent=~{:: headcontent}, navigation=~{fragments/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
 
 <head>
-    <title>Upload</title>
-
-    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment">
+    <th:block th:fragment="headcontent">
+        <th:block th:insert="fragments/dependencies :: dependencyFragment"></th:block>
     </th:block>
 </head>
 
 <body th:fragment="bodycontent">
 
-<h1 class="display-4">Portfolio Vorlage hochladen</h1>
+<h1 class="display-5">Portfolio Vorlage hochladen</h1>
 
 <br>
 
-<form class="input-group w-50" method="POST" enctype="multipart/form-data" action="/view">
+<form class="input-group w-50" method="POST" enctype="multipart/form-data" th:action="@{/view}">
     <div class="custom-file">
         <input id="INPUT_FILE" class="custom-file-input" name="file" type="file" accept=".adoc,.asciidoc,.asc,.txt"
                oninput="handleUpload()">
         <label id="LABEL_FILE" class="custom-file-label" for="INPUT_FILE">AsciiDoc Datei auswählen</label>
     </div>
     <div class="input-group-append">
-        <button id="BUTTON_UPLOAD" class="input-group-text btn" type="submit" disabled>Hochladen</button>
+        <button id="BUTTON_UPLOAD" class="input-group-text btn" type="submit" disabled
+                onclick="startSpinner()">
+            <span id="SPINNER_UPLOAD" class="spinner-border spinner-border-sm" hidden></span>
+            Hochladen
+        </button>
     </div>
 </form>
 
@@ -43,6 +46,11 @@
         let BUTTON_UPLOAD = document.getElementById("BUTTON_UPLOAD");
         BUTTON_UPLOAD.disabled = false;
         BUTTON_UPLOAD.classList.add("btn-primary")
+    }
+
+    function startSpinner() {
+        let SPINNER_UPLOAD = document.getElementById("SPINNER_UPLOAD");
+        SPINNER_UPLOAD.hidden = false;
     }
 
 </script>
