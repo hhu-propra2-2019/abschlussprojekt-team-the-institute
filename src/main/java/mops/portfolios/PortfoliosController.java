@@ -1,9 +1,5 @@
 package mops.portfolios;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import mops.portfolios.Domain.Entry.Entry;
 import mops.portfolios.Domain.Portfolio.Portfolio;
@@ -22,7 +18,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -63,22 +58,6 @@ public class PortfoliosController {
     return token.getAccount().getRoles().toString();
   }
 
-  private String getUserId() {
-    return "";
-  }
-
-  private String[] getLastPortfolio(String userId) {
-    return new String[]{"0", "Software Entwicklung im Team", "" + userId, null};
-  }
-
-  private String[][] getGruppenPortfolios(String userId) {
-    return new String[][]{{"1", "Praktikum", null, "" + userId}};
-  }
-
-  private String[][] getVorlesungPortfolios(String userId) {
-    return new String[][]{{"0", "Software Entwicklung im Team", "" + userId, null},{"2", "Machine Learning", "" + userId, null}};
-  }
-
   /**
    * Root mapping for GET requests.
    *
@@ -105,7 +84,6 @@ public class PortfoliosController {
    *
    * @return The page to load
    */
-
   @SuppressWarnings("PMD")
   @GetMapping("/index")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
@@ -125,7 +103,6 @@ public class PortfoliosController {
    *
    * @return The page to load
    */
-
   @SuppressWarnings("PMD")
   @GetMapping("/gruppen")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
@@ -142,7 +119,6 @@ public class PortfoliosController {
    * Individual portfolios mapping for GET requests.
    *
    */
-
   @SuppressWarnings("PMD")
   @GetMapping("/privat")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
