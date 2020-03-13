@@ -29,7 +29,7 @@ public class DatabaseUpdater {
     public void run() {
       while (true) {
         updateDatabaseEvents();
-        Thread.sleep(timeout); // 10 seconds interval
+        Thread.sleep(timeout);
       }
     }
   }
@@ -41,7 +41,7 @@ public class DatabaseUpdater {
    The interrupted status of the current thread is cleared when this exception is thrown.
    */
   public void updateDatabase(long timeout) throws InterruptedException {
-    long updateStatus = 0; // will be retrieved through a database call later. Not yet available
+    long updateStatus = 0; // TODO: will be retrieved through a database call later. Not yet available
     this.url = "/gruppen2/updatedGroups/" + updateStatus;
     DatabaseUpdaterThread databaseUpdaterThread = new DatabaseUpdaterThread(timeout);
     databaseUpdaterThread.run();
@@ -65,7 +65,6 @@ public class DatabaseUpdater {
 
     // try to receive data from service Gruppenbildung
     try {
-      // TODO: genaues URI mit gruppen2 absprechen
       responseBody = httpClient.get(url);
     } catch (HttpClientErrorException clientErr) { // if status 4xx or 5xx returned
       logger.warn("The service Gruppenbildung is not reachable: " + clientErr.getRawStatusCode()
@@ -98,9 +97,9 @@ public class DatabaseUpdater {
               + jsonErr.getMessage());
     }
     if (jsonObject == null) {
-      // FIXME: Keep this only while in development
       logger.error("An error occured while parsing the JSON data "
               + "received by the service Gruppenbildung");
+      // FIXME: Keep this only while in development
       throw new RuntimeException("JSON Object is null");
     }
 
