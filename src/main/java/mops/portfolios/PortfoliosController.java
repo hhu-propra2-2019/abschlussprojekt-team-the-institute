@@ -2,6 +2,7 @@ package mops.portfolios;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -18,12 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -63,21 +58,6 @@ public class PortfoliosController {
     return token.getAccount().getRoles().toString();
   }
 
-  private String getUserId() {
-    return "";
-  }
-
-  private String[] getLastPortfolio(String userId) {
-    return new String[]{"0", "Software Entwicklung im Team", "" + userId, null};
-  }
-
-  private String[][] getGruppenPortfolios(String userId) {
-    return new String[][]{{"1", "Praktikum", null, "" + userId}};
-  }
-
-  private String[][] getVorlesungPortfolios(String userId) {
-    return new String[][]{{"0", "Software Entwicklung im Team", "" + userId, null},{"2", "Machine Learning", "" + userId, null}};
-  }
 
   /**
    * Root mapping for GET requests.
