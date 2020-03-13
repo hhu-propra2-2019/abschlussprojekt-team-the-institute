@@ -86,6 +86,7 @@ image::Diagramm.png[]
 
 . Wir hatten erst einmal Probleme das "realm" zu finden.
 . HttpEntity hat nicht funktioniert, daher haben wir uns entschieden ResponseEntity zu nutzen.
+. Wir haben erneut mit der Gruppenbildung (gruppen2) geredet und wissen nun in welcher Form wir die Daten bekommen und an welche url wir die Anfrage senden müssen. Dadurch konnten wir die Platzhalter ersetzen.
 
 ===== Security
 
