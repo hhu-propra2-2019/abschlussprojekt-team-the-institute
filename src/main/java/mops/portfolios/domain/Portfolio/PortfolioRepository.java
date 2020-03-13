@@ -1,4 +1,4 @@
-package mops.portfolios.Domain.Portfolio;
+package mops.portfolios.domain.Portfolio;
 
 import java.util.List;
 

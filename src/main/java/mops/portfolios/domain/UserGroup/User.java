@@ -1,7 +1,6 @@
-package mops.portfolios.Domain.UserGroup;
+package mops.portfolios.domain.UserGroup;
 
 import java.util.Set;
-import java.util.UUID;
 
 import lombok.Data;
 

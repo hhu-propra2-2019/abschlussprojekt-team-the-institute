@@ -1,9 +1,9 @@
-package mops.portfolios.Domain.Portfolio;
+package mops.portfolios.domain.Portfolio;
 
 import lombok.*;
-import mops.portfolios.Domain.Entry.*;
-import mops.portfolios.Domain.UserGroup.Group;
-import mops.portfolios.Domain.UserGroup.User;
+import mops.portfolios.domain.entry.*;
+import mops.portfolios.domain.UserGroup.Group;
+import mops.portfolios.domain.UserGroup.User;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
