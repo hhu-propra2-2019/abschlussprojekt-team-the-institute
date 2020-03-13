@@ -236,7 +236,7 @@ public class PortfoliosController {
     }
 
     String text = new String(fileBytes, StandardCharsets.UTF_8);
-    String html = asciiConverter.convertToHTML(text);
+    String html = asciiConverter.convertToHtml(text);
     model.addAttribute("html", html);
 
     return "view_template";
