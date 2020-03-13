@@ -4,37 +4,38 @@ import lombok.*;
 import mops.portfolios.Domain.Entry.*;
 import mops.portfolios.Domain.UserGroup.Group;
 import mops.portfolios.Domain.UserGroup.User;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Data
+@Transactional
 public class Portfolio {
     private @Id
     @GeneratedValue
-    @Getter
     Long id;
 
     private @Column(nullable = false)
-    @Getter
-    @Setter
     String title;
 
-    private @Getter
+    private
     String userId;
 
-    private @Getter
-    Long groupId;
+    private Long groupId;
 
     @OneToMany(
-        cascade = CascadeType.ALL,
-        orphanRemoval = true
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER //FIXME before prod
     )
     private List<Entry> entries = new ArrayList<>();
 
 
-    public Portfolio() {}
+    public Portfolio() {
+    }
 
     public Portfolio(String title, User user) {
         this.title = title;

@@ -84,8 +84,11 @@ public class PortfoliosController {
     return new Account(
         principal.getName(),
         principal.getKeycloakSecurityContext().getIdToken().getEmail(),
-        null,
-        token.getAccount().getRoles());
+        ((KeycloakPrincipal) token.getPrincipal()).getKeycloakSecurityContext().getIdToken()
+                    .getPicture(),
+        token.getAccount().getRoles(),
+        ((KeycloakPrincipal) token.getPrincipal()).getKeycloakSecurityContext().getIdToken()
+                 .getSubject());
   }
 
   private void authorize(Model model, KeycloakAuthenticationToken token) {
