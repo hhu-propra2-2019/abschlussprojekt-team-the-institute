@@ -6,8 +6,8 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import mops.portfolios.Domain.Entry.Entry;
-import mops.portfolios.Domain.Portfolio.Portfolio;
+import mops.portfolios.domain.entry.Entry;
+import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.keycloak.Account;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.KeycloakPrincipal;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
 
 @Controller
 @AllArgsConstructor
@@ -58,7 +57,6 @@ public class PortfoliosController {
     return token.getAccount().getRoles().toString();
   }
 
-
   /**
    * Root mapping for GET requests.
    *
@@ -85,7 +83,6 @@ public class PortfoliosController {
    *
    * @return The page to load
    */
-
   @SuppressWarnings("PMD")
   @GetMapping("/index")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
@@ -105,7 +102,6 @@ public class PortfoliosController {
    *
    * @return The page to load
    */
-
   @SuppressWarnings("PMD")
   @GetMapping("/gruppen")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
@@ -122,7 +118,6 @@ public class PortfoliosController {
    * Individual portfolios mapping for GET requests.
    *
    */
-
   @SuppressWarnings("PMD")
   @GetMapping("/privat")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
@@ -136,7 +131,7 @@ public class PortfoliosController {
   }
 
   /**
-   * Portfolio mapping for GET requests.
+   * portfolio mapping for GET requests.
    *
    * @param model The spring model to add the attributes to
    * @param title The name of the portfolio
@@ -146,8 +141,9 @@ public class PortfoliosController {
   @GetMapping("/portfolio")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
 
-  public String clickPortfolio(Model model, @RequestParam String title, KeycloakAuthenticationToken token) {
-  
+  public String clickPortfolio(Model model, @RequestParam String title,
+                               KeycloakAuthenticationToken token) {
+
     authorize(model, token);
   
     Portfolio portfolio = hardMock.getPortfolioByTitle(title);
@@ -165,20 +161,22 @@ public class PortfoliosController {
   }
 
   /**
-   * Entry mapping for GET requests.
+   * entry mapping for GET requests.
    *
    * @param model The spring model to add the attributes to
    * @param title The name of the entry
-   * @param entry_title The title of the entry
+   * @param entryTitle The title of the entry
    * @return The page to load
    */
   @SuppressWarnings("PMD")
   @GetMapping("/entry")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String clickEntry(Model model, @RequestParam String title, @RequestParam String entry_title, KeycloakAuthenticationToken token) {
+  public String clickEntry(Model model, @RequestParam String title,
+                           @RequestParam String entryTitle, KeycloakAuthenticationToken token) {
+
     authorize(model, token);
     Portfolio portfolio = hardMock.getPortfolioByTitle(title);
-    Entry entry = hardMock.getEntryByTitle(entry_title);
+    Entry entry = hardMock.getEntryByTitle(entryTitle);
 
     model.addAttribute("portfolio", portfolio);
     model.addAttribute("entry", entry);
@@ -212,6 +210,9 @@ public class PortfoliosController {
   public String uploadTemplate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
+    model.addAttribute("portfolioList", hardMock.getMockPortfolios());
+    model.addAttribute("entryList", hardMock.getMockEntry());
+
     return "upload_template";
   }
 
@@ -225,7 +226,8 @@ public class PortfoliosController {
   @SuppressWarnings("PMD")
   @PostMapping("/view")
   @RolesAllowed({"ROLE_orga"})
-  public String viewUploadedTemplate(Model model, @RequestParam("file") MultipartFile file, KeycloakAuthenticationToken token) {
+  public String viewUploadedTemplate(Model model, @RequestParam("file") MultipartFile file,
+                                     KeycloakAuthenticationToken token) {
     authorize(model, token);
 
     byte[] fileBytes;
@@ -237,7 +239,7 @@ public class PortfoliosController {
     }
 
     String text = new String(fileBytes, StandardCharsets.UTF_8);
-    String html = asciiConverter.convertToHTML(text);
+    String html = asciiConverter.convertToHtml(text);
     model.addAttribute("html", html);
 
     return "view_template";
