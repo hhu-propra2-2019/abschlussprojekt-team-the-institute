@@ -4,11 +4,13 @@ import mops.portfolios.Domain.Entry.Entry;
 import mops.portfolios.Domain.Entry.EntryField;
 import mops.portfolios.Domain.Portfolio.Portfolio;
 import mops.portfolios.Domain.UserGroup.User;
+import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@Service
 public class HardMock {
   private User getMockUser() {
     return new User("Mocked", "abc@gmail.com", null, Collections.singleton("Student"), "1");

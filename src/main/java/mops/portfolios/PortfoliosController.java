@@ -23,7 +23,7 @@ import java.util.List;
 @Controller
 @AllArgsConstructor
 public class PortfoliosController {
-  transient private HardMock hardMock;
+  private transient HardMock hardMock;
   private transient AsciiDocConverter asciiConverter;
 
   /**
