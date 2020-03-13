@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class EntryField {
     private @Id @GeneratedValue @Getter Long id;
 
-    private @Setter String title;
+    private @Setter String entryFieldTitle;
 
     private @Setter String content;
 
@@ -21,5 +21,6 @@ public class EntryField {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Entry entry;
+
 
 }
