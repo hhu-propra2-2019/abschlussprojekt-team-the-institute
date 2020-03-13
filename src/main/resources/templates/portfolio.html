@@ -20,7 +20,7 @@
             <h5 class="card-title">Irgendein Titel?</h5>
             <p class="card-text">Das ist ein text. lalala la abccccccccccccccccccc</p>
             <a class="btn btn-primary"
-               th:href="@{/entry(title=${portfolio.getTitle()},entry_title=${entry.getTitle()})}">Anzeigen</a>
+               th:href="@{/entry(title=${portfolio.getTitle()},entryTitle=${entry.getTitle()})}">Anzeigen</a>
         </div>
         <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()} + ' Tagen'">Date</div>
     </div>
