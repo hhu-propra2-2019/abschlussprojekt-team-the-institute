@@ -14,19 +14,46 @@
 
 <br>
 
-<form class="input-group w-50" method="POST" enctype="multipart/form-data" th:action="@{/view}">
-    <div class="custom-file">
-        <input id="INPUT_FILE" class="custom-file-input" name="file" type="file" accept=".adoc,.asciidoc,.asc,.txt"
-               oninput="handleUpload()">
-        <label id="LABEL_FILE" class="custom-file-label" for="INPUT_FILE">AsciiDoc Datei auswählen</label>
+
+<form method="POST" enctype="multipart/form-data" th:action="@{/view}">
+
+    <div class="input-group w-50">
+        <div class="input-group-prepend">
+            <label class="input-group-text" for="SELECT_PORTFOLIO">Portfolio auswählen</label>
+        </div>
+        <select class="custom-select" id="SELECT_PORTFOLIO">
+            <option th:each="portfolio : ${portfolioList}" th:text="${portfolio.getTitle()}"></option>
+        </select>
     </div>
-    <div class="input-group-append">
-        <button id="BUTTON_UPLOAD" class="input-group-text btn" type="submit" disabled
-                onclick="startSpinner()">
-            <span id="SPINNER_UPLOAD" class="spinner-border spinner-border-sm" hidden></span>
-            Hochladen
-        </button>
+
+    <br>
+
+    <div class="input-group w-50">
+        <div class="input-group-prepend">
+            <label class="input-group-text" for="SELECT_ENTRY">Entry auswählen</label>
+        </div>
+        <select class="custom-select" id="SELECT_ENTRY">
+            <option th:each="entry : ${entryList}" th:text="${entry.getTitle()}"></option>
+        </select>
     </div>
+
+    <br>
+
+    <div class="input-group w-50">
+        <div class="custom-file">
+            <input id="INPUT_FILE" class="custom-file-input" name="file" type="file" accept=".adoc,.asciidoc,.asc,.txt"
+                   oninput="handleUpload()">
+            <label id="LABEL_FILE" class="custom-file-label" for="INPUT_FILE">AsciiDoc Datei auswählen</label>
+        </div>
+        <div class="input-group-append">
+            <button id="BUTTON_UPLOAD" class="input-group-text btn" type="submit" disabled
+                    onclick="handleSubmit()">
+                <span id="SPINNER_UPLOAD" class="spinner-border spinner-border-sm" hidden></span>
+                Hochladen
+            </button>
+        </div>
+    </div>
+
 </form>
 
 <script>
@@ -48,9 +75,12 @@
         BUTTON_UPLOAD.classList.add("btn-primary")
     }
 
-    function startSpinner() {
+    function handleSubmit() {
         let SPINNER_UPLOAD = document.getElementById("SPINNER_UPLOAD");
         SPINNER_UPLOAD.hidden = false;
+
+        let SELECT_PORTFOLIO = document.getElementById("SELECT_PORTFOLIO");
+
     }
 
 </script>
