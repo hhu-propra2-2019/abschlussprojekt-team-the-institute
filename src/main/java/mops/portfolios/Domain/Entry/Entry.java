@@ -26,10 +26,6 @@ public class Entry {
     private @CreatedDate Date CreatedDate;
     
     private @LastModifiedDate Date LastModifiedDate;
-    
-    private final String userId = null;
-
-    private final Long groupId = null;
 
     @OneToMany(
         cascade = CascadeType.ALL,

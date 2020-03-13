@@ -1,5 +1,4 @@
-= Softwareentwicklung im Team: Vorbereitung auf das Projekt
-WS19/20
+= Lernportfolios
 :icons: font
 :icon-set: octicon
 :source-highlighter: rouge

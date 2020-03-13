@@ -2,6 +2,8 @@ package mops.portfolios;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import mops.portfolios.Domain.Portfolio.Portfolio;
+import mops.portfolios.Domain.Portfolio.PortfolioRepository;
 import mops.portfolios.Domain.UserGroup.User;
 import mops.portfolios.Domain.UserGroup.Group;
 import mops.portfolios.Domain.UserGroup.UserGroup;
@@ -34,7 +36,7 @@ public class PortfoliosApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(UserGroupRepository repository) {
+    public CommandLineRunner demo(UserGroupRepository userGroupRepository, PortfolioRepository portfolioRepository) {
         return (args) -> {
             Set<String> roles = new HashSet<>(Arrays.asList("student"));
 
@@ -46,21 +48,42 @@ public class PortfoliosApplication {
             UserGroup userGroup1 = new UserGroup(user1.getId(), group1.getId(), "title11111111111");
             UserGroup userGroup2 = new UserGroup(user2.getId(), group1.getId(), "title22222222222");
 
-            repository.save(userGroup1);
-            repository.save(userGroup2);
+            Portfolio portfolio1 = new Portfolio("User 1 Portfolio 1", user1);
+            Portfolio portfolio2 = new Portfolio("User 2 Portfolio 1", user2);
+            Portfolio portfolio3 = new Portfolio("Group Portfolio 1", group1);
 
-            log.info("1==================================================================================");
-            log.info("RUN ALL THE THINGS!!!!11");
-            log.info("2==================================================================================");
-            log.info("3==================================================================================");
-            log.info("4==================================================================================");
-            log.info("5==================================================================================");
-            log.info("6==================================================================================");
-            log.info("7 - pmd, oh boi======================================================================");
+            userGroupRepository.save(userGroup1);
+            userGroupRepository.save(userGroup2);
+
+            portfolioRepository.save(portfolio1);
+            portfolioRepository.save(portfolio2);
+            portfolioRepository.save(portfolio3);
+
+            log.info(" 1 ==================================================================================");
+            log.info(" 2 ==================================================================================");
+            log.info(" 3 ==================================================================================");
+            log.info(" 4 ==================================================================================");
+            log.info(" 5 ==================================================================================");
+            log.info(" 6 ==================================================================================");
+            log.info(" 7 ==================================================================================");
 
 
-            for (UserGroup userGroup : repository.findAll()) {
+            for (UserGroup userGroup : userGroupRepository.findAll()) {
                 log.info(userGroup.toString());
+            }
+
+            for (Portfolio portfolio : portfolioRepository.findAll()) {
+                log.info(portfolio.toString());
+            }
+
+            for (Portfolio portfolio : portfolioRepository.findAllByUserId(user1.getId())) {
+                log.info("portfolioRepository.findAllByUserId");
+                log.info(portfolio.toString());
+            }
+
+            for (Portfolio portfolio : portfolioRepository.findAllByGroupId(group1.getId())) {
+                log.info("portfolioRepository.findAllByGroupId");
+                log.info(portfolio.toString());
             }
 
         };
