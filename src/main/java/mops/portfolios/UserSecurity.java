@@ -8,7 +8,11 @@ public class UserSecurity {
 
   private transient Portfolio portfolio;
 
-  public boolean hasGroupId (String userId) {
+  /** Checks if KeycloakUserId equals Portfolio-userId.
+   * @param userId - usedId to check
+   * @return - returns true or false
+   */
+  public boolean hasGroupId(String userId) {
 
     String userIdOfPortfolio;
 
@@ -25,7 +29,11 @@ public class UserSecurity {
     return false;
   }
 
-  public boolean hasUserId (String userId) {
+  /** Checks if KeycloakUserId equals Portfolio-userId.
+   * @param userId - usedId to check
+   * @return - returns true or false
+   */
+  public boolean hasUserId(String userId) {
 
     String userIdOfPortfolio;
 

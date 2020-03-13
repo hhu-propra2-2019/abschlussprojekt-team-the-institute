@@ -1,14 +1,13 @@
 package mops.portfolios;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.usergroup.User;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 @Service
 public class HardMock {
@@ -79,8 +78,8 @@ public class HardMock {
   @SuppressWarnings("PMD")
   Entry getEntryByTitle(String title) {
     List<Entry> entries = getMockEntry();
-    for (Entry e : entries){
-      if(e.getTitle().equals(title)){
+    for (Entry e : entries) {
+      if (e.getTitle().equals(title)) {
         return e;
       }
     }
