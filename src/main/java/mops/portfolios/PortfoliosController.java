@@ -210,6 +210,9 @@ public class PortfoliosController {
   public String uploadTemplate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
+    model.addAttribute("portfolioList", hardMock.getMockPortfolios());
+    model.addAttribute("entryList", hardMock.getMockEntry());
+
     return "upload_template";
   }
 
