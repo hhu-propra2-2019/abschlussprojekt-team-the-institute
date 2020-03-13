@@ -3,6 +3,7 @@ package mops.portfolios;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.jruby.RubyProcess;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class DatabaseUpdater {
 
   /**
    * This method updates the database using an injected HttpClient and url, easing up testing.
-   * @param httpClient The HttpClient to use
+   * @param httpClient The IHttpClient to use
    */
   @SuppressWarnings("PMD")
   void updateDatabaseEvents(IHttpClient httpClient, String url) {
@@ -67,7 +68,7 @@ public class DatabaseUpdater {
     } catch (HttpClientErrorException clientErr) { // if status 4xx or 5xx returned
       logger.warn("The service Gruppenbildung is not reachable: " + clientErr.getRawStatusCode()
               + " " + clientErr.getStatusText());
-      responseBody = "";
+      responseBody = null;
     } catch (IllegalArgumentException argException) {
       logger.error(argException.getMessage()); // Most likely URL formatted wrong
       throw new RuntimeException(argException);
@@ -82,12 +83,6 @@ public class DatabaseUpdater {
    */
   @SuppressWarnings("PMD")
   void updateDatabaseEvents(String jsonUpdate) {
-    // if couldn't retrieve data or not modified, keep the current state
-    if (jsonUpdate.isEmpty()) {
-      // TODO: use data from local database
-      logger.info("Database not modified");
-      return; // no need to update local database
-    }
 
     // check for possible errors
     JSONObject jsonObject = null;
@@ -107,7 +102,22 @@ public class DatabaseUpdater {
       throw new RuntimeException("JSON Object is null");
     }
 
+    if (isNotModified(jsonObject)) {
+      logger.info("Database not modified");
+      return; // no need to update local database
+    }
+
     // TODO: Process the received data
+  }
+
+  /**
+   * Checks if there are any modifications.
+   * @param jsonUpdate The JSONObject to check
+   * @return <b>true</b> if not modified, <b>false</b> if modified
+   */
+  boolean isNotModified(JSONObject jsonUpdate) {
+    JSONArray groupList = jsonUpdate.getJSONArray("groupList");
+    return groupList.isEmpty();
   }
 
 }
