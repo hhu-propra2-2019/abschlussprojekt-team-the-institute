@@ -3,7 +3,6 @@ package mops.portfolios;
 import java.util.List;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import manifold.ext.api.Jailbreak;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ch.qos.logback.classic.Logger;
@@ -16,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 public class DatabaseUpdaterTest {
 
-  @Jailbreak private transient DatabaseUpdater databaseUpdater;
+  private transient DatabaseUpdater databaseUpdater;
 
   /** The url to retrieve the data from */
   private transient String url = "/gruppen2/groupmembers";
