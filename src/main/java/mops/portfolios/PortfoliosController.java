@@ -2,8 +2,6 @@ package mops.portfolios;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.HashMap;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -32,6 +30,7 @@ import java.util.List;
 public class PortfoliosController {
   private transient HardMock hardMock;
   private transient AsciiDocConverter asciiConverter;
+  private transient UserSecurity userSecurity;
 
   /**
    * Takes the auth-token from Keycloak and generates an AccounDTO for the views.
@@ -196,7 +195,7 @@ public class PortfoliosController {
   @SuppressWarnings("PMD")
   @GetMapping("/entry")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String clickEntry(Model model, @RequestParam String title, @RequestParam int id, KeycloakAuthenticationToken token) {
+  public String clickEntry(Model model, @RequestParam String title, @RequestParam String entry_title, KeycloakAuthenticationToken token) {
     authorize(model, token);
     Portfolio portfolio = hardMock.getPortfolioByTitle(title);
     Entry entry = hardMock.getEntryByTitle(entry_title);
