@@ -19,7 +19,7 @@
         <div class="card-body" th:each="field : ${entry.getFields()}">
             <h5 class="card-title" th:text="${field.getTitle()}">Field title</h5>
             <p class="card-text" th:text="${field.getContent()}">Field content</p>
-            <a class="btn btn-primary" th:href="${field.getAttachement()}">Attachement</a>
+            <a class="btn btn-primary" th:text="${field.getAttachment()}">Attachement</a>
             <hr class="my-4">
         </div>
         <div class="card-footer">Hier kommt irgendwas hin</div>
