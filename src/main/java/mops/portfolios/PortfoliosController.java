@@ -39,10 +39,10 @@ public class PortfoliosController {
         principal.getName(),
         principal.getKeycloakSecurityContext().getIdToken().getEmail(),
         ((KeycloakPrincipal) token.getPrincipal()).getKeycloakSecurityContext().getIdToken()
-            .getPicture(),
+                    .getPicture(),
         token.getAccount().getRoles(),
         ((KeycloakPrincipal) token.getPrincipal()).getKeycloakSecurityContext().getIdToken()
-            .getSubject());
+                 .getSubject());
   }
 
   private void authorize(Model model, KeycloakAuthenticationToken token) {
@@ -56,22 +56,6 @@ public class PortfoliosController {
 
   private String getOrgaRole(KeycloakAuthenticationToken token) {
     return token.getAccount().getRoles().toString();
-  }
-
-  private String getUserId() {
-    return "";
-  }
-
-  private String[] getLastPortfolio(String userId) {
-    return new String[]{"0", "Software Entwicklung im Team", "" + userId, null};
-  }
-
-  private String[][] getGruppenPortfolios(String userId) {
-    return new String[][]{{"1", "Praktikum", null, "" + userId}};
-  }
-
-  private String[][] getVorlesungPortfolios(String userId) {
-    return new String[][]{{"0", "Software Entwicklung im Team", "" + userId, null}, {"2", "Machine Learning", "" + userId, null}};
   }
 
   /**
@@ -100,7 +84,6 @@ public class PortfoliosController {
    *
    * @return The page to load
    */
-
   @SuppressWarnings("PMD")
   @GetMapping("/index")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
@@ -120,7 +103,6 @@ public class PortfoliosController {
    *
    * @return The page to load
    */
-
   @SuppressWarnings("PMD")
   @GetMapping("/gruppen")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
@@ -129,21 +111,21 @@ public class PortfoliosController {
     List<Portfolio> q = hardMock.getMockGroupPortfolios();
 
     model.addAttribute("gruppen", q);
-
+    
     return "gruppen";
   }
 
   /**
    * Individual portfolios mapping for GET requests.
+   *
    */
-
   @SuppressWarnings("PMD")
   @GetMapping("/privat")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
     List<Portfolio> p = hardMock.getMockPortfolios();
-
+    
     model.addAttribute("vorlesungen", p);
 
     return "privat";
@@ -161,14 +143,14 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
 
   public String clickPortfolio(Model model, @RequestParam String title, KeycloakAuthenticationToken token) {
-
+  
     authorize(model, token);
-
+  
     Portfolio portfolio = hardMock.getPortfolioByTitle(title);
 
     model.addAttribute("portfolio", portfolio);
     model.addAttribute("entries", hardMock.getMockEntry());
-
+  
     if (getOrgaRole(token).contains("orga")) {
       return "portfolio";
     } else if (userSecurity.hasUserId(getUserId(token))) {
@@ -181,8 +163,8 @@ public class PortfoliosController {
   /**
    * Entry mapping for GET requests.
    *
-   * @param model       The spring model to add the attributes to
-   * @param title       The name of the entry
+   * @param model The spring model to add the attributes to
+   * @param title The name of the entry
    * @param entry_title The title of the entry
    * @return The page to load
    */
@@ -226,9 +208,6 @@ public class PortfoliosController {
   public String uploadTemplate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    model.addAttribute("portfolioList", hardMock.getMockPortfolios());
-    model.addAttribute("entryList", hardMock.getMockEntry());
-
     return "upload_template";
   }
 
@@ -236,7 +215,7 @@ public class PortfoliosController {
    * View mapping for POST requests.
    *
    * @param model The spring model to add the attributes to
-   * @param file  The uploaded (AsciiDoc) template file
+   * @param file The uploaded (AsciiDoc) template file
    * @return The page to load
    */
   @SuppressWarnings("PMD")
