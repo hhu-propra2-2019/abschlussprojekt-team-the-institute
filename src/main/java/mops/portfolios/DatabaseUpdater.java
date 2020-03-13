@@ -15,7 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 @SuppressWarnings("PMD")
 public class DatabaseUpdater {
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
-  transient String url = "/gruppen2/groupmembers";
+  transient String url;
 
   /**
    * The thread to run the updates.
@@ -41,6 +41,8 @@ public class DatabaseUpdater {
    The interrupted status of the current thread is cleared when this exception is thrown.
    */
   public void updateDatabase(long timeout) throws InterruptedException {
+    long updateStatus = 0; // will be retrieved through a database call later. Not yet available
+    this.url = "/gruppen2/updatedGroups/" + updateStatus;
     DatabaseUpdaterThread databaseUpdaterThread = new DatabaseUpdaterThread(timeout);
     databaseUpdaterThread.run();
   }
