@@ -11,8 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import lombok.Data;
 import mops.portfolios.domain.entry.Entry;
-import mops.portfolios.domain.userGroup.Group;
-import mops.portfolios.domain.userGroup.User;
+import mops.portfolios.domain.usergroup.Group;
+import mops.portfolios.domain.usergroup.User;
 import org.springframework.transaction.annotation.Transactional;
 
 @Entity

@@ -3,7 +3,7 @@ package mops.portfolios;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.portfolio.Portfolio;
-import mops.portfolios.domain.userGroup.User;
+import mops.portfolios.domain.usergroup.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
