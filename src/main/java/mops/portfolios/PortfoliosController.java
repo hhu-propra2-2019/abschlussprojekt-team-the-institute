@@ -7,7 +7,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import mops.portfolios.domain.entry.Entry;
-import mops.portfolios.domain.Portfolio.Portfolio;
+import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.keycloak.Account;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.KeycloakPrincipal;
@@ -131,7 +131,7 @@ public class PortfoliosController {
   }
 
   /**
-   * Portfolio mapping for GET requests.
+   * portfolio mapping for GET requests.
    *
    * @param model The spring model to add the attributes to
    * @param title The name of the portfolio

@@ -2,12 +2,12 @@ package mops.portfolios;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import mops.portfolios.domain.Portfolio.Portfolio;
-import mops.portfolios.domain.Portfolio.PortfolioRepository;
-import mops.portfolios.domain.UserGroup.User;
-import mops.portfolios.domain.UserGroup.Group;
-import mops.portfolios.domain.UserGroup.UserGroup;
-import mops.portfolios.domain.UserGroup.UserGroupRepository;
+import mops.portfolios.domain.portfolio.Portfolio;
+import mops.portfolios.domain.portfolio.PortfolioRepository;
+import mops.portfolios.domain.userGroup.User;
+import mops.portfolios.domain.userGroup.Group;
+import mops.portfolios.domain.userGroup.UserGroup;
+import mops.portfolios.domain.userGroup.UserGroupRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -48,9 +48,9 @@ public class PortfoliosApplication {
             UserGroup userGroup1 = new UserGroup(user1.getId(), group1.getId(), "title11111111111");
             UserGroup userGroup2 = new UserGroup(user2.getId(), group1.getId(), "title22222222222");
 
-            Portfolio portfolio1 = new Portfolio("User 1 Portfolio 1", user1);
-            Portfolio portfolio2 = new Portfolio("User 2 Portfolio 1", user2);
-            Portfolio portfolio3 = new Portfolio("Group Portfolio 1", group1);
+            Portfolio portfolio1 = new Portfolio("User 1 portfolio 1", user1);
+            Portfolio portfolio2 = new Portfolio("User 2 portfolio 1", user2);
+            Portfolio portfolio3 = new Portfolio("Group portfolio 1", group1);
 
             userGroupRepository.save(userGroup1);
             userGroupRepository.save(userGroup2);
