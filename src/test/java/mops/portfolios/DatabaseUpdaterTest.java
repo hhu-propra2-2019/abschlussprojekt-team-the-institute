@@ -105,13 +105,18 @@ public class DatabaseUpdaterTest {
             "          \"email\": \"studentin@student.in\"\n" +
             "        }\n" +
             "      ],\n" +
-            "      \"roles\": {},\n" +
+            "      \"roles\": {\n" +
+                      "\"studentin\": \"ADMIN\"" +
+                   "},\n"+
             "      \"type\": \"LECTURE\",\n" +
             "      \"visibility\": \"PUBLIC\",\n" +
             "      \"parent\": null\n" +
             "    }\n" +
             "  ]\n" +
             "}";
+
+    databaseUpdater.updateDatabaseEvents(response);
+
     JSONObject jsonObject = new JSONObject(response);
 
     boolean result = databaseUpdater.isNotModified(jsonObject);

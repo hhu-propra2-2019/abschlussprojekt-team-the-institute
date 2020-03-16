@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @SuppressWarnings("PMD")
 public class DatabaseUpdater {
@@ -42,7 +45,7 @@ public class DatabaseUpdater {
    */
   public void updateDatabase(long timeout) throws InterruptedException {
     long updateStatus = 0; // TODO: will be retrieved through a database call later. Not yet available
-    this.url = "/gruppen2/updatedGroups/" + updateStatus;
+    this.url = "/gruppen2/api/updateGroups/" + updateStatus;
     DatabaseUpdaterThread databaseUpdaterThread = new DatabaseUpdaterThread(timeout);
     databaseUpdaterThread.run();
   }
@@ -108,10 +111,25 @@ public class DatabaseUpdater {
       return; // no need to update local database
     }
 
+    Long newStatus;
+    JSONArray groupList;
+    List<String> groupMembers = new ArrayList<>();
+
     try {
-      Long newString = Long.parseLong(jsonObject.getString("status"));
+      newStatus = jsonObject.getBigInteger("status").longValue();
+      groupList = jsonObject.getJSONArray("groupList");
+
+      for(Object member : jsonObject.getJSONArray("members")) {
+        groupMembers.add(member.toString());
+      }
+
     } catch (Exception e) {
       logger.error("Couldn't parse JSONObject:" + e.getMessage());
+      throw e;
+    }
+
+    for (String member : groupMembers) {
+      System.out.println(member);
     }
 
     // TODO: Process the received data
