@@ -63,22 +63,6 @@ public class PortfoliosController {
     return token.getAccount().getRoles().toString();
   }
 
-  private String getUserId() {
-    return "";
-  }
-
-  private String[] getLastPortfolio(String userId) {
-    return new String[]{"0", "Software Entwicklung im Team", "" + userId, null};
-  }
-
-  private String[][] getGruppenPortfolios(String userId) {
-    return new String[][]{{"1", "Praktikum", null, "" + userId}};
-  }
-
-  private String[][] getVorlesungPortfolios(String userId) {
-    return new String[][]{{"0", "Software Entwicklung im Team", "" + userId, null},{"2", "Machine Learning", "" + userId, null}};
-  }
-
   /**
    * Root mapping for GET requests.
    *
