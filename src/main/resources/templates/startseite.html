@@ -22,11 +22,11 @@
     <hr class="my-4">
     <p>Hier eine schnelle Übersicht deiner Portfolios aus diesem Semester:</p>
 
-    <div class="card border-dark">
+    <div class="card border-dark w-50 mb-2">
         <!--
         given idu = user.id, find portfolio with smallest || right now - portfolio.date_last_modified||
         -->
-        <div class="card-header">Setzte hier deine Arbeit fort:</div>
+        <h5 class="card-header">Setzte hier deine Arbeit fort:</h5>
         <div class="card-body text-dark">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
@@ -37,7 +37,7 @@
         </div>
     </div>
 
-    <div class="card border-dark">
+    <div class="card border-dark w-50 mb-2">
         <!--
         given user.id find every idg = group.id. s.t. there exists user_group with user.id && group.id
         &&
@@ -46,7 +46,7 @@
         --- Hier kommen alle Gruppen-Portfolios des Studenten rein ---
 
         -->
-        <div class="card-header">Schnellzugriff auf die Gruppen-Portfolios:</div>
+        <h5 class="card-header">Schnellzugriff auf die Gruppen-Portfolios:</h5>
         <div class="card-body text-dark">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item" th:each="gruppe : ${gruppen}">
@@ -57,13 +57,13 @@
         </div>
     </div>
 
-    <div class="card border-dark">
+    <div class="card border-dark w-50 mb-2">
         <!--
         given idu = user.id display every portfolio with user.id = idu && right now - date created < 6 months
 
         --- Hier kommen alle Vorlesungs-Portfolios des Studenten rein ---
         -->
-        <div class="card-header">Schnellzugriff auf die Gruppen-Portfolios:</div>
+        <h5 class="card-header">Schnellzugriff auf die Gruppen-Portfolios:</h5>
         <div class="card-body text-dark">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item" th:each="vorlesung : ${vorlesungen}">
