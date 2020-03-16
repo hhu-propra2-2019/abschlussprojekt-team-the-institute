@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Data
 public class Portfolio {
     private @Id
     @GeneratedValue
@@ -29,7 +30,8 @@ public class Portfolio {
 
     @OneToMany(
         cascade = CascadeType.ALL,
-        orphanRemoval = true
+        orphanRemoval = true,
+        fetch = FetchType.EAGER
     )
     private @Getter List<Entry> entries = new ArrayList<>();
 

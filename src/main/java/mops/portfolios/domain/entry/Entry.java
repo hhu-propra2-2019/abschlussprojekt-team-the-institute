@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -23,14 +24,13 @@ public class Entry {
     private @Setter
     @Column(nullable = false) String title;
 
-    private @CreatedDate Date CreatedDate;
+    private final java.sql.Timestamp CreatedDate = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
     
     private @LastModifiedDate Date LastModifiedDate;
 
     @OneToMany(
         cascade = CascadeType.ALL,
-        fetch = FetchType.LAZY,
-        mappedBy = "entry",
+        fetch = FetchType.EAGER, //FIXME
         orphanRemoval = true
     )
     private List<EntryField> fields = new ArrayList<>();

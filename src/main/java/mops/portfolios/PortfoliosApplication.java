@@ -48,18 +48,17 @@ public class PortfoliosApplication {
             UserGroup userGroup2 = new UserGroup(user2.getId(), group1.getId(), "title22222222222");
 
             repository.save(userGroup1);
-            repository.save(userGroup2);
+            repository.save(userGroup2); */
 
             log.info("1==================================================================================");
-            log.info("RUN ALL THE THINGS!!!!11");
             log.info("2==================================================================================");
             log.info("3==================================================================================");
             log.info("4==================================================================================");
             log.info("5==================================================================================");
             log.info("6==================================================================================");
-            log.info("7 - pmd, oh boi======================================================================");
+            log.info("7==================================================================================");
 
-      */      DemoDataGenerator demo = new DemoDataGenerator();
+     DemoDataGenerator demo = new DemoDataGenerator();
 
             for (int i = 0; i < 10; i++) {
                 repository.save(demo.generateUserPortfolio());

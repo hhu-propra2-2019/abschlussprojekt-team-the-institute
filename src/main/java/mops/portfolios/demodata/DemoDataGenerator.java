@@ -25,7 +25,6 @@ public class DemoDataGenerator {
         entryField.setAttachment(faker.shakespeare().hamletQuote());
         entryField.setContent(faker.shakespeare().kingRichardIIIQuote());
         entryField.setTitle(faker.shakespeare().romeoAndJulietQuote());
-        entryField.setEntry(entry);
         return entryField;
     }
 

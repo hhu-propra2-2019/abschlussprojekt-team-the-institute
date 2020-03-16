@@ -19,8 +19,4 @@ public class EntryField {
 
     private @Setter String attachment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Entry entry;
-
-
 }
