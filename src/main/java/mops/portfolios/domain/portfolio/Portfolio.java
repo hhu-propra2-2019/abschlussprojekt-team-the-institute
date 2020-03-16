@@ -19,7 +19,7 @@ public class Portfolio {
     private @Column(nullable = false)
     @Getter
     @Setter
-    String portfolioTitle;
+    String title;
 
     private @Getter
     String userId;
@@ -37,12 +37,12 @@ public class Portfolio {
     public Portfolio() {}
 
     public Portfolio(String title, User user) {
-        this.portfolioTitle = title;
+        this.title = title;
         this.userId = user.getId();
     }
 
     public Portfolio(String title, Group group) {
-        this.portfolioTitle = title;
+        this.title = title;
         this.groupId = group.getId();
     }
 }

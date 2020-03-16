@@ -24,7 +24,7 @@ public class DemoDataGenerator {
         EntryField entryField = new EntryField();
         entryField.setAttachment(faker.shakespeare().hamletQuote());
         entryField.setContent(faker.shakespeare().kingRichardIIIQuote());
-        entryField.setEntryFieldTitle(faker.shakespeare().romeoAndJulietQuote());
+        entryField.setTitle(faker.shakespeare().romeoAndJulietQuote());
         entryField.setEntry(entry);
         return entryField;
     }
@@ -36,7 +36,7 @@ public class DemoDataGenerator {
 
     private Entry generateGroupEntry(){
         Entry entry = new Entry();
-        entry.setEntryTitle(faker.shakespeare().romeoAndJulietQuote());
+        entry.setTitle(faker.shakespeare().romeoAndJulietQuote());
         entry.getFields().addAll(generateEntryFieldList(entry));
         return entry;
     }
@@ -55,7 +55,7 @@ public class DemoDataGenerator {
 
     private Entry generateUserEntry() {
         Entry entry = new Entry();
-        entry.setEntryTitle(faker.shakespeare().romeoAndJulietQuote());
+        entry.setTitle(faker.shakespeare().romeoAndJulietQuote());
         entry.setFields(generateEntryFieldList(entry));
         return entry;
     }

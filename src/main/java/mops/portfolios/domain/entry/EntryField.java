@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class EntryField {
     private @Id @GeneratedValue @Getter Long id;
 
-    private @Setter String entryFieldTitle;
+    private @Setter String title;
 
     private @Setter String content;
 

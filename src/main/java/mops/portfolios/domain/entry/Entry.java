@@ -21,7 +21,7 @@ public class Entry {
     private @Id @GeneratedValue @Getter Long id;
 
     private @Setter
-    @Column(nullable = false) String entryTitle;
+    @Column(nullable = false) String title;
 
     private @CreatedDate Date CreatedDate;
     
@@ -35,8 +35,8 @@ public class Entry {
     )
     private List<EntryField> fields = new ArrayList<>();
 
-    public Entry(String entryTitle) {
-        this.entryTitle = entryTitle;
+    public Entry(String title) {
+        this.title = title;
     }
 
 }
