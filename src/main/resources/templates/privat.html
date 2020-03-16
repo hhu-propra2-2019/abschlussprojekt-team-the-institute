@@ -10,13 +10,13 @@
 
 <body th:fragment="bodycontent">
 
-
 <div class="jumbotron pt-1 font-italic">
     <h1 class="display-5">Archiv</h1>
     <p class="lead">Willkommen bei deinem Archiv des Portfolioservice des MOPS! Hier findest du alle deine Portfolios:</p>
     <hr class="my-4">
-    <div class="card border-dark">
-        <div class="card-header">Deine Portfolios:</div>
+
+    <div class="card border-dark w-50 mb-2">
+        <h5 class="card-header">Deine Portfolios:</h5>
         <div class="card-body text-dark">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item" th:each="vorlesung : ${vorlesungen}">
