@@ -2,11 +2,11 @@ package mops.portfolios;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import mops.portfolios.DemoData.DemoDataGenerator;
-import mops.portfolios.Domain.Entry.EntryFieldRepository;
-import mops.portfolios.Domain.Entry.EntryRepository;
-import mops.portfolios.Domain.Portfolio.Portfolio;
-import mops.portfolios.Domain.Portfolio.PortfolioRepository;
+import mops.portfolios.demodata.DemoDataGenerator;
+import mops.portfolios.domain.entry.EntryFieldRepository;
+import mops.portfolios.domain.entry.EntryRepository;
+import mops.portfolios.domain.portfolio.Portfolio;
+import mops.portfolios.domain.portfolio.PortfolioRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

@@ -1,4 +1,4 @@
-package mops.portfolios.Domain.Entry;
+package mops.portfolios.domain.entry;
 
 import lombok.Data;
 import lombok.Getter;

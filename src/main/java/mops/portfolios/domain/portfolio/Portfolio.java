@@ -1,9 +1,9 @@
-package mops.portfolios.Domain.Portfolio;
+package mops.portfolios.domain.portfolio;
 
 import lombok.*;
-import mops.portfolios.Domain.Entry.*;
-import mops.portfolios.Domain.UserGroup.Group;
-import mops.portfolios.Domain.UserGroup.User;
+import mops.portfolios.domain.entry.*;
+import mops.portfolios.domain.usergroup.Group;
+import mops.portfolios.domain.usergroup.User;
 
 import javax.persistence.*;
 import java.util.ArrayList;
