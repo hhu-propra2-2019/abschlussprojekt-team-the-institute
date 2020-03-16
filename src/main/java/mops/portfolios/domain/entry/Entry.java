@@ -1,40 +1,42 @@
 package mops.portfolios.domain.entry;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
+import javax.persistence.*;
+
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Data
 @RequiredArgsConstructor
 public class Entry {
-  private @Id @GeneratedValue @Getter Long id;
+    private @Id @GeneratedValue @Getter Long id;
 
-  private @Setter @Column(nullable = false) String title;
+    private @Setter
+    @Column(nullable = false) String title;
 
-  private @CreatedDate Date createdDate;
+    private final java.sql.Timestamp CreatedDate = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+    
+    private @LastModifiedDate Date LastModifiedDate;
 
-  private @LastModifiedDate Date lastModifiedDate;
+    @OneToMany(
+        cascade = CascadeType.ALL,
+        fetch = FetchType.EAGER, //FIXME
+        orphanRemoval = true
+    )
+    private List<EntryField> fields = new ArrayList<>();
 
-  @OneToMany(
-      cascade = CascadeType.ALL,
-      fetch = FetchType.LAZY,
-      mappedBy = "entry",
-      orphanRemoval = true
-  )
-  private List<EntryField> fields = new ArrayList<>();
+    public Entry(String title) {
+        this.title = title;
+    }
+
 }
