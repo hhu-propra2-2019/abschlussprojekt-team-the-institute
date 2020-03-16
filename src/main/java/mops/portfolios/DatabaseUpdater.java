@@ -108,6 +108,12 @@ public class DatabaseUpdater {
       return; // no need to update local database
     }
 
+    try {
+      Long newString = Long.parseLong(jsonObject.getString("status"));
+    } catch (Exception e) {
+      logger.error("Couldn't parse JSONObject:" + e.getMessage());
+    }
+
     // TODO: Process the received data
   }
 
