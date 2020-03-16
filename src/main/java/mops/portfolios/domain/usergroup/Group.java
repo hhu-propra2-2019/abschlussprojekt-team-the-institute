@@ -6,19 +6,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Group {
-  private Long id;
-  private String title;
+    private Long id;
+    private String title;
 
-  public Group(Long id, String title) {
-    this.id = id;
-    this.title = title;
-  }
+    public Group(Long id, String title) {
+        this.id = id;
+        this.title = title;
+    }
 
-  public String getTitle() {
-    return title;
-  }
+    public String getTitle() {
+        return title;
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public Long getId() {
+        return id;
+    }
 }
