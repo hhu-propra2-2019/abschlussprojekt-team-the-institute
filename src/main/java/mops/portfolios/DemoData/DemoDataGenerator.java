@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 
 public class DemoDataGenerator {
 
-    private final Faker faker = new Faker(Locale.GERMAN);
+    private transient final Faker faker = new Faker(Locale.GERMAN);
 
     private EntryField generateEntryField(Entry entry) {
         EntryField entryField = new EntryField();
