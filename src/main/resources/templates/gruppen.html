@@ -9,13 +9,22 @@
 </head>
 
 <body th:fragment="bodycontent">
-<div class="content">
-    <ul>
-        <li th:each="gruppe : ${gruppen}" class="sep">
-            <p>Gruppe: <a th:text="${gruppe.getTitle()}" th:href="@{/portfolio(title=${gruppe.getTitle()})}">Titel</a></p>
-            <br>
-        </li>
-    </ul>
+
+<div class="jumbotron pt-1 font-italic">
+    <h1 class="display-5">Archiv</h1>
+    <p class="lead">Willkommen beim Archiv des Portfolioservice des MOPS! Hier findest du alle Gruppen-Portfolios, die dir zugeordnet wurden:</p>
+    <hr class="my-4">
+    <div class="card border-dark">
+        <div class="card-header">Die Gruppen-Portfolios:</div>
+        <div class="card-body text-dark">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" th:each="gruppe : ${gruppen}">
+                    <a th:text="${gruppe.getTitle()}" th:href="@{/portfolio(title=${gruppe.getTitle()})}">Gruppe
+                        1</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 </body>
 </html>
