@@ -67,6 +67,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
             .permitAll();
   }
 
+
   /**
    * Redirect all Requests to SSL if header in proxy are set.
    *

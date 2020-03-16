@@ -1,5 +1,7 @@
 package mops.portfolios;
 
+
+import javax.persistence.EntityManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import mops.portfolios.demodata.DemoDataGenerator;
@@ -14,22 +16,23 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import javax.persistence.EntityManager;
+
 
 @SpringBootApplication
 @RequiredArgsConstructor
 public class PortfoliosApplication {
 
-    private static final Logger log = LoggerFactory.getLogger(PortfoliosApplication.class);
+  private static final Logger log = LoggerFactory.getLogger(PortfoliosApplication.class);
 
     final @NonNull EntityManager entityManager;
     final @NonNull PortfolioRepository repository;
 
-    public static void main(String[] args) {
-
-        SpringApplication.run(PortfoliosApplication.class, args);
-
-    }
+  /** Starts the application.
+   * @param args - command-line arguments
+   */
+  public static void main(String[] args) {
+    SpringApplication.run(PortfoliosApplication.class, args);
+  }
 
     @Bean
     public CommandLineRunner demo(PortfolioRepository PortfolioRepository, EntryRepository entryRepository, EntryFieldRepository entryFieldRepository) {
