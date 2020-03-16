@@ -106,8 +106,41 @@ public class DatabaseUpdaterTest {
             "        }\n" +
             "      ],\n" +
             "      \"roles\": {\n" +
-                      "\"studentin\": \"ADMIN\"" +
-                   "},\n"+
+            "\"studentin\": \"ADMIN\"" +
+            "},\n"+
+            "      \"type\": \"LECTURE\",\n" +
+            "      \"visibility\": \"PUBLIC\",\n" +
+            "      \"parent\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    JSONObject jsonObject = new JSONObject(response);
+
+    boolean result = databaseUpdater.isNotModified(jsonObject);
+    assertEquals(false, result);
+  }
+
+  @Test
+  public void extractJsonObject() {
+    String response = "{\n" +
+            "  \"status\": 4,\n" +
+            "  \"groupList\": [\n" +
+            "    {\n" +
+            "      \"id\": 2,\n" +
+            "      \"title\": null,\n" +
+            "      \"description\": null,\n" +
+            "      \"members\": [\n" +
+            "        {\n" +
+            "          \"user_id\": \"studentin\",\n" +
+            "          \"givenname\": \"studentin\",\n" +
+            "          \"familyname\": \"studentin\",\n" +
+            "          \"email\": \"studentin@student.in\"\n" +
+            "        }\n" +
+            "      ],\n" +
+            "      \"roles\": {\n" +
+            "\"studentin\": \"ADMIN\"" +
+            "},\n"+
             "      \"type\": \"LECTURE\",\n" +
             "      \"visibility\": \"PUBLIC\",\n" +
             "      \"parent\": null\n" +
@@ -116,11 +149,6 @@ public class DatabaseUpdaterTest {
             "}";
 
     databaseUpdater.updateDatabaseEvents(response);
-
-    JSONObject jsonObject = new JSONObject(response);
-
-    boolean result = databaseUpdater.isNotModified(jsonObject);
-    assertEquals(false, result);
   }
 
 }

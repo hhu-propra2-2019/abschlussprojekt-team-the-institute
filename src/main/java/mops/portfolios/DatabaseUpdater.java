@@ -113,23 +113,16 @@ public class DatabaseUpdater {
 
     Long newStatus;
     JSONArray groupList;
-    List<String> groupMembers = new ArrayList<>();
 
     try {
       newStatus = jsonObject.getBigInteger("status").longValue();
       groupList = jsonObject.getJSONArray("groupList");
 
-      for(Object member : jsonObject.getJSONArray("members")) {
-        groupMembers.add(member.toString());
-      }
+
 
     } catch (Exception e) {
       logger.error("Couldn't parse JSONObject:" + e.getMessage());
       throw e;
-    }
-
-    for (String member : groupMembers) {
-      System.out.println(member);
     }
 
     // TODO: Process the received data
