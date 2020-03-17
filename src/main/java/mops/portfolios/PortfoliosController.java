@@ -108,9 +108,9 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    List<Portfolio> p = portfolioService.findAllByUserId(getUserId(token));
+    List<Portfolio> p = portfolioService.findAllByUserId("userId");
 
-    List<UserGroup> userGroups = userGroupService.findAllByUserId(getUserId(token));
+    List<UserGroup> userGroups = userGroupService.findAllByUserId("userId");
     List<Long> groups = new ArrayList<>();
 
     for (UserGroup u: userGroups){
@@ -140,7 +140,7 @@ public class PortfoliosController {
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<UserGroup> userGroups = userGroupService.findAllByUserId(getUserId(token));
+    List<UserGroup> userGroups = userGroupService.findAllByUserId("userId");
     List<Long> groups = new ArrayList<>();
 
     for (UserGroup u: userGroups){
@@ -165,7 +165,7 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    List<Portfolio> p = portfolioService.findAllByUserId(getUserId(token));
+    List<Portfolio> p = portfolioService.findAllByUserId("userId");
     
     model.addAttribute("vorlesungen", p);
 
