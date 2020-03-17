@@ -3,18 +3,22 @@ package mops.portfolios;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import mops.portfolios.domain.entry.Entry;
+import mops.portfolios.domain.entry.EntryRepository;
 import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
+import mops.portfolios.domain.portfolio.PortfolioRepository;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.usergroup.UserGroupService;
 import mops.portfolios.keycloak.Account;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +33,15 @@ public class PortfoliosController {
   private transient AsciiDocConverter asciiConverter;
   private transient UserSecurity userSecurity;
 
+  @Autowired
   private transient EntryService entryService;
+  @Autowired
+  private transient EntryRepository entryRepository;
+  @Autowired
   private transient PortfolioService portfolioService;
+  @Autowired
+  private transient PortfolioRepository portfolioRepository;
+  @Autowired
   private transient UserGroupService userGroupService;
 
   /**
@@ -143,29 +154,29 @@ public class PortfoliosController {
    * portfolio mapping for GET requests.
    *
    * @param model The spring model to add the attributes to
-   * @param title The name of the portfolio
+   * @param id The ID of the portfolio
    * @return The page to load
    */
   @SuppressWarnings("PMD")
   @GetMapping("/portfolio")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-
-  public String clickPortfolio(Model model, @RequestParam String title,
+  public String clickPortfolio(Model model, @RequestParam Long id,
                                KeycloakAuthenticationToken token) {
 
     authorize(model, token);
-  
-    Portfolio portfolio = hardMock.getPortfolioByTitle(title);
+
+    Portfolio portfolio = portfolioRepository.findById(id).get();
+    List<Entry> entries = portfolio.getEntries();
 
     model.addAttribute("portfolio", portfolio);
-    model.addAttribute("entries", hardMock.getMockEntry());
-  
+    model.addAttribute("entries", entries);
+
     if (getOrgaRole(token).contains("orga")) {
       return "portfolio";
     } else if (userSecurity.hasUserId(getUserId(token))) {
       return "portfolio";
     } else {
-      return "redirect://localhost:8080";
+      return "redirect://localhost:8081";
     }
   }
 
