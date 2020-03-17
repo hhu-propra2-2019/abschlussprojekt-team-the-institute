@@ -76,12 +76,14 @@ public class PortfoliosController {
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> p = hardMock.getMockPortfolios();
-    List<Portfolio> q = hardMock.getMockGroupPortfolios();
+    List<Portfolio> pList = portfolioService.findFirstFew();
 
-    model.addAttribute("last", q.get(1));
-    model.addAttribute("gruppen", q);
-    model.addAttribute("vorlesungen", p);
+    List<Portfolio> p = pList.subList(0, 4);
+    List<Portfolio> q = pList.subList(4, pList.size() - 1);
+
+    model.addAttribute("last", p.get(1));
+    model.addAttribute("gruppen", p);
+    model.addAttribute("vorlesungen", q);
     return "startseite";
   }
 
