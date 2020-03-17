@@ -1,4 +1,4 @@
-package mops.portfolios.Domain.Entry;
+package mops.portfolios.domain.entry;
 
 import lombok.Data;
 import lombok.Getter;
@@ -18,8 +18,5 @@ public class EntryField {
     private @Setter String content;
 
     private @Setter String attachment;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Entry entry;
 
 }

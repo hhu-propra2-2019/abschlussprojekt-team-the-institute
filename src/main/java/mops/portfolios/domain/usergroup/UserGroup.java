@@ -1,4 +1,4 @@
-package mops.portfolios.Domain.UserGroup;
+package mops.portfolios.domain.usergroup;
 
 import lombok.*;
 
