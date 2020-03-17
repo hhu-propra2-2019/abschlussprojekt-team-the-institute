@@ -9,7 +9,7 @@ import java.util.List;
 public class UserGroupService {
 
     @Autowired
-    UserGroupRepository repository;
+    transient UserGroupRepository repository;
 
     public List<UserGroup> findAllByUserId(String userId) {
         return repository.findAllByUserId(userId);
