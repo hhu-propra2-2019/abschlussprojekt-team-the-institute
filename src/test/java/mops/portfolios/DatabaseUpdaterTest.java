@@ -128,7 +128,7 @@ public class DatabaseUpdaterTest {
             "  \"groupList\": [\n" +
             "    {\n" +
             "      \"id\": 2,\n" +
-            "      \"title\": null,\n" +
+            "      \"title\": \"Lorem\",\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
             "        {\n" +
