@@ -7,7 +7,10 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import mops.portfolios.domain.entry.Entry;
+import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
+import mops.portfolios.domain.portfolio.PortfolioService;
+import mops.portfolios.domain.usergroup.UserGroupService;
 import mops.portfolios.keycloak.Account;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.KeycloakPrincipal;
@@ -25,6 +28,10 @@ public class PortfoliosController {
   private transient HardMock hardMock;
   private transient AsciiDocConverter asciiConverter;
   private transient UserSecurity userSecurity;
+
+  private transient EntryService entryService;
+  private transient PortfolioService portfolioService;
+  private transient UserGroupService userGroupService;
 
   /**
    * Takes the auth-token from Keycloak and generates an AccounDTO for the views.
