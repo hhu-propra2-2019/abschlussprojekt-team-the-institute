@@ -1,13 +1,13 @@
 package mops.portfolios.domain.portfolio;
 
-import mops.portfolios.domain.entry.Entry;
+import mops.portfolios.domain.usergroup.UserGroup;
+import mops.portfolios.domain.usergroup.UserGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PortfolioService {
@@ -34,6 +34,23 @@ public class PortfolioService {
             portfolioList.add((Portfolio) iterator.next());
         }
         return portfolioList;
+    }
+
+    public List<Portfolio> getGroupPortfolios(UserGroupService userGroupService, String userId) {
+        List<UserGroup> userGroups = userGroupService.findAllByUserId(userId);
+        List<Long> groups = new ArrayList<>();
+
+        for (UserGroup u: userGroups){
+            groups.add(u.getGroupId());
+        }
+
+        List<Portfolio> q = new ArrayList<>();
+
+        for (Long l : groups) {
+            q.addAll(findAllByGroupId(l));
+        }
+
+        return q;
     }
 
     public List<Portfolio> findAll() {

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
+import javax.sound.sampled.Port;
+
 import lombok.AllArgsConstructor;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryRepository;
@@ -110,20 +112,9 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    List<Portfolio> p = portfolioService.findAllByUserId(getUserId(token));
 
-    List<UserGroup> userGroups = userGroupService.findAllByUserId(getUserId(token));
-    List<Long> groups = new ArrayList<>();
-
-    for (UserGroup u: userGroups){
-      groups.add(u.getGroupId());
-    }
-
-    List<Portfolio> q = new ArrayList<>();
-
-    for (Long l : groups) {
-       q.addAll(portfolioService.findAllByGroupId(l));
-    }
+    List<Portfolio> p = portfolioService.findAllByUserId("userId");
+    List<Portfolio> q = portfolioService.getGroupPortfolios(userGroupService,"userId");
 
     model.addAttribute("gruppen", q);
     model.addAttribute("vorlesungen", p);
@@ -142,19 +133,10 @@ public class PortfoliosController {
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<UserGroup> userGroups = userGroupService.findAllByUserId(getUserId(token));
-    List<Long> groups = new ArrayList<>();
+    List<Portfolio> q = portfolioService.getGroupPortfolios(userGroupService,"userId");
 
-    for (UserGroup u: userGroups){
-      groups.add(u.getGroupId());
-    }
-    List<Portfolio> q = new ArrayList<>();
-
-    for (Long l : groups) {
-      q.addAll(portfolioService.findAllByGroupId(l));
-    }
     model.addAttribute("gruppen", q);
-    
+
     return "gruppen";
   }
 
@@ -167,7 +149,7 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    List<Portfolio> p = portfolioService.findAllByUserId(getUserId(token));
+    List<Portfolio> p = portfolioService.findAllByUserId("userId");
     
     model.addAttribute("vorlesungen", p);
 
