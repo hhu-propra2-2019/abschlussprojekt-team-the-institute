@@ -14,7 +14,7 @@ import java.util.List;
 public class PortfolioService {
 
     @Autowired
-    PortfolioRepository repository;
+    transient PortfolioRepository repository;
 
     public List<Portfolio> findAllByUserId(String userId) {
         return repository.findAllByUserId(userId);
@@ -37,6 +37,7 @@ public class PortfolioService {
         return findAll().subList(0, 10);
     }
 
+    @SuppressWarnings("PMD")
     public List<Portfolio> getGroupPortfolios(UserGroupService userGroupService, String userId) {
         List<UserGroup> userGroups = userGroupService.findAllByUserId(userId);
         List<Long> groups = new ArrayList<>();
@@ -57,7 +58,7 @@ public class PortfolioService {
     public Portfolio findPortfolioById(Long id) {
         return repository.findById(id).get();
     }
-
+    @SuppressWarnings("PMD")
     public Entry findEntryById(Portfolio portfolio, Long id) {
         for(Entry entry : portfolio.getEntries()) {
             if (entry.getId() == id) {
