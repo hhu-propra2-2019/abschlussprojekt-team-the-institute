@@ -24,17 +24,17 @@ public class PortfolioService {
         return repository.findAllByGroupId(groupId);
     }
 
-    public Portfolio findById(Long id) {
-        return repository.findById(id).get();
-    }
-
-    public List<Portfolio> findFirstFew() {
+    public List<Portfolio> findAll() {
         List<Portfolio> portfolioList = new ArrayList<>();
         Iterator iterator = repository.findAll().iterator();
-        for(int i = 0; i < 8; i++) {
+        while(iterator.hasNext()) {
             portfolioList.add((Portfolio) iterator.next());
         }
         return portfolioList;
+    }
+
+    public List<Portfolio> findFirstFew() {
+        return findAll().subList(0, 10);
     }
 
     public List<Portfolio> getGroupPortfolios(UserGroupService userGroupService, String userId) {
@@ -52,15 +52,6 @@ public class PortfolioService {
         }
 
         return q;
-    }
-
-    public List<Portfolio> findAll() {
-        List<Portfolio> portfolioList = new ArrayList<>();
-        Iterator iterator = repository.findAll().iterator();
-        while(iterator.hasNext()) {
-            portfolioList.add((Portfolio) iterator.next());
-        }
-        return portfolioList;
     }
 
     public Portfolio findPortfolioById(Long id) {

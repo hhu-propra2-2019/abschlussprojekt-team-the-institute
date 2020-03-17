@@ -171,7 +171,7 @@ public class PortfoliosController {
 
     authorize(model, token);
 
-    Portfolio portfolio = portfolioRepository.findById(id).get();
+    Portfolio portfolio = portfolioService.findPortfolioById(id);
 
     model.addAttribute("portfolio", portfolio);
 
