@@ -1,50 +1,50 @@
 package mops.portfolios.domain.portfolio;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import lombok.Data;
-import mops.portfolios.domain.entry.Entry;
+import lombok.*;
+import mops.portfolios.domain.entry.*;
 import mops.portfolios.domain.usergroup.Group;
 import mops.portfolios.domain.usergroup.User;
-import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
-@Transactional
 public class Portfolio {
-  private @Id @GeneratedValue Long id;
+    private @Id
+    @GeneratedValue
+    @Getter
+    Long id;
 
-  private @Column(nullable = false) String title;
+    private @Column(nullable = false)
+    @Getter
+    @Setter
+    String title;
 
-  private String userId;
+    private @Getter
+    String userId;
 
-  private Long groupId;
+    private @Getter
+    Long groupId;
 
-  @OneToMany(
-      cascade = CascadeType.ALL,
-      orphanRemoval = true,
-      fetch = FetchType.EAGER //FIXME before prod
-  )
-  private List<Entry> entries = new ArrayList<>();
+    @OneToMany(
+        cascade = CascadeType.ALL,
+        orphanRemoval = true,
+        fetch = FetchType.EAGER
+    )
+    private @Getter List<Entry> entries = new ArrayList<>();
 
 
-  public Portfolio() {
-  }
+    public Portfolio() {}
 
-  public Portfolio(String title, User user) {
-    this.title = title;
-    this.userId = user.getId();
-  }
+    public Portfolio(String title, User user) {
+        this.title = title;
+        this.userId = user.getId();
+    }
 
-  public Portfolio(String title, Group group) {
-    this.title = title;
-    this.groupId = group.getId();
-  }
+    public Portfolio(String title, Group group) {
+        this.title = title;
+        this.groupId = group.getId();
+    }
 }
