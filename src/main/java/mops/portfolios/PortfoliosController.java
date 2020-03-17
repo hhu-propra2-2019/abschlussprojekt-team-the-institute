@@ -166,10 +166,8 @@ public class PortfoliosController {
     authorize(model, token);
 
     Portfolio portfolio = portfolioRepository.findById(id).get();
-    List<Entry> entries = portfolio.getEntries();
 
     model.addAttribute("portfolio", portfolio);
-    model.addAttribute("entries", entries);
 
     if (getOrgaRole(token).contains("orga")) {
       return "portfolio";
@@ -184,22 +182,24 @@ public class PortfoliosController {
    * entry mapping for GET requests.
    *
    * @param model The spring model to add the attributes to
-   * @param title The name of the entry
-   * @param entryTitle The title of the entry
+   * @param pId The portfolio id
+   * @param eId The entry id
    * @return The page to load
    */
   @SuppressWarnings("PMD")
   @GetMapping("/entry")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String clickEntry(Model model, @RequestParam String title,
-                           @RequestParam String entryTitle, KeycloakAuthenticationToken token) {
+  public String clickEntry(Model model, @RequestParam Long pId,
+                           @RequestParam Long eId, KeycloakAuthenticationToken token) {
 
     authorize(model, token);
-    Portfolio portfolio = hardMock.getPortfolioByTitle(title);
-    Entry entry = hardMock.getEntryByTitle(entryTitle);
+
+    Portfolio portfolio = portfolioService.findPortfolioById(pId);
+    Entry entry = portfolioService.findEntryById(portfolio, eId);
 
     model.addAttribute("portfolio", portfolio);
     model.addAttribute("entry", entry);
+
     return "entry";
   }
 
@@ -230,7 +230,7 @@ public class PortfoliosController {
   public String uploadTemplate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    model.addAttribute("portfolioList", hardMock.getMockPortfolios());
+    model.addAttribute("portfolioList", portfolioService.findAll());
     model.addAttribute("entryList", hardMock.getMockEntry());
 
     return "upload_template";
