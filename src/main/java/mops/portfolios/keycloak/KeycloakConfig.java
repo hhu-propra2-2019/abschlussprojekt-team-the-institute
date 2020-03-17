@@ -17,11 +17,11 @@ public class KeycloakConfig {
   }
 
   @Value("${keycloak.resource}")
-  private String clientId;
+  private transient String clientId;
   @Value("${keycloak.credentials.secret}")
-  private String clientSecret;
+  private transient String clientSecret;
   @Value("${hhu_keycloak.token-uri}")
-  private String tokenUri;
+  private transient String tokenUri;
 
   @Bean public RestTemplate serviceAccountRestTemplate(){
     ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
