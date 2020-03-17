@@ -14,7 +14,7 @@ import java.util.List;
 public class PortfolioService {
 
     @Autowired
-    transient PortfolioRepository repository;
+    PortfolioRepository repository;
 
     public List<Portfolio> findAllByUserId(String userId) {
         return repository.findAllByUserId(userId);
@@ -24,21 +24,19 @@ public class PortfolioService {
         return repository.findAllByGroupId(groupId);
     }
 
-    public Portfolio findById(Long id) {
-        return repository.findById(id).get();
-    }
-
-    @SuppressWarnings("PMD")
-    public List<Portfolio> findFirstFew() {
+    public List<Portfolio> findAll() {
         List<Portfolio> portfolioList = new ArrayList<>();
         Iterator iterator = repository.findAll().iterator();
-        for(int i = 0; i < 8; i++) {
+        while(iterator.hasNext()) {
             portfolioList.add((Portfolio) iterator.next());
         }
         return portfolioList;
     }
 
-    @SuppressWarnings("PMD")
+    public List<Portfolio> findFirstFew() {
+        return findAll().subList(0, 10);
+    }
+
     public List<Portfolio> getGroupPortfolios(UserGroupService userGroupService, String userId) {
         List<UserGroup> userGroups = userGroupService.findAllByUserId(userId);
         List<Long> groups = new ArrayList<>();
@@ -56,21 +54,10 @@ public class PortfolioService {
         return q;
     }
 
-    public List<Portfolio> findAll() {
-        List<Portfolio> portfolioList = new ArrayList<>();
-        Iterator iterator = repository.findAll().iterator();
-        while(iterator.hasNext()) {
-            portfolioList.add((Portfolio) iterator.next());
-        }
-        return portfolioList;
-    }
-
-    @SuppressWarnings("PMD")
     public Portfolio findPortfolioById(Long id) {
         return repository.findById(id).get();
     }
 
-    @SuppressWarnings("PMD")
     public Entry findEntryById(Portfolio portfolio, Long id) {
         for(Entry entry : portfolio.getEntries()) {
             if (entry.getId() == id) {
