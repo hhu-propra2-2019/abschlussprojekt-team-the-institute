@@ -125,6 +125,10 @@ public class DatabaseUpdater {
       throw e;
     }
 
+    List<Long> deletedGroups = getDeletedGroups(jsonObject);
+    for(Long groupId : deletedGroups) {
+      ;
+    }
     // TODO: Process the received data
   }
 
@@ -136,6 +140,30 @@ public class DatabaseUpdater {
   boolean isNotModified(JSONObject jsonUpdate) {
     JSONArray groupList = jsonUpdate.getJSONArray("groupList");
     return groupList.isEmpty();
+  }
+
+  List<Long> getDeletedGroups(JSONObject jsonUpdate) {
+    List<Long> deletedGroups = new ArrayList<>();
+
+    JSONArray groupList;
+    try {
+      groupList = jsonUpdate.getJSONArray("groupList");
+
+      for(Object groupElement : groupList) {
+        JSONObject group = (JSONObject) groupElement;
+          long id = group.getBigInteger("id").longValue();
+          String title = group.getString("title");
+          if (title == null || title.isEmpty()) {
+            deletedGroups.add(id);
+          }
+      }
+
+    } catch (Exception e) {
+      logger.error("Couldn't parse JSONObject:" + e.getMessage());
+      throw e;
+    }
+
+    return deletedGroups;
   }
 
 }
