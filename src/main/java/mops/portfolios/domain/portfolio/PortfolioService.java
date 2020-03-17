@@ -17,6 +17,14 @@ public class PortfolioService {
         return repository.findAllByUserId(userId);
     }
 
+    public List<Portfolio> findAllByGroupId(Long groupId) {
+        return repository.findAllByGroupId(groupId);
+    }
+
+    public Portfolio findById(Long id) {
+        return repository.findById(id).get();
+    }
+
     public List<Portfolio> findFirstFew() {
         List<Portfolio> portfolioList = new ArrayList<>();
         Iterator iterator = repository.findAll().iterator();
