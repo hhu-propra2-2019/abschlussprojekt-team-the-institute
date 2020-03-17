@@ -20,7 +20,7 @@
         <div class="card-body text-dark">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item" th:each="gruppe : ${gruppen}">
-                    <a th:text="${gruppe.getTitle()}" th:href="@{/portfolio(title=${gruppe.getTitle()})}">Gruppe
+                    <a th:text="${gruppe.getTitle()}" th:href="@{/portfolio(title=${gruppe.getId()})}">Gruppe
                         1</a>
                 </li>
             </ul>

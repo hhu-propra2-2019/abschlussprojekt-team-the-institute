@@ -1,5 +1,6 @@
 package mops.portfolios.domain.portfolio;
 
+import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.usergroup.UserGroup;
 import mops.portfolios.domain.usergroup.UserGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
