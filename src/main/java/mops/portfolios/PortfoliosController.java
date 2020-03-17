@@ -2,6 +2,7 @@ package mops.portfolios;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.security.RolesAllowed;
@@ -13,6 +14,7 @@ import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioRepository;
 import mops.portfolios.domain.portfolio.PortfolioService;
+import mops.portfolios.domain.usergroup.UserGroup;
 import mops.portfolios.domain.usergroup.UserGroupService;
 import mops.portfolios.keycloak.Account;
 import mops.portfolios.tools.AsciiDocConverter;
@@ -108,8 +110,20 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    List<Portfolio> p = hardMock.getMockPortfolios();
-    List<Portfolio> q = hardMock.getMockGroupPortfolios();
+    List<Portfolio> p = portfolioService.findAllByUserId(getUserId(token));
+
+    List<UserGroup> userGroups = userGroupService.findAllByUserId(getUserId(token));
+    List<Long> groups = new ArrayList<>();
+
+    for (UserGroup u: userGroups){
+      groups.add(u.getGroupId());
+    }
+
+    List<Portfolio> q = new ArrayList<>();
+
+    for (Long l : groups) {
+       q.addAll(portfolioService.findAllByGroupId(l));
+    }
 
     model.addAttribute("gruppen", q);
     model.addAttribute("vorlesungen", p);
@@ -127,8 +141,18 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    List<Portfolio> q = hardMock.getMockGroupPortfolios();
 
+    List<UserGroup> userGroups = userGroupService.findAllByUserId(getUserId(token));
+    List<Long> groups = new ArrayList<>();
+
+    for (UserGroup u: userGroups){
+      groups.add(u.getGroupId());
+    }
+    List<Portfolio> q = new ArrayList<>();
+
+    for (Long l : groups) {
+      q.addAll(portfolioService.findAllByGroupId(l));
+    }
     model.addAttribute("gruppen", q);
     
     return "gruppen";
@@ -143,7 +167,7 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    List<Portfolio> p = hardMock.getMockPortfolios();
+    List<Portfolio> p = portfolioService.findAllByUserId(getUserId(token));
     
     model.addAttribute("vorlesungen", p);
 
@@ -199,7 +223,6 @@ public class PortfoliosController {
 
     model.addAttribute("portfolio", portfolio);
     model.addAttribute("entry", entry);
-
     return "entry";
   }
 
