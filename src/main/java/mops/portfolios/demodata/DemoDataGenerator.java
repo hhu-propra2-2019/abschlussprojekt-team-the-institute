@@ -17,7 +17,7 @@ public class DemoDataGenerator {
   private final transient Faker faker = new Faker(Locale.GERMAN);
 
   /**
-   * Generates a single EntryField
+   * Generates a single EntryField.
    * @param entry - the Entry that will contain it
    * @return - the EntryField
    */
@@ -30,7 +30,7 @@ public class DemoDataGenerator {
   }
 
   /**
-   * Fills the entry with "content"
+   * Fills the entry with "content".
    * @param entry - the entry to fill
    * @return - the EntryFields
    */
@@ -40,7 +40,7 @@ public class DemoDataGenerator {
   }
 
   /**
-   * Generates an entry for a group portfolio
+   * Generates an entry for a group portfolio.
    * @return - the entry
    */
   private Entry generateGroupEntry() {

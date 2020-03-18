@@ -8,7 +8,6 @@ import java.util.Objects;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.sound.sampled.Port;
-
 import lombok.AllArgsConstructor;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryRepository;
@@ -91,10 +90,10 @@ public class PortfoliosController {
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> pList = portfolioService.findFirstFew();
+    List<Portfolio> portfolioList = portfolioService.findFirstFew();
 
-    List<Portfolio> p = pList.subList(0, 4);
-    List<Portfolio> q = pList.subList(4, pList.size() - 1);
+    List<Portfolio> p = portfolioList.subList(0, 4);
+    List<Portfolio> q = portfolioList.subList(4, portfolioList.size() - 1);
 
     model.addAttribute("last", p.get(1));
     model.addAttribute("gruppen", p);
@@ -188,20 +187,20 @@ public class PortfoliosController {
    * entry mapping for GET requests.
    *
    * @param model The spring model to add the attributes to
-   * @param pId The portfolio id
-   * @param eId The entry id
+   * @param portfolioId The portfolio id
+   * @param entryId The entry id
    * @return The page to load
    */
   @SuppressWarnings("PMD")
   @GetMapping("/entry")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String clickEntry(Model model, @RequestParam Long pId,
-                           @RequestParam Long eId, KeycloakAuthenticationToken token) {
+  public String clickEntry(Model model, @RequestParam Long portfolioId,
+                           @RequestParam Long entryId, KeycloakAuthenticationToken token) {
 
     authorize(model, token);
 
-    Portfolio portfolio = portfolioService.findPortfolioById(pId);
-    Entry entry = portfolioService.findEntryById(portfolio, eId);
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+    Entry entry = portfolioService.findEntryById(portfolio, entryId);
 
     model.addAttribute("portfolio", portfolio);
     model.addAttribute("entry", entry);

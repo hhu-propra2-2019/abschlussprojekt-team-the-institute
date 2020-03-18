@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class HTMLErrorController implements ErrorController {
+public class HtmlErrorController implements ErrorController {
 
   /**
    * Error mapping for GET requests.

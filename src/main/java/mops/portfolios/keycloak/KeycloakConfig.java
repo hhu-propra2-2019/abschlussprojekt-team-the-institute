@@ -25,7 +25,7 @@ public class KeycloakConfig {
   private transient String tokenUri;
 
   /**
-   * The RestTemplate for Keycloak
+   * The RestTemplate for Keycloak.
    * @return the RestTemplate
    */
   @Bean public RestTemplate serviceAccountRestTemplate() {
