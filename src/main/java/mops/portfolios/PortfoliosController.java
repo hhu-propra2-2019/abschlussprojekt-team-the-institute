@@ -12,6 +12,8 @@ import mops.portfolios.keycloak.Account;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,10 +46,14 @@ public class PortfoliosController {
                  .getSubject());
   }
 
-  private void authorize(Model model, KeycloakAuthenticationToken token) {
-    Account account = createAccountFromPrincipal(token);
-    model.addAttribute("account", account);
-  }
+    private static final Logger log = LoggerFactory.getLogger(PortfoliosApplication.class);
+
+    private void authorize(Model model, KeycloakAuthenticationToken token) {
+        Account account = createAccountFromPrincipal(token);
+        KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+        model.addAttribute("account", account);
+        log.info("--------------- 6666 --------------",principal.getKeycloakSecurityContext().getIdToken().getEmail());
+    }
 
   private String getUserId(KeycloakAuthenticationToken token) {
     return token.getAccount().getKeycloakSecurityContext().getIdToken().getId();

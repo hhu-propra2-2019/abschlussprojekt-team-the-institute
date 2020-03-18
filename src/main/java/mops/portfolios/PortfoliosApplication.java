@@ -9,6 +9,8 @@ import mops.portfolios.domain.entry.EntryFieldRepository;
 import mops.portfolios.domain.entry.EntryRepository;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioRepository;
+import mops.portfolios.domain.state.State;
+import mops.portfolios.domain.state.StateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -35,7 +37,7 @@ public class PortfoliosApplication {
   }
 
     @Bean
-    public CommandLineRunner demo(PortfolioRepository PortfolioRepository, EntryRepository entryRepository, EntryFieldRepository entryFieldRepository) {
+    public CommandLineRunner demo(StateService stateService, PortfolioRepository PortfolioRepository, EntryRepository entryRepository, EntryFieldRepository entryFieldRepository) {
         return (args) -> {
       /*      Set<String> roles = new HashSet<>(Arrays.asList("student"));
 
@@ -71,6 +73,14 @@ public class PortfoliosApplication {
                 log.info(portfolio.toString());
             }
 
+            log.info("8==================================================================================");
+
+//            Long gruppenState = stateService.getState("gruppenbildung2");
+//            log.info(stateService.toString());
+//            log.info(gruppenState.toString());
+//
+            stateService.setState("gruppenbildung2", 99L);
+            log.info(stateService.getState("gruppenbildung2").toString());
         };
     }
 }
