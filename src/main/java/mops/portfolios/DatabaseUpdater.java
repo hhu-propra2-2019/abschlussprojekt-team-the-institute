@@ -24,6 +24,9 @@ public class DatabaseUpdater {
   @Autowired
   UserGroupRepository userGroupRepository;
 
+//  @Autowired
+//  StateService stateService;
+
 
   /**
    * The thread to run the updates.
@@ -49,7 +52,7 @@ public class DatabaseUpdater {
    The interrupted status of the current thread is cleared when this exception is thrown.
    */
   public void updateDatabase(long timeout) throws InterruptedException {
-    long updateStatus = 0; // TODO: will be retrieved through a database call later. Not yet available
+    long updateStatus = 0; // TODO: insert "stateService.getState("gruppen2");"
     this.url = "/gruppen2/api/updateGroups/" + updateStatus;
     DatabaseUpdaterThread databaseUpdaterThread = new DatabaseUpdaterThread(timeout);
     databaseUpdaterThread.run();
@@ -123,8 +126,6 @@ public class DatabaseUpdater {
       newStatus = jsonObject.getBigInteger("status").longValue();
       groupList = jsonObject.getJSONArray("groupList");
 
-
-
     } catch (Exception e) {
       logger.error("Couldn't parse JSONObject:" + e.getMessage());
       throw e;
@@ -134,6 +135,9 @@ public class DatabaseUpdater {
     for(Long groupId : deletedGroups) {
       userGroupRepository.deleteById(groupId); // TODO: Change to own method
     }
+
+
+
     // TODO: Process the received data
   }
 
