@@ -14,7 +14,6 @@
 
 <br>
 
-
 <form method="POST" enctype="multipart/form-data" th:action="@{/view}">
 
     <div class="input-group w-50">
@@ -33,7 +32,7 @@
             <label class="input-group-text" for="SELECT_ENTRY">Entry auswählen</label>
         </div>
         <select class="custom-select" id="SELECT_ENTRY">
-            <option th:each="entry : ${entryList}" th:text="${entry.getTitle()}"></option>
+
         </select>
     </div>
 
@@ -82,7 +81,6 @@
         let SELECT_PORTFOLIO = document.getElementById("SELECT_PORTFOLIO");
 
     }
-
 </script>
 
 </body>
