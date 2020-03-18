@@ -3,6 +3,7 @@ package mops.portfolios;
 import java.util.List;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ch.qos.logback.classic.Logger;
@@ -30,18 +31,20 @@ public class DatabaseUpdaterTest {
   public void testClientError() {
     ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
 
-    listAppender.start();
-    logger.addAppender(listAppender);
-    IHttpClient httpClient = new FakeHttpClient();
-    databaseUpdater.updateDatabaseEvents(httpClient, "400");
-    listAppender.stop();
+    assertThrows(RuntimeException.class, () -> {
+      listAppender.start();
+      logger.addAppender(listAppender);
+      IHttpClient httpClient = new FakeHttpClient();
+      databaseUpdater.updateDatabaseEvents(httpClient, "400");
+      listAppender.stop();
 
-    List<ILoggingEvent> logsList = listAppender.list;
-    int logSize = logsList.size();
+      List<ILoggingEvent> logsList = listAppender.list;
+      int logSize = logsList.size();
 
-    assertEquals("The service Gruppenbildung is not reachable: 400 BAD_REQUEST",
-            logsList.get(logSize - 2).getMessage());
-    assertEquals("Database not modified", logsList.get(logSize - 1).getMessage());
+      assertEquals("The service Gruppenbildung is not reachable: 400 BAD_REQUEST",
+              logsList.get(logSize - 2).getMessage());
+      assertEquals("An error occured while parsing the JSON data received by the service Gruppenbildung", logsList.get(logSize - 1).getMessage());
+    });
   }
 
   @Test
@@ -50,7 +53,7 @@ public class DatabaseUpdaterTest {
 
     listAppender.start();
     logger.addAppender(listAppender);
-    databaseUpdater.updateDatabaseEvents("");
+    databaseUpdater.updateDatabaseEvents("{\"status\":4,\"groupList\":[]}");
     listAppender.stop();
 
     List<ILoggingEvent> logsList = listAppender.list;
@@ -75,5 +78,77 @@ public class DatabaseUpdaterTest {
     databaseUpdater.updateDatabaseEvents(httpClient, this.url); // takes mocked JSON from the FakeHttpClient
   }
 
+  @Test
+  public void GroupListNotModified() {
+    // as talked with gruppen2, this is how the response will look if not modified
+    String response = "{\"status\":4,\"groupList\":[]}";
+    JSONObject jsonObject = new JSONObject(response);
+
+    boolean result = databaseUpdater.isNotModified(jsonObject);
+    assertEquals(true, result);
+  }
+
+  @Test
+  public void GroupListIsModified() {
+    String response = "{\n" +
+            "  \"status\": 4,\n" +
+            "  \"groupList\": [\n" +
+            "    {\n" +
+            "      \"id\": 2,\n" +
+            "      \"title\": null,\n" +
+            "      \"description\": null,\n" +
+            "      \"members\": [\n" +
+            "        {\n" +
+            "          \"user_id\": \"studentin\",\n" +
+            "          \"givenname\": \"studentin\",\n" +
+            "          \"familyname\": \"studentin\",\n" +
+            "          \"email\": \"studentin@student.in\"\n" +
+            "        }\n" +
+            "      ],\n" +
+            "      \"roles\": {\n" +
+            "\"studentin\": \"ADMIN\"" +
+            "},\n"+
+            "      \"type\": \"LECTURE\",\n" +
+            "      \"visibility\": \"PUBLIC\",\n" +
+            "      \"parent\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    JSONObject jsonObject = new JSONObject(response);
+
+    boolean result = databaseUpdater.isNotModified(jsonObject);
+    assertEquals(false, result);
+  }
+
+  @Test
+  public void extractJsonObject() {
+    String response = "{\n" +
+            "  \"status\": 4,\n" +
+            "  \"groupList\": [\n" +
+            "    {\n" +
+            "      \"id\": 2,\n" +
+            "      \"title\": \"Lorem\",\n" +
+            "      \"description\": null,\n" +
+            "      \"members\": [\n" +
+            "        {\n" +
+            "          \"user_id\": \"studentin\",\n" +
+            "          \"givenname\": \"studentin\",\n" +
+            "          \"familyname\": \"studentin\",\n" +
+            "          \"email\": \"studentin@student.in\"\n" +
+            "        }\n" +
+            "      ],\n" +
+            "      \"roles\": {\n" +
+            "\"studentin\": \"ADMIN\"" +
+            "},\n"+
+            "      \"type\": \"LECTURE\",\n" +
+            "      \"visibility\": \"PUBLIC\",\n" +
+            "      \"parent\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    databaseUpdater.updateDatabaseEvents(response);
+  }
 
 }
