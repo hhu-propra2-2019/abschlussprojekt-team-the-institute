@@ -33,18 +33,14 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @AllArgsConstructor
 public class PortfoliosController {
-  private transient HardMock hardMock;
+
   private transient AsciiDocConverter asciiConverter;
   private transient UserSecurity userSecurity;
 
   @Autowired
   private transient EntryService entryService;
   @Autowired
-  private transient EntryRepository entryRepository;
-  @Autowired
   private transient PortfolioService portfolioService;
-  @Autowired
-  private transient PortfolioRepository portfolioRepository;
   @Autowired
   private transient UserGroupService userGroupService;
 
@@ -236,7 +232,6 @@ public class PortfoliosController {
     authorize(model, token);
 
     model.addAttribute("portfolioList", portfolioService.findAll());
-    model.addAttribute("entryList", hardMock.getMockEntry());
 
     return "upload_template";
   }
