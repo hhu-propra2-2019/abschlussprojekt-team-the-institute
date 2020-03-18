@@ -35,7 +35,7 @@ public class DatabaseUpdaterTest {
       listAppender.start();
       logger.addAppender(listAppender);
       IHttpClient httpClient = new FakeHttpClient();
-      databaseUpdater.updateDatabaseEvents(httpClient, "400");
+      databaseUpdater.getGroupUpdatesFromUrl(httpClient, "400");
       listAppender.stop();
 
       List<ILoggingEvent> logsList = listAppender.list;
@@ -70,12 +70,12 @@ public class DatabaseUpdaterTest {
   @Test
   public void testUpdateDatabaseEventsIllegalArgument() {
     databaseUpdater.url = "/bla/bla";
-    assertThrows(RuntimeException.class, () -> databaseUpdater.updateDatabaseEvents());
+    assertThrows(RuntimeException.class, () -> databaseUpdater.getUpdatesFromJsonObject());
   }
   @Test
   public void testSuccessfulRequest() {
     IHttpClient httpClient = new FakeHttpClient();
-    databaseUpdater.updateDatabaseEvents(httpClient, this.url); // takes mocked JSON from the FakeHttpClient
+    databaseUpdater.getGroupUpdatesFromUrl(httpClient, this.url); // takes mocked JSON from the FakeHttpClient
   }
 
   @Test

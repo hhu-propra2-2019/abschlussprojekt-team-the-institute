@@ -28,7 +28,7 @@
                 maximus. Vivamus finibus justo a libero sodales ullamcorper. Maecenas fermentum urna vitae nisl aliquam
                 commodo. Nunc semper lectus imperdiet lectus volutpat, vitae faucibus odio finibus.</p>
             <a class="btn btn-primary"
-               th:href="@{/entry(pId=${portfolio.getId()},eId=${entry.getId()})}">Anzeigen</a>
+               th:href="@{/entry(portfolioId=${portfolio.getId()},entryId=${entry.getId()})}">Anzeigen</a>
         </div>
         <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()}">Date created</div>
     </div>

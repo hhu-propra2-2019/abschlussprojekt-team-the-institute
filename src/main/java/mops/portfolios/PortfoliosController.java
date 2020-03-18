@@ -1,14 +1,5 @@
 package mops.portfolios;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.sound.sampled.Port;
-
 import lombok.AllArgsConstructor;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryRepository;
@@ -16,7 +7,6 @@ import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioRepository;
 import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.usergroup.UserGroup;
 import mops.portfolios.domain.usergroup.UserGroupService;
 import mops.portfolios.keycloak.Account;
 import mops.portfolios.tools.AsciiDocConverter;
@@ -29,6 +19,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -60,10 +57,9 @@ public class PortfoliosController {
         principal.getName(),
         principal.getKeycloakSecurityContext().getIdToken().getEmail(),
         ((KeycloakPrincipal) token.getPrincipal()).getKeycloakSecurityContext().getIdToken()
-                    .getPicture(),
+            .getPicture(),
         token.getAccount().getRoles(),
-        ((KeycloakPrincipal) token.getPrincipal()).getKeycloakSecurityContext().getIdToken()
-                 .getSubject());
+        ((KeycloakPrincipal) token.getPrincipal()).getName());
   }
 
   private void authorize(Model model, KeycloakAuthenticationToken token) {
@@ -71,12 +67,31 @@ public class PortfoliosController {
     model.addAttribute("account", account);
   }
 
-  private String getUserId(KeycloakAuthenticationToken token) {
-    return token.getAccount().getKeycloakSecurityContext().getIdToken().getId();
+  private String getUserName(KeycloakAuthenticationToken token) {
+    return ((KeycloakPrincipal) token.getPrincipal()).getName();
   }
 
   private String getOrgaRole(KeycloakAuthenticationToken token) {
     return token.getAccount().getRoles().toString();
+  }
+
+  @SuppressWarnings("PMD")
+  private List<Portfolio> getPortfolios(KeycloakAuthenticationToken token, List<Portfolio> p) {
+    List<Portfolio> portfolios = new ArrayList<>();
+
+    // TODO: Changing userId since it is dynamic and can therefore not be used
+
+    for (Portfolio portfolio : p) {
+
+      if (portfolio.getUserId() == null) {
+        continue;
+      }
+
+      if (portfolio.getUserId().equals(getUserName(token))) {
+        portfolios.add(portfolio);
+      }
+    }
+    return portfolios;
   }
 
   /**
@@ -91,14 +106,16 @@ public class PortfoliosController {
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> pList = portfolioService.findFirstFew();
+    List<Portfolio> portfoliosList = portfolioService.findFirstFew();
 
-    List<Portfolio> p = pList.subList(0, 4);
-    List<Portfolio> q = pList.subList(4, pList.size() - 1);
+    List<Portfolio> groupPortfolios = /*getPortfolios(token, */portfoliosList.subList(0, 4);
+    List<Portfolio> userPortfolios = getPortfolios(token,
+        portfoliosList.subList(4, portfoliosList.size() - 1));
 
-    model.addAttribute("last", p.get(1));
-    model.addAttribute("gruppen", p);
-    model.addAttribute("vorlesungen", q);
+    model.addAttribute("last", groupPortfolios.get(0));
+    model.addAttribute("gruppen", groupPortfolios);
+    model.addAttribute("vorlesungen", userPortfolios);
+
     return "startseite";
   }
 
@@ -113,11 +130,14 @@ public class PortfoliosController {
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> p = portfolioService.findAllByUserId("userId");
-    List<Portfolio> q = portfolioService.getGroupPortfolios(userGroupService,"userId");
+    List<Portfolio> groupPortfolios = getPortfolios(token,
+        portfolioService.getGroupPortfolios(userGroupService, "userId"));
+    List<Portfolio> userPortfolios = getPortfolios(token,
+        portfolioService.findAllByUserId("userId"));
 
-    model.addAttribute("gruppen", q);
-    model.addAttribute("vorlesungen", p);
+    model.addAttribute("gruppen", groupPortfolios);
+    model.addAttribute("vorlesungen", userPortfolios);
+
     return "index";
 
   }
@@ -133,25 +153,27 @@ public class PortfoliosController {
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> q = portfolioService.getGroupPortfolios(userGroupService,"userId");
+    List<Portfolio> groupPortfolios = getPortfolios(token,
+        portfolioService.getGroupPortfolios(userGroupService, "userId"));
 
-    model.addAttribute("gruppen", q);
+    model.addAttribute("gruppen", groupPortfolios);
 
     return "gruppen";
   }
 
   /**
    * Individual portfolios mapping for GET requests.
-   *
    */
   @SuppressWarnings("PMD")
   @GetMapping("/privat")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    List<Portfolio> p = portfolioService.findAllByUserId("userId");
-    
-    model.addAttribute("vorlesungen", p);
+
+    List<Portfolio> userPortfolios = getPortfolios(token,
+        portfolioService.findAllByUserId("userId"));
+
+    model.addAttribute("vorlesungen", userPortfolios);
 
     return "privat";
   }
@@ -160,7 +182,7 @@ public class PortfoliosController {
    * portfolio mapping for GET requests.
    *
    * @param model The spring model to add the attributes to
-   * @param id The ID of the portfolio
+   * @param id    The ID of the portfolio
    * @return The page to load
    */
   @SuppressWarnings("PMD")
@@ -177,7 +199,7 @@ public class PortfoliosController {
 
     if (getOrgaRole(token).contains("orga")) {
       return "portfolio";
-    } else if (userSecurity.hasUserId(getUserId(token))) {
+    } else if (userSecurity.hasUserName(getUserName(token))) {
       return "portfolio";
     } else {
       return "redirect://localhost:8081"; // TODO: redirect to error page
@@ -187,21 +209,21 @@ public class PortfoliosController {
   /**
    * entry mapping for GET requests.
    *
-   * @param model The spring model to add the attributes to
-   * @param pId The portfolio id
-   * @param eId The entry id
+   * @param model       The spring model to add the attributes to
+   * @param portfolioId The portfolio id
+   * @param entryId     The entry id
    * @return The page to load
    */
   @SuppressWarnings("PMD")
   @GetMapping("/entry")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String clickEntry(Model model, @RequestParam Long pId,
-                           @RequestParam Long eId, KeycloakAuthenticationToken token) {
+  public String clickEntry(Model model, @RequestParam Long portfolioId,
+                           @RequestParam Long entryId, KeycloakAuthenticationToken token) {
 
     authorize(model, token);
 
-    Portfolio portfolio = portfolioService.findPortfolioById(pId);
-    Entry entry = portfolioService.findEntryById(portfolio, eId);
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+    Entry entry = portfolioService.findEntryById(portfolio, entryId);
 
     model.addAttribute("portfolio", portfolio);
     model.addAttribute("entry", entry);
@@ -245,7 +267,7 @@ public class PortfoliosController {
    * View mapping for POST requests.
    *
    * @param model The spring model to add the attributes to
-   * @param file The uploaded (AsciiDoc) template file
+   * @param file  The uploaded (AsciiDoc) template file
    * @return The page to load
    */
   @SuppressWarnings("PMD")
