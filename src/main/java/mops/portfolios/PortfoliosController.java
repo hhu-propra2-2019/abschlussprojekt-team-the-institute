@@ -210,7 +210,7 @@ public class PortfoliosController {
    */
   @SuppressWarnings("PMD")
   @GetMapping("/edit")
-  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  @RolesAllowed({"ROLE_orga"})
   public String editTemplate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
