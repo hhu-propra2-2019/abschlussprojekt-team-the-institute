@@ -50,12 +50,25 @@ public class PortfoliosController {
     model.addAttribute("account", account);
   }
 
-  private String getUserId(KeycloakAuthenticationToken token) {
-    return token.getAccount().getKeycloakSecurityContext().getIdToken().getId();
+  private String getUserName(KeycloakAuthenticationToken token) {
+    return ((KeycloakPrincipal) token.getPrincipal()).getName();
   }
 
   private String getOrgaRole(KeycloakAuthenticationToken token) {
     return token.getAccount().getRoles().toString();
+  }
+
+  private List<Portfolio> getPortfolios(KeycloakAuthenticationToken token, List<Portfolio> p) {
+    List<Portfolio> portfolios = new ArrayList<>();
+
+    // TODO: Changing userId since it is dynamic and can therefore not be used
+
+    for (Portfolio portfolio : p) {
+      if (portfolio.getUserId().equals(getUserName(token))) {
+        portfolios.add(portfolio);
+      }
+    }
+    return portfolios;
   }
 
   /**
@@ -70,35 +83,13 @@ public class PortfoliosController {
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> p = hardMock.getMockPortfolios();
-    List<Portfolio> q = hardMock.getMockGroupPortfolios();
-
-    List<Portfolio> userPortfolios = new ArrayList<>();
-    List<Portfolio> groupPortfolios = new ArrayList<>();
-
-    System.out.println(getUserId(token));
-
-
-    for (Portfolio portfolio: p) {
-      if (portfolio.getUserId().equals(getUserId(token))) {
-        userPortfolios.add(portfolio);
-      }
-    }
-
-    for (Portfolio portfolio: q) {
-      if (portfolio.getUserId().equals(getUserId(token))) {
-        groupPortfolios.add(portfolio);
-      }
-    }
+    List<Portfolio> userPortfolios = getPortfolios(token, hardMock.getMockPortfolios());
+    List<Portfolio> groupPortfolios = getPortfolios(token, hardMock.getMockGroupPortfolios());
 
     model.addAttribute("last", groupPortfolios.get(1));
     model.addAttribute("vorlesungen", userPortfolios);
     model.addAttribute("gruppen", groupPortfolios);
 
-
-//    model.addAttribute("last", q.get(1));
-//    model.addAttribute("gruppen", q);
-//    model.addAttribute("vorlesungen", p);
     return "startseite";
   }
 
@@ -112,11 +103,13 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    List<Portfolio> p = hardMock.getMockPortfolios();
-    List<Portfolio> q = hardMock.getMockGroupPortfolios();
 
-    model.addAttribute("gruppen", q);
-    model.addAttribute("vorlesungen", p);
+    List<Portfolio> userPortfolios = getPortfolios(token, hardMock.getMockPortfolios());
+    List<Portfolio> groupPortfolios = getPortfolios(token, hardMock.getMockGroupPortfolios());
+
+    model.addAttribute("vorlesungen", userPortfolios);
+    model.addAttribute("gruppen", groupPortfolios);
+
     return "index";
 
   }
@@ -131,9 +124,10 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    List<Portfolio> q = hardMock.getMockGroupPortfolios();
 
-    model.addAttribute("gruppen", q);
+    List<Portfolio> groupPortfolios = getPortfolios(token, hardMock.getMockGroupPortfolios());
+
+    model.addAttribute("gruppen", groupPortfolios);
     
     return "gruppen";
   }
@@ -147,9 +141,10 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    List<Portfolio> p = hardMock.getMockPortfolios();
+
+    List<Portfolio> userPortfolios = getPortfolios(token, hardMock.getMockPortfolios());
     
-    model.addAttribute("vorlesungen", p);
+    model.addAttribute("vorlesungen", userPortfolios);
 
     return "privat";
   }
@@ -177,7 +172,7 @@ public class PortfoliosController {
   
     if (getOrgaRole(token).contains("orga")) {
       return "portfolio";
-    } else if (userSecurity.hasUserId(getUserId(token))) {
+    } else if (userSecurity.hasUserName(getUserName(token))) {
       return "portfolio";
     } else {
       return "redirect://localhost:8081"; // TODO: redirect to error page
