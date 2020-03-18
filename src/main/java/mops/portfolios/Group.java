@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 public class Group {
 
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
+  private transient long id;
 
   Group get(int id) {
     return this;

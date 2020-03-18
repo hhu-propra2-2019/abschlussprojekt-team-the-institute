@@ -9,7 +9,7 @@ public class FakeHttpClient implements IHttpClient {
   /**
    * Feel free to set this differently
    */
-  public transient String response = "{'key': 'value'}";
+  public transient String response = "{\"status\":4,\"groupList\":[]}";
 
   @Override
   public String get(String url) throws HttpClientErrorException {

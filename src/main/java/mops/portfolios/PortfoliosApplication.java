@@ -27,8 +27,8 @@ public class PortfoliosApplication {
 
   private static final Logger log = LoggerFactory.getLogger(PortfoliosApplication.class);
 
-    final @NonNull EntityManager entityManager;
-    final @NonNull PortfolioRepository repository;
+  final @NonNull EntityManager entityManager;
+  final @NonNull PortfolioRepository repository;
 
   /** Starts the application.
    * @param args - command-line arguments
@@ -37,7 +37,15 @@ public class PortfoliosApplication {
     SpringApplication.run(PortfoliosApplication.class, args);
   }
 
+    /**
+   * Set the commandLine inputs.
+   * @param portfolioRepository - the portfolioRepo to inject
+   * @param entryRepository - the entryRepo to inject
+   * @param entryFieldRepository - the entryFieldRepo to inject
+   * @return - the command line args.
+   */
     @Bean
+ 
     public CommandLineRunner demo(StateService stateService, PortfolioRepository PortfolioRepository, EntryRepository entryRepository, EntryFieldRepository entryFieldRepository) {
         return (args) -> {
       /*      Set<String> roles = new HashSet<>(Arrays.asList("student"));

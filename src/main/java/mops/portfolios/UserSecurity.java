@@ -8,17 +8,22 @@ public class UserSecurity {
 
   private transient Portfolio portfolio;
 
-  public boolean hasUserId (String userId) {
+  /**
+   * Checks if the user is allowed to view this portfolio.
+   * @param userName - the name of the user opening the portfolio
+   * @return - if portfolio.userName equals userName
+   */
+  public boolean hasUserName (String userName) {
 
-    String userIdOfPortfolio;
+    String userNameOfPortfolio;
 
     if (portfolio == null) {
       return false;
     }
 
-    userIdOfPortfolio = portfolio.getUserId();
+    userNameOfPortfolio = portfolio.getUserId();
 
-    if (userIdOfPortfolio != null && userIdOfPortfolio.equals(userId)) {
+    if (userNameOfPortfolio != null && userNameOfPortfolio.equals(userName)) {
       return true;
     }
 
