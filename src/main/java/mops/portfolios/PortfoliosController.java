@@ -6,13 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.AllArgsConstructor;
 import mops.portfolios.domain.entry.Entry;
+import mops.portfolios.domain.entry.EntryRepository;
+import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
+import mops.portfolios.domain.portfolio.PortfolioRepository;
+import mops.portfolios.domain.portfolio.PortfolioService;
+import mops.portfolios.domain.usergroup.UserGroupService;
 import mops.portfolios.keycloak.Account;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +33,17 @@ public class PortfoliosController {
   private transient HardMock hardMock;
   private transient AsciiDocConverter asciiConverter;
   private transient UserSecurity userSecurity;
+
+  @Autowired
+  private transient EntryService entryService;
+  @Autowired
+  private transient EntryRepository entryRepository;
+  @Autowired
+  private transient PortfolioService portfolioService;
+  @Autowired
+  private transient PortfolioRepository portfolioRepository;
+  @Autowired
+  private transient UserGroupService userGroupService;
 
   /**
    * Takes the auth-token from Keycloak and generates an AccounDTO for the views.
@@ -41,8 +59,7 @@ public class PortfoliosController {
         ((KeycloakPrincipal) token.getPrincipal()).getKeycloakSecurityContext().getIdToken()
                     .getPicture(),
         token.getAccount().getRoles(),
-        ((KeycloakPrincipal) token.getPrincipal()).getKeycloakSecurityContext().getIdToken()
-                 .getSubject());
+        ((KeycloakPrincipal) token.getPrincipal()).getName());
   }
 
   private void authorize(Model model, KeycloakAuthenticationToken token) {
@@ -58,12 +75,13 @@ public class PortfoliosController {
     return token.getAccount().getRoles().toString();
   }
 
+  @SuppressWarnings("PMD")
   private List<Portfolio> getPortfolios(KeycloakAuthenticationToken token, List<Portfolio> p) {
     List<Portfolio> portfolios = new ArrayList<>();
 
     // TODO: Changing userId since it is dynamic and can therefore not be used
 
-    for (Portfolio portfolio : p) {
+    for (Portfolio portfolio: p) {
       if (portfolio.getUserId().equals(getUserName(token))) {
         portfolios.add(portfolio);
       }
@@ -83,12 +101,14 @@ public class PortfoliosController {
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> userPortfolios = getPortfolios(token, hardMock.getMockPortfolios());
-    List<Portfolio> groupPortfolios = getPortfolios(token, hardMock.getMockGroupPortfolios());
+    List<Portfolio> pList = portfolioService.findFirstFew();
+
+    List<Portfolio> groupPortfolios = getPortfolios(token, pList.subList(0, 4));
+    List<Portfolio> userPortfolios = getPortfolios(token, pList.subList(4, pList.size() - 1));
 
     model.addAttribute("last", groupPortfolios.get(1));
-    model.addAttribute("vorlesungen", userPortfolios);
     model.addAttribute("gruppen", groupPortfolios);
+    model.addAttribute("vorlesungen", userPortfolios);
 
     return "startseite";
   }
@@ -104,11 +124,11 @@ public class PortfoliosController {
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> userPortfolios = getPortfolios(token, hardMock.getMockPortfolios());
-    List<Portfolio> groupPortfolios = getPortfolios(token, hardMock.getMockGroupPortfolios());
+    List<Portfolio> groupPortfolios = getPortfolios(token, portfolioService.getGroupPortfolios(userGroupService,"userId"));
+    List<Portfolio> userPortfolios = getPortfolios(token, portfolioService.findAllByUserId("userId"));
 
-    model.addAttribute("vorlesungen", userPortfolios);
     model.addAttribute("gruppen", groupPortfolios);
+    model.addAttribute("vorlesungen", userPortfolios);
 
     return "index";
 
@@ -125,10 +145,10 @@ public class PortfoliosController {
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> groupPortfolios = getPortfolios(token, hardMock.getMockGroupPortfolios());
+    List<Portfolio> groupPortfolios = getPortfolios(token, portfolioService.getGroupPortfolios(userGroupService,"userId"));
 
     model.addAttribute("gruppen", groupPortfolios);
-    
+
     return "gruppen";
   }
 
@@ -142,8 +162,8 @@ public class PortfoliosController {
   public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> userPortfolios = getPortfolios(token, hardMock.getMockPortfolios());
-    
+    List<Portfolio> userPortfolios = getPortfolios(token, portfolioService.findAllByUserId("userId"));
+
     model.addAttribute("vorlesungen", userPortfolios);
 
     return "privat";
@@ -153,23 +173,21 @@ public class PortfoliosController {
    * portfolio mapping for GET requests.
    *
    * @param model The spring model to add the attributes to
-   * @param title The name of the portfolio
+   * @param id The ID of the portfolio
    * @return The page to load
    */
   @SuppressWarnings("PMD")
   @GetMapping("/portfolio")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-
-  public String clickPortfolio(Model model, @RequestParam String title,
+  public String clickPortfolio(Model model, @RequestParam Long id,
                                KeycloakAuthenticationToken token) {
 
     authorize(model, token);
-  
-    Portfolio portfolio = hardMock.getPortfolioByTitle(title);
+
+    Portfolio portfolio = portfolioService.findPortfolioById(id);
 
     model.addAttribute("portfolio", portfolio);
-    model.addAttribute("entries", hardMock.getMockEntry());
-  
+
     if (getOrgaRole(token).contains("orga")) {
       return "portfolio";
     } else if (userSecurity.hasUserName(getUserName(token))) {
@@ -183,19 +201,20 @@ public class PortfoliosController {
    * entry mapping for GET requests.
    *
    * @param model The spring model to add the attributes to
-   * @param title The name of the entry
-   * @param entryTitle The title of the entry
+   * @param pId The portfolio id
+   * @param eId The entry id
    * @return The page to load
    */
   @SuppressWarnings("PMD")
   @GetMapping("/entry")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String clickEntry(Model model, @RequestParam String title,
-                           @RequestParam String entryTitle, KeycloakAuthenticationToken token) {
+  public String clickEntry(Model model, @RequestParam Long pId,
+                           @RequestParam Long eId, KeycloakAuthenticationToken token) {
 
     authorize(model, token);
-    Portfolio portfolio = hardMock.getPortfolioByTitle(title);
-    Entry entry = hardMock.getEntryByTitle(entryTitle);
+
+    Portfolio portfolio = portfolioService.findPortfolioById(pId);
+    Entry entry = portfolioService.findEntryById(portfolio, eId);
 
     model.addAttribute("portfolio", portfolio);
     model.addAttribute("entry", entry);
@@ -210,7 +229,7 @@ public class PortfoliosController {
    */
   @SuppressWarnings("PMD")
   @GetMapping("/edit")
-  @RolesAllowed({"ROLE_orga"})
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String editTemplate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
@@ -229,7 +248,7 @@ public class PortfoliosController {
   public String uploadTemplate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    model.addAttribute("portfolioList", hardMock.getMockPortfolios());
+    model.addAttribute("portfolioList", portfolioService.findAll());
     model.addAttribute("entryList", hardMock.getMockEntry());
 
     return "upload_template";
