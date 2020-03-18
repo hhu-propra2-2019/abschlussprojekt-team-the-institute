@@ -18,6 +18,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.Random;
 
 
 @SpringBootApplication
@@ -75,11 +76,10 @@ public class PortfoliosApplication {
 
             log.info("8==================================================================================");
 
-//            Long gruppenState = stateService.getState("gruppenbildung2");
-//            log.info(stateService.toString());
-//            log.info(gruppenState.toString());
-//
-            stateService.setState("gruppenbildung2", 99L);
+            log.info(stateService.getState("gruppenbildung2").toString());
+
+            stateService.setState("gruppenbildung2", Math.abs(new Random().nextLong()));
+
             log.info(stateService.getState("gruppenbildung2").toString());
         };
     }

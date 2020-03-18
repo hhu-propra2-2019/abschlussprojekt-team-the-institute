@@ -1,5 +1,6 @@
 package mops.portfolios.domain.state;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -12,6 +13,7 @@ public class StateService {
 //    @PersistenceContext
 //    private EntityManager em;
 
+    @Autowired
     StateRepository repository;
 
     public Long getState(String name) {
