@@ -132,7 +132,7 @@ public class DatabaseUpdater {
 
     List<Long> deletedGroups = getDeletedGroups(jsonObject);
     for(Long groupId : deletedGroups) {
-      userGroupRepository.deleteById(groupId);
+      userGroupRepository.deleteById(groupId); // TODO: Change to own method
     }
     // TODO: Process the received data
   }
