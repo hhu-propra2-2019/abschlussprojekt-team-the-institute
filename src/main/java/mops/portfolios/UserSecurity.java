@@ -10,20 +10,20 @@ public class UserSecurity {
 
   /**
    * Checks if the user is allowed to view this portfolio.
-   * @param userId - the id of the user opening the portfolio
-   * @return - if portfolio.userId equals userId
+   * @param userName - the name of the user opening the portfolio
+   * @return - if portfolio.userName equals userName
    */
-  public boolean hasUserId(String userId) {
+  public boolean hasUserName (String userName) {
 
-    String userIdOfPortfolio;
+    String userNameOfPortfolio;
 
     if (portfolio == null) {
       return false;
     }
 
-    userIdOfPortfolio = portfolio.getUserId();
+    userNameOfPortfolio = portfolio.getUserId();
 
-    if (userIdOfPortfolio != null && userIdOfPortfolio.equals(userId)) {
+    if (userNameOfPortfolio != null && userNameOfPortfolio.equals(userName)) {
       return true;
     }
 
