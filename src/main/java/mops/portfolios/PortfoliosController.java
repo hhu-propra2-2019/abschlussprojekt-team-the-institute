@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-
 import lombok.AllArgsConstructor;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryRepository;
@@ -101,10 +100,11 @@ public class PortfoliosController {
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> pList = portfolioService.findFirstFew();
+    List<Portfolio> portfoliosList = portfolioService.findFirstFew();
 
-    List<Portfolio> groupPortfolios = getPortfolios(token, pList.subList(0, 4));
-    List<Portfolio> userPortfolios = getPortfolios(token, pList.subList(4, pList.size() - 1));
+    List<Portfolio> groupPortfolios = getPortfolios(token, portfoliosList.subList(0, 4));
+    List<Portfolio> userPortfolios = getPortfolios(token,
+            portfoliosList.subList(4, portfoliosList.size() - 1));
 
     model.addAttribute("last", groupPortfolios.get(1));
     model.addAttribute("gruppen", groupPortfolios);
@@ -124,8 +124,10 @@ public class PortfoliosController {
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> groupPortfolios = getPortfolios(token, portfolioService.getGroupPortfolios(userGroupService,"userId"));
-    List<Portfolio> userPortfolios = getPortfolios(token, portfolioService.findAllByUserId("userId"));
+    List<Portfolio> groupPortfolios = getPortfolios(token,
+            portfolioService.getGroupPortfolios(userGroupService,"userId"));
+    List<Portfolio> userPortfolios = getPortfolios(token,
+            portfolioService.findAllByUserId("userId"));
 
     model.addAttribute("gruppen", groupPortfolios);
     model.addAttribute("vorlesungen", userPortfolios);
@@ -145,7 +147,8 @@ public class PortfoliosController {
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> groupPortfolios = getPortfolios(token, portfolioService.getGroupPortfolios(userGroupService,"userId"));
+    List<Portfolio> groupPortfolios = getPortfolios(token,
+            portfolioService.getGroupPortfolios(userGroupService,"userId"));
 
     model.addAttribute("gruppen", groupPortfolios);
 
@@ -162,7 +165,8 @@ public class PortfoliosController {
   public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> userPortfolios = getPortfolios(token, portfolioService.findAllByUserId("userId"));
+    List<Portfolio> userPortfolios = getPortfolios(token,
+            portfolioService.findAllByUserId("userId"));
 
     model.addAttribute("vorlesungen", userPortfolios);
 
@@ -201,20 +205,20 @@ public class PortfoliosController {
    * entry mapping for GET requests.
    *
    * @param model The spring model to add the attributes to
-   * @param pId The portfolio id
-   * @param eId The entry id
+   * @param portfolioId The portfolio id
+   * @param entryId The entry id
    * @return The page to load
    */
   @SuppressWarnings("PMD")
   @GetMapping("/entry")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String clickEntry(Model model, @RequestParam Long pId,
-                           @RequestParam Long eId, KeycloakAuthenticationToken token) {
+  public String clickEntry(Model model, @RequestParam Long portfolioId,
+                           @RequestParam Long entryId, KeycloakAuthenticationToken token) {
 
     authorize(model, token);
 
-    Portfolio portfolio = portfolioService.findPortfolioById(pId);
-    Entry entry = portfolioService.findEntryById(portfolio, eId);
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+    Entry entry = portfolioService.findEntryById(portfolio, entryId);
 
     model.addAttribute("portfolio", portfolio);
     model.addAttribute("entry", entry);
