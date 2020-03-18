@@ -1,5 +1,14 @@
 package mops.portfolios;
 
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+import javax.sound.sampled.Port;
 import lombok.AllArgsConstructor;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryRepository;
@@ -30,18 +39,14 @@ import java.util.List;
 @Controller
 @AllArgsConstructor
 public class PortfoliosController {
-  private transient HardMock hardMock;
+
   private transient AsciiDocConverter asciiConverter;
   private transient UserSecurity userSecurity;
 
   @Autowired
   private transient EntryService entryService;
   @Autowired
-  private transient EntryRepository entryRepository;
-  @Autowired
   private transient PortfolioService portfolioService;
-  @Autowired
-  private transient PortfolioRepository portfolioRepository;
   @Autowired
   private transient UserGroupService userGroupService;
 
@@ -105,7 +110,7 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-
+    
     List<Portfolio> portfoliosList = portfolioService.findFirstFew();
 
     List<Portfolio> groupPortfolios = /*getPortfolios(token, */portfoliosList.subList(0, 4);
@@ -258,7 +263,6 @@ public class PortfoliosController {
     authorize(model, token);
 
     model.addAttribute("portfolioList", portfolioService.findAll());
-    model.addAttribute("entryList", hardMock.getMockEntry());
 
     return "upload_template";
   }

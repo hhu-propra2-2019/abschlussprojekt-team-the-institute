@@ -24,8 +24,8 @@ public class PortfoliosApplication {
 
   private static final Logger log = LoggerFactory.getLogger(PortfoliosApplication.class);
 
-    final @NonNull EntityManager entityManager;
-    final @NonNull PortfolioRepository repository;
+  final @NonNull EntityManager entityManager;
+  final @NonNull PortfolioRepository repository;
 
   /** Starts the application.
    * @param args - command-line arguments
@@ -34,43 +34,53 @@ public class PortfoliosApplication {
     SpringApplication.run(PortfoliosApplication.class, args);
   }
 
-    @Bean
-    public CommandLineRunner demo(PortfolioRepository PortfolioRepository, EntryRepository entryRepository, EntryFieldRepository entryFieldRepository) {
-        return (args) -> {
-      /*      Set<String> roles = new HashSet<>(Arrays.asList("student"));
+  /**
+   * Set the commandLine inputs.
+   * @param portfolioRepository - the portfolioRepo to inject
+   * @param entryRepository - the entryRepo to inject
+   * @param entryFieldRepository - the entryFieldRepo to inject
+   * @return - the command line args.
+   */
+  @Bean
+  public CommandLineRunner demo(PortfolioRepository portfolioRepository,
+                                EntryRepository entryRepository,
+                                EntryFieldRepository entryFieldRepository) {
+    return (args) -> {
+      /*
+          Set<String> roles = new HashSet<>(Arrays.asList("student"));
+          User user1 = new User("User1", "mail1@example.com", null, roles, "UUID-1234-5678");
+          User user2 = new User("User2", "mail2@example.com", null, roles, "UUID-4321-9876");
 
-            User user1 = new User("User1", "mail1@example.com", null, roles, "UUID-1234-5678");
-            User user2 = new User("User2", "mail2@example.com", null, roles, "UUID-4321-9876");
+          Group group1 = new Group(123L, "Group1");
 
-            Group group1 = new Group(123L, "Group1");
+          UserGroup userGroup1 = new UserGroup(user1.getId(), group1.getId(), "title11111111111");
+          UserGroup userGroup2 = new UserGroup(user2.getId(), group1.getId(), "title22222222222");
 
-            UserGroup userGroup1 = new UserGroup(user1.getId(), group1.getId(), "title11111111111");
-            UserGroup userGroup2 = new UserGroup(user2.getId(), group1.getId(), "title22222222222");
+          repository.save(userGroup1);
+          repository.save(userGroup2); */
+      String line = "============================================================"
+          + "======================";
+      log.info("1" + line);
+      log.info("2" + line);
+      log.info("3" + line);
+      log.info("4" + line);
+      log.info("5" + line);
+      log.info("6" + line);
+      log.info("7" + line);
 
-            repository.save(userGroup1);
-            repository.save(userGroup2); */
+      DemoDataGenerator demo = new DemoDataGenerator();
 
-            log.info("1==================================================================================");
-            log.info("2==================================================================================");
-            log.info("3==================================================================================");
-            log.info("4==================================================================================");
-            log.info("5==================================================================================");
-            log.info("6==================================================================================");
-            log.info("7==================================================================================");
-
-     DemoDataGenerator demo = new DemoDataGenerator();
-
-            for (int i = 0; i < 10; i++) {
-                repository.save(demo.generateUserPortfolio());
-                repository.save(demo.generateGroupPortfolio());
-            }
+      for (int i = 0; i < 10; i++) {
+        repository.save(demo.generateUserPortfolio());
+        repository.save(demo.generateGroupPortfolio());
+      }
 
 
 
-            for (Portfolio portfolio : repository.findAll()) {
-                log.info(portfolio.toString());
-            }
+      for (Portfolio portfolio : repository.findAll()) {
+        log.info(portfolio.toString());
+      }
 
-        };
-    }
+    };
+  }
 }

@@ -8,6 +8,11 @@ public class UserSecurity {
 
   private transient Portfolio portfolio;
 
+  /**
+   * Checks if the user is allowed to view this portfolio.
+   * @param userName - the name of the user opening the portfolio
+   * @return - if portfolio.userName equals userName
+   */
   public boolean hasUserName (String userName) {
 
     String userNameOfPortfolio;
