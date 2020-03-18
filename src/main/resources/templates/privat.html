@@ -20,7 +20,7 @@
         <div class="card-body text-dark">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item" th:each="vorlesung : ${vorlesungen}">
-                    <a th:text="${vorlesung.getTitle()}" th:href="@{/portfolio(title=${vorlesung.getTitle()})}">Portfolio
+                    <a th:text="${vorlesung.getTitle()}" th:href="@{/portfolio(id=${vorlesung.getId()})}">Portfolio
                         1</a>
                 </li>
             </ul>
