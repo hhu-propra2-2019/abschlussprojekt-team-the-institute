@@ -22,8 +22,61 @@
     <hr class="my-4">
     <p>Portfolio Eintrag - Abgabe</p>
 
-    <div th:text="${template.getPortfolioTitle()}"></div>
-    <div th:text="${template.getEntryTitle()}"></div>
+    <p th:text="${template.getPortfolioTitle()}">Portfolio title</p>
+    <p th:text="${template.getEntryTitle()}">Entry title</p>
+
+    <hr>
+
+    <form th:each="entry : ${template.getEntries()}">
+
+        <div th:switch="${entry.getType()}" th:with="AnswerType = ${T(mops.portfolios.templates.AnswerType)}">
+
+            <div th:case="${AnswerType.TEXT}">
+                <label for="validationTextarea" th:text="${entry.getQuestion()}">Question</label>
+                <textarea class="form-control is-invalid" id="validationTextarea" th:placeholder="${entry.getHint()}"
+                          required></textarea>
+                <div class="invalid-feedback">
+                    Du musst dieses Textfeld ausfüllen
+                </div>
+            </div>
+
+            <div th:case="${AnswerType.SINGLE_CHOICE}">
+
+                <div class="form-check" th:each="choice : ${entry.getHint().split(',')}">
+                    <input class="form-check-input" type="radio" th:id="${choice.replace(' ', '')}">
+                    <label class="form-check-label" th:for="${choice.replace(' ', '')}" th:text="${choice}">
+                        Choice
+                    </label>
+                </div>
+
+            </div>
+
+            <div th:case="${AnswerType.MULTIPLE_CHOICE}">
+
+                <div class="form-check" th:each="choice : ${entry.getHint().split(',')}">
+                    <input class="form-check-input" type="checkbox" th:id="${choice.replace(' ', '')}">
+                    <label class="form-check-label" th:for="${choice.replace(' ', '')}" th:text="${choice}">
+                        Choice
+                    </label>
+                </div>
+
+            </div>
+
+            <!--
+            <p th:case="${AnswerType.ATTACHEMENT}">User is an administrator</p>
+
+            <p th:case="${AnswerType.NUMBER_SLIDER}">User is an administrator</p>
+            -->
+
+            <p th:case="*">Type not found</p>
+
+            <br>
+            <hr>
+
+        </div>
+
+
+    </form>
 
 </div>
 
