@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import mops.portfolios.domain.entry.Entry;
-import mops.portfolios.domain.usergroup.Group;
+import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.usergroup.User;
 
 @Entity

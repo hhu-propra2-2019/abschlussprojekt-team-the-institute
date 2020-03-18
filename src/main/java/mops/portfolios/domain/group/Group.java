@@ -1,4 +1,4 @@
-package mops.portfolios.domain.usergroup;
+package mops.portfolios.domain.group;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

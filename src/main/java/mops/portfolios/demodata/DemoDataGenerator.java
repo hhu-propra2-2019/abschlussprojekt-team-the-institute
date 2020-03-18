@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.portfolio.Portfolio;
-import mops.portfolios.domain.usergroup.Group;
+import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.usergroup.User;
 
 public class DemoDataGenerator {
