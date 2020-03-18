@@ -67,10 +67,9 @@ public class PortfoliosController {
         ((KeycloakPrincipal) token.getPrincipal()).getName());
   }
 
-    private static final Logger log = LoggerFactory.getLogger(PortfoliosApplication.class);
-
     private void authorize(Model model, KeycloakAuthenticationToken token) {
         Account account = createAccountFromPrincipal(token);
+        @SuppressWarnings("PMD")
         KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
         model.addAttribute("account", account);
     }

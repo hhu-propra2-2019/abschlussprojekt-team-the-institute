@@ -37,16 +37,9 @@ public class PortfoliosApplication {
     SpringApplication.run(PortfoliosApplication.class, args);
   }
 
-    /**
-   * Set the commandLine inputs.
-   * @param portfolioRepository - the portfolioRepo to inject
-   * @param entryRepository - the entryRepo to inject
-   * @param entryFieldRepository - the entryFieldRepo to inject
-   * @return - the command line args.
-   */
+    // PLS DO NOT document this - we remove this before release, this runner is just a playground.
     @Bean
- 
-    public CommandLineRunner demo(StateService stateService, PortfolioRepository PortfolioRepository, EntryRepository entryRepository, EntryFieldRepository entryFieldRepository) {
+    public CommandLineRunner demo(StateService stateService, EntryRepository entryRepository, EntryFieldRepository entryFieldRepository) {
         return (args) -> {
       /*      Set<String> roles = new HashSet<>(Arrays.asList("student"));
 
