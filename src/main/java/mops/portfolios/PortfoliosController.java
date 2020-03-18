@@ -67,10 +67,12 @@ public class PortfoliosController {
         ((KeycloakPrincipal) token.getPrincipal()).getName());
   }
 
-  private void authorize(Model model, KeycloakAuthenticationToken token) {
-    Account account = createAccountFromPrincipal(token);
-    model.addAttribute("account", account);
-  }
+    private void authorize(Model model, KeycloakAuthenticationToken token) {
+        Account account = createAccountFromPrincipal(token);
+        @SuppressWarnings("PMD")
+        KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
+        model.addAttribute("account", account);
+    }
 
   private String getUserName(KeycloakAuthenticationToken token) {
     return ((KeycloakPrincipal) token.getPrincipal()).getName();
