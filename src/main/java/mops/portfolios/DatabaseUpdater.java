@@ -2,12 +2,13 @@ package mops.portfolios;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.jruby.RubyProcess;
+import mops.portfolios.domain.usergroup.UserGroupRepository;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -19,6 +20,10 @@ import java.util.List;
 public class DatabaseUpdater {
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
   transient String url;
+
+  @Autowired
+  UserGroupRepository userGroupRepository;
+
 
   /**
    * The thread to run the updates.
@@ -127,7 +132,7 @@ public class DatabaseUpdater {
 
     List<Long> deletedGroups = getDeletedGroups(jsonObject);
     for(Long groupId : deletedGroups) {
-      ;
+      userGroupRepository.deleteById(groupId);
     }
     // TODO: Process the received data
   }
