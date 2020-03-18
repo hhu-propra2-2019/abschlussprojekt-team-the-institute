@@ -2,6 +2,7 @@ package mops.portfolios;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
@@ -72,9 +73,32 @@ public class PortfoliosController {
     List<Portfolio> p = hardMock.getMockPortfolios();
     List<Portfolio> q = hardMock.getMockGroupPortfolios();
 
-    model.addAttribute("last", q.get(1));
-    model.addAttribute("gruppen", q);
-    model.addAttribute("vorlesungen", p);
+    List<Portfolio> userPortfolios = new ArrayList<>();
+    List<Portfolio> groupPortfolios = new ArrayList<>();
+
+    System.out.println(getUserId(token));
+
+
+    for (Portfolio portfolio: p) {
+      if (portfolio.getUserId().equals(getUserId(token))) {
+        userPortfolios.add(portfolio);
+      }
+    }
+
+    for (Portfolio portfolio: q) {
+      if (portfolio.getUserId().equals(getUserId(token))) {
+        groupPortfolios.add(portfolio);
+      }
+    }
+
+    model.addAttribute("last", groupPortfolios.get(1));
+    model.addAttribute("vorlesungen", userPortfolios);
+    model.addAttribute("gruppen", groupPortfolios);
+
+
+//    model.addAttribute("last", q.get(1));
+//    model.addAttribute("gruppen", q);
+//    model.addAttribute("vorlesungen", p);
     return "startseite";
   }
 
