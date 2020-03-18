@@ -180,7 +180,7 @@ public class PortfoliosController {
     } else if (userSecurity.hasUserId(getUserId(token))) {
       return "portfolio";
     } else {
-      return "redirect://localhost:8081";
+      return "redirect://localhost:8081"; // TODO: redirect to error page
     }
   }
 
