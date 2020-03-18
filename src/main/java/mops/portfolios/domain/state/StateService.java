@@ -12,7 +12,7 @@ public class StateService {
 //    private EntityManager em;
 
     @Autowired
-    StateRepository repository;
+    private transient StateRepository repository;
 
     public Long getState(String name) {
         Optional<State> lastState = repository.findById(name);
