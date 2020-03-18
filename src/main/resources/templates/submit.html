@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Submit', headcontent=~{:: headcontent}, navigation=~{fragments/navigation :: navigationFragment}, bodycontent=~{:: bodycontent})}">
+
+<head>
+    <th:block th:fragment="headcontent">
+        <th:block th:insert="fragments/dependencies :: dependencyFragment"></th:block>
+
+        <style>
+
+        </style>
+
+    </th:block>
+</head>
+
+<body th:fragment="bodycontent">
+
+<div class="jumbotron pt-1 font-italic">
+
+    <h1 class="display-5">Submit</h1>
+    <p class="lead">Willkommen beim Portfolioservice des MOPS!</p>
+    <hr class="my-4">
+    <p>Portfolio Eintrag - Abgabe</p>
+
+    <div th:text="${template.getPortfolioTitle()}"></div>
+    <div th:text="${template.getEntryTitle()}"></div>
+
+</div>
+
+<script>
+
+</script>
+
+</body>
+</html>
