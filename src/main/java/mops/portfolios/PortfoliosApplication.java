@@ -9,6 +9,8 @@ import mops.portfolios.domain.entry.EntryFieldRepository;
 import mops.portfolios.domain.entry.EntryRepository;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioRepository;
+import mops.portfolios.domain.state.State;
+import mops.portfolios.domain.state.StateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -16,6 +18,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.Random;
 
 
 @SpringBootApplication
@@ -34,53 +37,51 @@ public class PortfoliosApplication {
     SpringApplication.run(PortfoliosApplication.class, args);
   }
 
-  /**
-   * Set the commandLine inputs.
-   * @param portfolioRepository - the portfolioRepo to inject
-   * @param entryRepository - the entryRepo to inject
-   * @param entryFieldRepository - the entryFieldRepo to inject
-   * @return - the command line args.
-   */
-  @Bean
-  public CommandLineRunner demo(PortfolioRepository portfolioRepository,
-                                EntryRepository entryRepository,
-                                EntryFieldRepository entryFieldRepository) {
-    return (args) -> {
-      /*
-          Set<String> roles = new HashSet<>(Arrays.asList("student"));
-          User user1 = new User("User1", "mail1@example.com", null, roles, "UUID-1234-5678");
-          User user2 = new User("User2", "mail2@example.com", null, roles, "UUID-4321-9876");
+    // PLS DO NOT document this - we remove this before release, this runner is just a playground.
+    @Bean
+    public CommandLineRunner demo(StateService stateService, EntryRepository entryRepository, EntryFieldRepository entryFieldRepository) {
+        return (args) -> {
+      /*      Set<String> roles = new HashSet<>(Arrays.asList("student"));
 
-          Group group1 = new Group(123L, "Group1");
+            User user1 = new User("User1", "mail1@example.com", null, roles, "UUID-1234-5678");
+            User user2 = new User("User2", "mail2@example.com", null, roles, "UUID-4321-9876");
 
-          UserGroup userGroup1 = new UserGroup(user1.getId(), group1.getId(), "title11111111111");
-          UserGroup userGroup2 = new UserGroup(user2.getId(), group1.getId(), "title22222222222");
+            Group group1 = new Group(123L, "Group1");
 
-          repository.save(userGroup1);
-          repository.save(userGroup2); */
-      String line = "============================================================"
-          + "======================";
-      log.info("1" + line);
-      log.info("2" + line);
-      log.info("3" + line);
-      log.info("4" + line);
-      log.info("5" + line);
-      log.info("6" + line);
-      log.info("7" + line);
+            UserGroup userGroup1 = new UserGroup(user1.getId(), group1.getId(), "title11111111111");
+            UserGroup userGroup2 = new UserGroup(user2.getId(), group1.getId(), "title22222222222");
 
-      DemoDataGenerator demo = new DemoDataGenerator();
+            repository.save(userGroup1);
+            repository.save(userGroup2); */
 
-      for (int i = 0; i < 10; i++) {
-        repository.save(demo.generateUserPortfolio());
-        repository.save(demo.generateGroupPortfolio());
-      }
+            log.info("1==================================================================================");
+            log.info("2==================================================================================");
+            log.info("3==================================================================================");
+            log.info("4==================================================================================");
+            log.info("5==================================================================================");
+            log.info("6==================================================================================");
+            log.info("7==================================================================================");
+
+     DemoDataGenerator demo = new DemoDataGenerator();
+
+            for (int i = 0; i < 10; i++) {
+                repository.save(demo.generateUserPortfolio());
+                repository.save(demo.generateGroupPortfolio());
+            }
 
 
 
-      for (Portfolio portfolio : repository.findAll()) {
-        log.info(portfolio.toString());
-      }
+            for (Portfolio portfolio : repository.findAll()) {
+                log.info(portfolio.toString());
+            }
 
-    };
-  }
+            log.info("8==================================================================================");
+
+            log.info(stateService.getState("gruppenbildung2").toString());
+
+            stateService.setState("gruppenbildung2", Math.abs(new Random().nextLong()));
+
+            log.info(stateService.getState("gruppenbildung2").toString());
+        };
+    }
 }
