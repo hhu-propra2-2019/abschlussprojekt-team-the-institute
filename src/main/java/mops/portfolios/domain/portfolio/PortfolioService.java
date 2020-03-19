@@ -94,6 +94,7 @@ public class PortfolioService {
    *  Finds all Portfolios that are templates
    * @return - list of portfolios
    */
+  @SuppressWarnings("PMD")
   public List<Portfolio> getAllTemplates() {
     List<Portfolio> templates = new ArrayList<>();
     List<Portfolio> allPortfolios = findAll();
@@ -109,6 +110,7 @@ public class PortfolioService {
    * Finds all actual non-template portfolios
    * @return - list of portfolios
    */
+  @SuppressWarnings("PMD")
   public List<Portfolio> getAllPortfolios() {
     List<Portfolio> templates = new ArrayList<>();
     List<Portfolio> allPortfolios = findAll();
