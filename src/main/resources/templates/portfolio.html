@@ -29,6 +29,7 @@
                 commodo. Nunc semper lectus imperdiet lectus volutpat, vitae faucibus odio finibus.</p>
             <a class="btn btn-primary"
                th:href="@{/entry(portfolioId=${portfolio.getId()},entryId=${entry.getId()})}">Anzeigen</a>
+            <button class="btn btn-primary"><a href="/submit">An Umfrage teilnehmen</a></button>
         </div>
         <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()}">Date created</div>
     </div>
