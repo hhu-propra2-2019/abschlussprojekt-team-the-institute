@@ -26,18 +26,16 @@
 
     <hr>
 
-    <form th:each="entry : ${template.getEntries()}">
+    <form>
 
-        <div th:switch="${entry.getType()}" th:with="AnswerType = ${T(mops.portfolios.templates.AnswerType)}">
+        <div th:each="entry : ${template.getEntries()}" th:switch="${entry.getType()}"
+             th:with="AnswerType = ${T(mops.portfolios.templates.AnswerType)}">
 
             <div th:case="${AnswerType.TEXT}">
                 <label for="INPUT_TEXT">
                     <u th:text="${entry.getQuestion()}">Question</u>
                 </label>
                 <textarea class="form-control" id="INPUT_TEXT" th:placeholder="${entry.getHint()}" required></textarea>
-                <div class="invalid-feedback">
-                    Du musst dieses Textfeld ausfüllen
-                </div>
             </div>
 
             <div th:case="${AnswerType.SINGLE_CHOICE}">
@@ -46,7 +44,7 @@
                 </label>
                 <div class="form-check" th:each="choice : ${entry.getHint().split(',')}"
                      th:with="id=${choice.replace(' ', '')}">
-                    <input class="form-check-input" type="radio" name="radio" th:id="${id}">
+                    <input class="form-check-input" type="radio" name="radio" th:id="${id}" required>
                     <label class="form-check-label" th:for="id" th:text="${choice}">
                         Choice
                     </label>
@@ -59,7 +57,7 @@
                 </label>
                 <div class="form-check" th:each="choice : ${entry.getHint().split(',')}"
                      th:with="id=${choice.replace(' ', '')}">
-                    <input class="form-check-input" type="checkbox" th:id="${id}">
+                    <input class="form-check-input" type="checkbox" th:id="${id}" required>
                     <label class="form-check-label" th:for="${id}" th:text="${choice}">
                         Choice
                     </label>
@@ -71,7 +69,7 @@
                     <u th:text="${entry.getQuestion()}">Question</u>
                 </label>
                 <br>
-                <input class="custom-range w-50" id="INPUT_RANGE" type="range"
+                <input class="custom-range w-50" id="INPUT_RANGE" type="range" required
                        th:value="${range[0]}" th:min="${range[0]}" th:max="${range[1]}"
                        data-toggle="tooltip" data-placement="top" th:title="${range[0]}"
                        oninput="$('#INPUT_RANGE').tooltip('dispose'); this.title = this.value; $('#INPUT_RANGE').tooltip('show');">
@@ -83,7 +81,8 @@
                 </label>
                 <br>
                 <div class="custom-file w-50">
-                    <input type="file" class="custom-file-input" id="INPUT_FILE" th:accept="${entry.getHint()}">
+                    <input type="file" class="custom-file-input" id="INPUT_FILE" th:accept="${entry.getHint()}"
+                           required>
                     <label class="custom-file-label" for="INPUT_FILE">Datei auswählen</label>
                 </div>
             </div>
@@ -95,12 +94,14 @@
 
         </div>
 
+        <button class="btn btn-primary" type="submit">Absenden</button>
 
     </form>
 
 </div>
 
 <script>
+    //TODO: FORM VALIDATION
 </script>
 
 </body>
