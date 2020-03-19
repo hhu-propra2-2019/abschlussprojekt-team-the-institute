@@ -27,7 +27,7 @@ public class Portfolio {
 
   private @Getter Long groupId;
 
-  private @Getter boolean isTemplate;
+  private @Setter @Getter boolean isTemplate;
 
   @OneToMany(
       cascade = CascadeType.ALL,
