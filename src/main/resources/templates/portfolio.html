@@ -18,7 +18,7 @@
     <p th:text="'Hier eine Liste aller Einträge im Portfolio ' + ${portfolio.getTitle()} + ':'">Entry list</p>
 
     <div class="card border-dark w-50 mb-2" th:each="entry : ${portfolio.getEntries()}">
-        <h5 class="card-header" th:text="'Woche ' + ${entry.getTitle()}">Title/Week</h5>
+        <h5 class="card-header" th:text="${entry.getTitle()}">Title/Week</h5>
         <div class="card-body text-dark">
             <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc non finibus odio. Nullam
                 leo tortor, tristique eu efficitur eu, hendrerit eu est. Sed sed risus aliquet, mollis velit vitae,
