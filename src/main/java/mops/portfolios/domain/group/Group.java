@@ -6,6 +6,7 @@ import mops.portfolios.domain.user.User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import java.util.ArrayList;
@@ -23,5 +24,5 @@ public class Group {
   private String title;
 
   @ManyToMany
-  private List<User> users = new ArrayList<User>();
+  private List<User> users = new ArrayList<>();
 }

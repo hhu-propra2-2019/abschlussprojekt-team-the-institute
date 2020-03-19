@@ -23,6 +23,7 @@ public class GroupService {
     }
 
     public void updateGroup(Long groupId, List<User> users) {
+
         Group group = repository.findById(groupId).get();
 
         group.setUsers(users);
