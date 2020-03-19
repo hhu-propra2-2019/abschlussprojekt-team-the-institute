@@ -123,4 +123,12 @@ public class DemoDataGenerator {
   private Group generateGroup() {
     return new Group(9876543210L, "test");
   }
+
+  private Portfolio generateTemplate() {
+    Portfolio template = new Portfolio(faker.shakespeare().asYouLikeItQuote(), generateUser());
+    template.getEntries().addAll(generateUserEntryList());
+    template.setTemplate(true);
+    return template;
+  }
+
 }
