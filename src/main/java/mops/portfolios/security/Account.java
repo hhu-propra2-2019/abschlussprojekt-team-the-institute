@@ -1,4 +1,4 @@
-package mops.portfolios.keycloak;
+package mops.portfolios.security;
 
 import java.util.Set;
 import lombok.AllArgsConstructor;

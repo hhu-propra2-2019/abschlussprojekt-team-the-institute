@@ -1,4 +1,4 @@
-package mops.portfolios;
+package mops.portfolios.security;
 
 import mops.portfolios.domain.portfolio.Portfolio;
 import org.springframework.stereotype.Service;
