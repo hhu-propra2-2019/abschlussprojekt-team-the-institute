@@ -7,77 +7,59 @@
         <th:block th:insert="fragments/dependencies :: dependencyFragment"></th:block>
 
         <style>
-            ul {
-                list-style-type: none;
-            }
-
-            .content {
-                font-style: italic;
-            }
-
-            .sep {
-                padding-top: 0.5em;
-                border-color: black;
-                border-width: 0.05em;
-                border-radius: 0.1em;
-                border-style: solid;
-            }
-
-            .sep li {
-                padding: 0.3em;
-            }
 
         </style>
+
     </th:block>
 </head>
 
 <body th:fragment="bodycontent">
 
-<div class="content">
-    <div id="this_semester">
-        <p>Willkommen beim Portfolioservice des MOPS!</p>
-        <ul>Hier eine schnelle Übersicht deiner Portoflios aus diesem Semester:
-            <li class="sep" id="last">
-                <!--
-                given idu = user.id, find portfolio with smallest || right now - portfolio.date_last_modified||
-                -->
-                <ul> Setzte hier deine Arbeit fort:
-                    <li>
-                        <a th:text="${last.getTitle()}" th:href="@{/portfolio(title=${last.getTitle()})}">Letztes Portfolio</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="sep" id="gruppen">
-                <!--
-                given user.id find every idg = group.id. s.t. there exists user_group with user.id && group.id
-                &&
-                display every portfolio with group.id = idg && right now - date created < 6 months
+<div class="jumbotron pt-1 font-italic">
 
-                --- Hier kommen alle Gruppen-Portfolios des Studenten rein ---
+    <h1 class="display-5">Startseite</h1>
+    <p class="lead">Willkommen beim Portfolioservice des MOPS!</p>
+    <hr class="my-4">
+    <p>Hier eine schnelle Übersicht deiner Portfolios aus diesem Semester:</p>
 
-                -->
-                <ul> Schnellzugriff auf die Gruppen-Portfolios:
-                    <li th:each="gruppe : ${gruppen}">
-                        <a th:text="${gruppe.getTitle()}" th:href="@{/portfolio(title=${gruppe.getTitle()})}">Gruppe 1</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="sep" id="vorlesungen">
-                <!--
-                given idu = user.id display every portfolio with user.id = idu && right now - date created < 6 months
-
-                --- Hier kommen alle Vorlesungs-Portfolios des Studenten rein ---
-                -->
-
-                <ul>Schnellzugriff auf die privaten Portfolios:
-                    <li th:each="vorlesung : ${vorlesungen}">
-                        <a th:text="${vorlesung.getTitle()}" th:href="@{/portfolio(title=${vorlesung.getTitle()})}">Portfolio 1</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+    <div class="card border-dark w-50 mb-2">
+        <h5 class="card-header">Setzte hier deine Arbeit fort:</h5>
+        <div class="card-body text-dark">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <a class="card-text" th:text="${last.getTitle()}" th:href="@{/portfolio(id=${last.getId()})}">Letztes
+                        Portfolio</a>
+                </li>
+            </ul>
+        </div>
     </div>
+
+    <div class="card border-dark w-50 mb-2">
+        <h5 class="card-header">Schnellzugriff auf die Gruppen-Portfolios:</h5>
+        <div class="card-body text-dark">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" th:each="gruppe : ${gruppen}">
+                    <a th:text="${gruppe.getTitle()}" th:href="@{/portfolio(id=${gruppe.getId()})}">Gruppe
+                        1</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card border-dark w-50 mb-2">
+        <h5 class="card-header">Schnellzugriff auf deine Portfolios:</h5>
+        <div class="card-body text-dark">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" th:each="vorlesung : ${vorlesungen}">
+                    <a th:text="${vorlesung.getTitle()}" th:href="@{/portfolio(id=${vorlesung.getId()})}">Portfolio
+                        1</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
 </div>
+
 <script>
 
 </script>

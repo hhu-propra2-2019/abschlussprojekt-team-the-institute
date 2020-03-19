@@ -10,21 +10,32 @@
 
 <body th:fragment="bodycontent">
 
-<div class="text-center">
+<div class="jumbotron pt-1 font-italic">
 
-    <h1 class="display-4" th:text="'Portfolioübersicht - ' + ${portfolio.getTitle()}">Portfolio title</h1>
+    <h1 class="display-5">Portfolio</h1>
+    <p class="lead">Willkommen beim Portfolioservice des MOPS!</p>
+    <hr class="my-4">
+    <p th:text="'Hier eine Liste aller Einträge im Portfolio ' + ${portfolio.getTitle()} + ':'">Entry list</p>
 
-    <div class="card mt-4 bg-secondary" th:each="entry : ${entries}">
-        <h3 class="card-header" th:text="'Woche ' + ${entry.getTitle()}">Entry title</h3>
-        <div class="card-body">
-            <h5 class="card-title">Irgendein Titel?</h5>
-            <p class="card-text">Das ist ein text. lalala la abccccccccccccccccccc</p>
+    <div class="card border-dark w-50 mb-2" th:each="entry : ${portfolio.getEntries()}">
+        <h5 class="card-header" th:text="${entry.getTitle()}">Title/Week</h5>
+        <div class="card-body text-dark">
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc non finibus odio. Nullam
+                leo tortor, tristique eu efficitur eu, hendrerit eu est. Sed sed risus aliquet, mollis velit vitae,
+                pretium augue. In accumsan augue sagittis nibh lobortis luctus. Vivamus ipsum quam, posuere at vehicula
+                sagittis, tincidunt in odio. Nulla varius ornare mi sed hendrerit. Duis eleifend, justo ut vulputate
+                elementum, felis massa auctor mauris, vitae placerat enim enim ac libero. Morbi scelerisque a enim in
+                maximus. Vivamus finibus justo a libero sodales ullamcorper. Maecenas fermentum urna vitae nisl aliquam
+                commodo. Nunc semper lectus imperdiet lectus volutpat, vitae faucibus odio finibus.</p>
             <a class="btn btn-primary"
-               th:href="@{/entry(title=${portfolio.getTitle()},entry_title=${entry.getTitle()})}">Anzeigen</a>
+               th:href="@{/entry(portfolioId=${portfolio.getId()},entryId=${entry.getId()})}">Anzeigen</a>
+            <button class="btn btn-primary"><a href="/submit">An Umfrage teilnehmen</a></button>
         </div>
-        <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()} + ' Tagen'">Date</div>
+        <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()}">Date created</div>
     </div>
+
 </div>
+
 </body>
 
 </html>
