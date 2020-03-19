@@ -3,6 +3,8 @@ package mops.portfolios;
 import java.util.List;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import mops.portfolios.tools.FakeHttpClient;
+import mops.portfolios.tools.IHttpClient;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
