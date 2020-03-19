@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@SuppressWarnings("PMD")
 public class TemplateService {
 
     private List<Template> templateList = Arrays.asList(
