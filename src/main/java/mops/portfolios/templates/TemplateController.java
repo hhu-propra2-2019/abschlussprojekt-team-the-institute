@@ -1,6 +1,6 @@
 package mops.portfolios.templates;
 
-import mops.portfolios.keycloak.Account;
+import mops.portfolios.security.Account;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
