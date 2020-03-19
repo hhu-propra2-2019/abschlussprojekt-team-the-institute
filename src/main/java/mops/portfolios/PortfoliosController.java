@@ -16,6 +16,8 @@ import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioRepository;
 import mops.portfolios.domain.portfolio.PortfolioService;
+import mops.portfolios.domain.usergroup.Group;
+import mops.portfolios.domain.usergroup.UserGroup;
 import mops.portfolios.domain.usergroup.UserGroupService;
 import mops.portfolios.keycloak.Account;
 import mops.portfolios.tools.AsciiDocConverter;
@@ -101,6 +103,26 @@ public class PortfoliosController {
     return portfolios;
   }
 
+  @SuppressWarnings("PMD")
+  private List<Portfolio> getGroupPortfolios(KeycloakAuthenticationToken token, List<Portfolio> p) {
+    List<Portfolio> portfolios = new ArrayList<>();
+    List<UserGroup> groups = userGroupService.findAllByUserId(getUserName(token));
+    Portfolio staticPortfolio = new Portfolio("Lorem ipsum", new Group(1L, "Group 1"));
+
+    for (Portfolio portfolio : p) {
+      if (portfolio.getGroupId() == null) {
+        portfolios.add(staticPortfolio);
+      }
+      for (UserGroup group: groups) {
+        if (portfolio.getGroupId() == group.getGroupId()) {
+          portfolios.add(portfolio);
+        }
+      }
+    }
+    return portfolios;
+  }
+
+
   /**
    * Root mapping for GET requests.
    *
@@ -115,9 +137,17 @@ public class PortfoliosController {
     
     List<Portfolio> portfoliosList = portfolioService.findFirstFew();
 
-    List<Portfolio> groupPortfolios = /*getPortfolios(token, */portfoliosList.subList(0, 4);
+    List<Portfolio> groupPortfolios = getGroupPortfolios(token, portfoliosList.subList(0, 4));
     List<Portfolio> userPortfolios = getPortfolios(token,
         portfoliosList.subList(4, portfoliosList.size() - 1));
+
+    for (Portfolio p: groupPortfolios) {
+      System.out.println(p);
+    }
+
+    for (Portfolio p: userPortfolios) {
+      System.out.println(p);
+    }
 
     model.addAttribute("last", groupPortfolios.get(0));
     model.addAttribute("gruppen", groupPortfolios);
@@ -137,7 +167,7 @@ public class PortfoliosController {
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> groupPortfolios = getPortfolios(token,
+    List<Portfolio> groupPortfolios = getGroupPortfolios(token,
         portfolioService.getGroupPortfolios(userGroupService, "userId"));
     List<Portfolio> userPortfolios = getPortfolios(token,
         portfolioService.findAllByUserId("userId"));
@@ -160,7 +190,7 @@ public class PortfoliosController {
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> groupPortfolios = getPortfolios(token,
+    List<Portfolio> groupPortfolios = getGroupPortfolios(token,
         portfolioService.getGroupPortfolios(userGroupService, "userId"));
 
     model.addAttribute("gruppen", groupPortfolios);
