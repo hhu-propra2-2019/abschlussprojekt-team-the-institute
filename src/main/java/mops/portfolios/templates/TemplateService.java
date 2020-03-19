@@ -22,8 +22,9 @@ public class TemplateService {
             new TemplateEntry("Was hast du heute gelernt?", AnswerType.TEXT, "Some hint"),
             new TemplateEntry("Was hast du nicht verstanden?", AnswerType.TEXT, "Some hint"),
             new TemplateEntry("Was könnte man besser machen?", AnswerType.MULTIPLE_CHOICE, "Mehr auf Schüler eingehen,Umfangreicher erklären,Weniger Hausaufgaben"),
+            new TemplateEntry("Wähle was aus:", AnswerType.SINGLE_CHOICE, "Wahl 1,Wahl 2,Wahl 9549"),
             new TemplateEntry("Schreibe eine Java-Klasse..", AnswerType.ATTACHEMENT, ".java"),
-            new TemplateEntry("Bewerte die Übung heute", AnswerType.NUMBER_SLIDER, "1,10")
+            new TemplateEntry("Bewerte die Übung heute:", AnswerType.NUMBER_SLIDER, "1,10")
         )),
 
         new Template("Aldat", "Vorlesung_1", Arrays.asList(

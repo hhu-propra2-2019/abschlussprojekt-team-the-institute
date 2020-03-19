@@ -20,10 +20,9 @@
     <h1 class="display-5">Submit</h1>
     <p class="lead">Willkommen beim Portfolioservice des MOPS!</p>
     <hr class="my-4">
-    <p>Portfolio Eintrag - Abgabe</p>
-
-    <p th:text="${template.getPortfolioTitle()}">Portfolio title</p>
-    <p th:text="${template.getEntryTitle()}">Entry title</p>
+    <p>Portfolio Eintrag - Abgabe</p> :
+    <span th:text="${template.getPortfolioTitle()}">Portfolio title</span> :
+    <span th:text="${template.getEntryTitle()}">Entry title</span>
 
     <hr>
 
@@ -32,46 +31,67 @@
         <div th:switch="${entry.getType()}" th:with="AnswerType = ${T(mops.portfolios.templates.AnswerType)}">
 
             <div th:case="${AnswerType.TEXT}">
-                <label for="validationTextarea" th:text="${entry.getQuestion()}">Question</label>
-                <textarea class="form-control is-invalid" id="validationTextarea" th:placeholder="${entry.getHint()}"
-                          required></textarea>
+                <label for="INPUT_TEXT">
+                    <u th:text="${entry.getQuestion()}">Question</u>
+                </label>
+                <textarea class="form-control" id="INPUT_TEXT" th:placeholder="${entry.getHint()}" required></textarea>
                 <div class="invalid-feedback">
                     Du musst dieses Textfeld ausfüllen
                 </div>
             </div>
 
             <div th:case="${AnswerType.SINGLE_CHOICE}">
-
-                <div class="form-check" th:each="choice : ${entry.getHint().split(',')}">
-                    <input class="form-check-input" type="radio" th:id="${choice.replace(' ', '')}">
-                    <label class="form-check-label" th:for="${choice.replace(' ', '')}" th:text="${choice}">
+                <label>
+                    <u th:text="${entry.getQuestion()}">Question</u>
+                </label>
+                <div class="form-check" th:each="choice : ${entry.getHint().split(',')}"
+                     th:with="id=${choice.replace(' ', '')}">
+                    <input class="form-check-input" type="radio" name="radio" th:id="${id}">
+                    <label class="form-check-label" th:for="id" th:text="${choice}">
                         Choice
                     </label>
                 </div>
-
             </div>
 
             <div th:case="${AnswerType.MULTIPLE_CHOICE}">
-
-                <div class="form-check" th:each="choice : ${entry.getHint().split(',')}">
-                    <input class="form-check-input" type="checkbox" th:id="${choice.replace(' ', '')}">
-                    <label class="form-check-label" th:for="${choice.replace(' ', '')}" th:text="${choice}">
+                <label>
+                    <u th:text="${entry.getQuestion()}">Question</u>
+                </label>
+                <div class="form-check" th:each="choice : ${entry.getHint().split(',')}"
+                     th:with="id=${choice.replace(' ', '')}">
+                    <input class="form-check-input" type="checkbox" th:id="${id}">
+                    <label class="form-check-label" th:for="${id}" th:text="${choice}">
                         Choice
                     </label>
                 </div>
-
             </div>
 
-            <!--
-            <p th:case="${AnswerType.ATTACHEMENT}">User is an administrator</p>
+            <div th:case="${AnswerType.NUMBER_SLIDER}" th:with="range = ${entry.getHint().split(',')}">
+                <label for="INPUT_RANGE">
+                    <u th:text="${entry.getQuestion()}">Question</u>
+                </label>
+                <br>
+                <input class="custom-range w-50" id="INPUT_RANGE" type="range"
+                       th:value="${range[0]}" th:min="${range[0]}" th:max="${range[1]}"
+                       data-toggle="tooltip" data-placement="top" th:title="${range[0]}"
+                       oninput="$('#INPUT_RANGE').tooltip('dispose'); this.title = this.value; $('#INPUT_RANGE').tooltip('show');">
+            </div>
 
-            <p th:case="${AnswerType.NUMBER_SLIDER}">User is an administrator</p>
-            -->
+            <div th:case="${AnswerType.ATTACHEMENT}">
+                <label>
+                    <u th:text="${entry.getQuestion()}">Question</u>
+                </label>
+                <br>
+                <div class="custom-file w-50">
+                    <input type="file" class="custom-file-input" id="INPUT_FILE" th:accept="${entry.getHint()}">
+                    <label class="custom-file-label" for="INPUT_FILE">Datei auswählen</label>
+                </div>
+            </div>
 
             <p th:case="*">Type not found</p>
 
-            <br>
             <hr>
+            <br>
 
         </div>
 
@@ -81,7 +101,6 @@
 </div>
 
 <script>
-
 </script>
 
 </body>
