@@ -104,4 +104,19 @@ public class PortfolioService {
     }
     return templates;
   }
+
+  /**
+   * Finds all actual non-template portfolios
+   * @return - list of portfolios
+   */
+  public List<Portfolio> getAllPortfolios() {
+    List<Portfolio> templates = new ArrayList<>();
+    List<Portfolio> allPortfolios = findAll();
+    for(Portfolio p : allPortfolios) {
+      if (!p.isTemplate()) {
+        templates.add(p);
+      }
+    }
+    return templates;
+  }
 }
