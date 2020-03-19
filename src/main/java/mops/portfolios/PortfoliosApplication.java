@@ -72,13 +72,18 @@ public class PortfoliosApplication {
                 repository.save(demo.generateTemplate());
             }
 
+            log.info("8==================================================================================");
+            log.info("Non-templates:");
 
-
-            for (Portfolio portfolio : repository.findAll()) {
+            for (Portfolio portfolio : portfolioService.getAllPortfolios()) {
                 log.info(portfolio.toString());
             }
 
-            log.info("8==================================================================================");
+            log.info("9==================================================================================");
+            log.info("Templates:");
+            for (Portfolio portfolio : portfolioService.getAllTemplates()) {
+                log.info(portfolio.toString());
+            }
 
             log.info(stateService.getState("gruppenbildung2").toString());
 
