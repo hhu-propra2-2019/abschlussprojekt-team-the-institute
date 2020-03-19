@@ -98,6 +98,7 @@ image::Diagramm.png[]
 .. Wir sind dann auf JDK11 umgestiegen. Damit lief der Test durch. Die Applikation funktionierte weiterhin.
 .. Gradle build funktionierte lokal, aber nicht beim push in github. Daher haben wir noch die github actions in JDK11 geändert.
 . Wir haben die `application.properties` an die Keycloak Clients angepasst.
+. Beim Zuordnen der Portfolios auf den angemeldeten Benutzer kam es zu dem Problem, dass wir immer die Errorpage angezeigt bekommen haben. Das ist passiert, weil wir der Benutzer noch keine Portfolios hatte, jedoch in dem HTML-Dokument auf das letzte Portfolio zugegriffen wurde. Wir haben das jetzt so gelöst, dass wir ein statisches Portfolio ausgeben.
 
 ===== Datenbank Update Service
 . Da wir das genaue Format, das wir von der Gruppenbildung erhalten werden, noch nicht kennen,
