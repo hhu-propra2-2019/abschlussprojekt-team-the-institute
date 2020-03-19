@@ -3,11 +3,13 @@ package mops.portfolios.domain.portfolio;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.usergroup.UserGroup;
 import mops.portfolios.domain.usergroup.UserGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class PortfolioService {
@@ -86,5 +88,20 @@ public class PortfolioService {
       }
     }
     return null;
+  }
+
+  /**
+   *  Finds all Portfolios that are templates
+   * @return - list of portfolios
+   */
+  public List<Portfolio> getAllTemplates() {
+    List<Portfolio> templates = new ArrayList<>();
+    List<Portfolio> allPortfolios = findAll();
+    for(Portfolio p : allPortfolios) {
+      if (p.isTemplate()) {
+        templates.add(p);
+      }
+    }
+    return templates;
   }
 }
