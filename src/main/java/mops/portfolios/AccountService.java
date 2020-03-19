@@ -2,10 +2,12 @@ package mops.portfolios;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import mops.portfolios.controller.PortfoliosController;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.usergroup.Group;
 import mops.portfolios.domain.usergroup.UserGroup;
-import mops.portfolios.keycloak.Account;
+import mops.portfolios.security.Account;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.ui.Model;
@@ -36,23 +38,23 @@ public class AccountService {
             ((KeycloakPrincipal) token.getPrincipal()).getName());
   }
 
-  void authorize(Model model, KeycloakAuthenticationToken token) {
+  public void authorize(Model model, KeycloakAuthenticationToken token) {
     Account account = createAccountFromPrincipal(token);
     @SuppressWarnings("PMD")
     KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
     model.addAttribute("account", account);
   }
 
-  String getUserName(KeycloakAuthenticationToken token) {
+  public String getUserName(KeycloakAuthenticationToken token) {
     return ((KeycloakPrincipal) token.getPrincipal()).getName();
   }
 
-  String getOrgaRole(KeycloakAuthenticationToken token) {
+  public String getOrgaRole(KeycloakAuthenticationToken token) {
     return token.getAccount().getRoles().toString();
   }
 
   @SuppressWarnings("PMD")
-  List<Portfolio> getPortfolios(KeycloakAuthenticationToken token, List<Portfolio> p) {
+  public List<Portfolio> getPortfolios(KeycloakAuthenticationToken token, List<Portfolio> p) {
     List<Portfolio> portfolios = new ArrayList<Portfolio>();
 
     // TODO: Changing userId since it is dynamic and can therefore not be used
@@ -71,7 +73,7 @@ public class AccountService {
   }
 
   @SuppressWarnings("PMD")
-  List<Portfolio> getGroupPortfolios(KeycloakAuthenticationToken token, List<Portfolio> p) {
+  public List<Portfolio> getGroupPortfolios(KeycloakAuthenticationToken token, List<Portfolio> p) {
     List<Portfolio> portfolios = new ArrayList<Portfolio>();
     List<UserGroup> groups = portfoliosController.getUserGroupService()
             .findAllByUserId(getUserName(token));

@@ -1,4 +1,4 @@
-package mops.portfolios;
+package mops.portfolios.controller;
 
 
 import java.io.IOException;
@@ -7,6 +7,8 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import mops.portfolios.AccountService;
+import mops.portfolios.security.UserSecurity;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
