@@ -13,10 +13,12 @@ import lombok.AllArgsConstructor;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryRepository;
 import mops.portfolios.domain.entry.EntryService;
+import mops.portfolios.domain.group.Group;
+import mops.portfolios.domain.group.GroupService;
 import mops.portfolios.domain.portfolio.Portfolio;
-import mops.portfolios.domain.portfolio.PortfolioRepository;
 import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.usergroup.UserGroupService;
+import mops.portfolios.domain.user.User;
+import mops.portfolios.domain.user.UserService;
 import mops.portfolios.keycloak.Account;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.KeycloakPrincipal;
@@ -25,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,11 +47,13 @@ public class PortfoliosController {
   private transient UserSecurity userSecurity;
 
   @Autowired
-  private transient EntryService entryService;
+  private transient UserService userService;
+
+  @Autowired
+  private transient GroupService groupService;
+
   @Autowired
   private transient PortfolioService portfolioService;
-  @Autowired
-  private transient UserGroupService userGroupService;
 
   /**
    * Takes the auth-token from Keycloak and generates an AccounDTO for the views.
@@ -112,12 +117,16 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
-    
-    List<Portfolio> portfoliosList = portfolioService.findFirstFew();
 
-    List<Portfolio> groupPortfolios = /*getPortfolios(token, */portfoliosList.subList(0, 4);
-    List<Portfolio> userPortfolios = getPortfolios(token,
-        portfoliosList.subList(4, portfoliosList.size() - 1));
+    //FIXME: Change "studentin" to user_name of the logged in user;
+    // Beware! User Entity should NOT be used to find the user's private Porfolios,
+    // as this Entity exists in out DB only as relation to the Group, so USE
+    // user_name provided by keycloak to get the user portfolios.
+    User user = userService.findByUserName("studentin");
+
+    List<Group> groups = userService.getGroupsByUser(user);
+    List<Portfolio> groupPortfolios = portfolioService.findAllByGroupList(groups);
+    List<Portfolio> userPortfolios = portfolioService.findAllByUserId("studentin"); // Change me to the user_name of the logged-in user
 
     model.addAttribute("last", groupPortfolios.get(0));
     model.addAttribute("gruppen", groupPortfolios);
@@ -137,10 +146,15 @@ public class PortfoliosController {
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> groupPortfolios = getPortfolios(token,
-        portfolioService.getGroupPortfolios(userGroupService, "userId"));
-    List<Portfolio> userPortfolios = getPortfolios(token,
-        portfolioService.findAllByUserId("userId"));
+    //FIXME: Change "studentin" to user_name of the logged in user;
+    // Beware! User Entity should NOT be used to find the user's private Porfolios,
+    // as this Entity exists in out DB only as relation to the Group, so USE
+    // user_name provided by keycloak to get the user portfolios.
+    User user = userService.findByUserName(getUserName(token));
+    List<Group> groups = userService.getGroupsByUser(user);
+
+    List<Portfolio> groupPortfolios = portfolioService.findAllByGroupList(groups);
+    List<Portfolio> userPortfolios = portfolioService.findAllByUserId(getUserName(token));
 
     model.addAttribute("gruppen", groupPortfolios);
     model.addAttribute("vorlesungen", userPortfolios);
@@ -160,8 +174,9 @@ public class PortfoliosController {
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
     authorize(model, token);
 
-    List<Portfolio> groupPortfolios = getPortfolios(token,
-        portfolioService.getGroupPortfolios(userGroupService, "userId"));
+    User user = userService.findByUserName(getUserName(token));
+    List<Group> groups = userService.getGroupsByUser(user);
+    List<Portfolio> groupPortfolios = portfolioService.findAllByGroupList(groups);
 
     model.addAttribute("gruppen", groupPortfolios);
 
@@ -193,9 +208,9 @@ public class PortfoliosController {
    * @return The page to load
    */
   @SuppressWarnings("PMD")
-  @GetMapping("/portfolio")
+  @GetMapping("/portfolio/{id}")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String clickPortfolio(Model model, @RequestParam Long id,
+  public String clickPortfolio(Model model, @PathVariable Long id,
                                KeycloakAuthenticationToken token) {
 
     authorize(model, token);
@@ -206,7 +221,7 @@ public class PortfoliosController {
 
     if (getOrgaRole(token).contains("orga")) {
       return "portfolio";
-    } else if (userSecurity.hasUserName(getUserName(token))) {
+    } else if (userSecurity.isAllowedToViewPortfolio(getUserName(token), portfolio)) {
       return "portfolio";
     } else {
       return "redirect://localhost:8081"; // TODO: redirect to error page

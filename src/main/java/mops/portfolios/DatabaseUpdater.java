@@ -2,7 +2,7 @@ package mops.portfolios;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import mops.portfolios.domain.usergroup.UserGroupRepository;
+import mops.portfolios.domain.group.GroupRepository;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +22,7 @@ public class DatabaseUpdater {
   transient String url;
 
   @Autowired
-  UserGroupRepository userGroupRepository;
+  GroupRepository groupRepository;
 
 
   /**
@@ -132,7 +132,7 @@ public class DatabaseUpdater {
 
     List<Long> deletedGroups = getDeletedGroups(jsonObject);
     for(Long groupId : deletedGroups) {
-      userGroupRepository.deleteById(groupId);
+      groupRepository.deleteById(groupId);
     }
     // TODO: Process the received data
   }

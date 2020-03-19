@@ -9,4 +9,6 @@ public interface PortfolioRepository extends CrudRepository<Portfolio, Long> {
 
   List<Portfolio> findAllByGroupId(Long groupId);
 
+  List<Portfolio> findAllByGroupIdIn(List<Long> groupIdList);
+
 }

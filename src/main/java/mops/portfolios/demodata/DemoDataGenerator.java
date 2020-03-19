@@ -1,16 +1,15 @@
 package mops.portfolios.demodata;
 
 import com.github.javafaker.Faker;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.portfolio.Portfolio;
-import mops.portfolios.domain.usergroup.Group;
-import mops.portfolios.domain.usergroup.User;
+import mops.portfolios.domain.group.Group;
+import mops.portfolios.domain.user.User;
 
 public class DemoDataGenerator {
 
@@ -104,16 +103,9 @@ public class DemoDataGenerator {
    * @return - returns the user
    */
   private User generateUser() {
-    HashSet<String> roles = new HashSet<>();
-    roles.add("role_1");
-    roles.add("role_2");
-    roles.add("role_3");
-    return new User(
-        "user_name",
-        "user_mail",
-        "user_image",
-        roles,
-        "userId");
+    User user = new User();
+    user.setName("studentin");
+    return user;
   }
 
   /**
@@ -121,6 +113,13 @@ public class DemoDataGenerator {
    * @return - returns the group
    */
   private Group generateGroup() {
-    return new Group(9876543210L, "test");
+    User user = new User();
+    user.setName("studentin");
+    User user2 = new User();
+    user.setName("student");
+    Group group = new Group();
+    group.setTitle("Group 1");
+    group.setUsers(Arrays.asList(user, user2));
+    return group;
   }
 }
