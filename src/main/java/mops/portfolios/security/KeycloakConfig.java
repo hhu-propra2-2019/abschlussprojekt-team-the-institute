@@ -1,4 +1,4 @@
-package mops.portfolios.keycloak;
+package mops.portfolios.security;
 
 import org.keycloak.OAuth2Constants;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;

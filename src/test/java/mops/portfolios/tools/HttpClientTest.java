@@ -1,4 +1,4 @@
-package mops.portfolios;
+package mops.portfolios.tools;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
