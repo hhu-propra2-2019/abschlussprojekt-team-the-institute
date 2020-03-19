@@ -28,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class PortfoliosController {
 
-  private final AccountService accountService = new AccountService(this);
+
   private transient AsciiDocConverter asciiConverter;
   private transient UserSecurity userSecurity;
 
@@ -38,6 +38,8 @@ public class PortfoliosController {
   private transient PortfolioService portfolioService;
   @Autowired
   private transient UserGroupService userGroupService;
+  @Autowired
+  private transient final AccountService accountService;
 
   /**
    * Root mapping for GET requests.

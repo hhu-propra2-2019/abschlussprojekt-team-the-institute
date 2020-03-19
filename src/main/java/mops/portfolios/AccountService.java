@@ -3,23 +3,23 @@ package mops.portfolios;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import mops.portfolios.controller.PortfoliosController;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.usergroup.Group;
 import mops.portfolios.domain.usergroup.UserGroup;
+import mops.portfolios.domain.usergroup.UserGroupService;
 import mops.portfolios.security.Account;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-
+@Service
+@AllArgsConstructor
 public class AccountService {
-  private final transient PortfoliosController portfoliosController;
-
-  public AccountService(PortfoliosController portfoliosController) {
-    this.portfoliosController = portfoliosController;
-  }
-
+   private final transient UserGroupService userGroupService;
+   
   /**
    * Takes the auth-token from Keycloak and generates an AccounDTO for the views.
    *
@@ -75,8 +75,7 @@ public class AccountService {
   @SuppressWarnings("PMD")
   public List<Portfolio> getGroupPortfolios(KeycloakAuthenticationToken token, List<Portfolio> p) {
     List<Portfolio> portfolios = new ArrayList<Portfolio>();
-    List<UserGroup> groups = portfoliosController.getUserGroupService()
-            .findAllByUserId(getUserName(token));
+    List<UserGroup> groups = this.userGroupService.findAllByUserId(getUserName(token));
     Portfolio staticPortfolio = new Portfolio("Lorem ipsum", new Group(1L, "Group 1"));
 
     for (Portfolio portfolio : p) {
