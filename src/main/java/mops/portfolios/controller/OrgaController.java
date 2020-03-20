@@ -107,6 +107,23 @@ public class OrgaController {
   }
 
   /**
+   * Upload mapping for GET requests.
+   *
+   * @param model The spring model to add the attributes to
+   * @return The page to load
+   */
+  @SuppressWarnings("PMD")
+  @GetMapping("/upload")
+  @RolesAllowed({"ROLE_orga"})
+  public String uploadAscii(Model model, KeycloakAuthenticationToken token) {
+    accountService.authorize(model, token);
+
+    model.addAttribute("templateList", templateService.getAll());
+
+    return "orga/asciidoc/upload";
+  }
+
+  /**
    * View mapping for POST requests.
    *
    * @param model The spring model to add the attributes to
