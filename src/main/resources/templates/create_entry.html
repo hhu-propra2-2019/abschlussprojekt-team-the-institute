@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Submit', headcontent=~{:: headcontent}, navigation=~{fragments/navigation :: navigationFragment}, bodycontent=~{:: bodycontent})}">
+
+<head>
+    <th:block th:fragment="headcontent">
+        <th:block th:insert="fragments/dependencies :: dependencyFragment"></th:block>
+
+        <style>
+
+        </style>
+
+    </th:block>
+</head>
+
+<body th:fragment="bodycontent">
+
+<div class="jumbotron pt-1 font-italic">
+
+    <h1 class="display-5">Neuer Eintrag</h1>
+    <p class="lead">Hier kannst du dein Portfolio um einen neuen Eintrag erweitern</p>
+    <hr class="my-4">
+
+
+    <br>
+
+    <form class="tab-content">
+        <br>
+        <button class="btn btn-primary" type="submit">Erstellen</button>
+    </form>
+
+</div>
+
+<script>
+    //TODO: FORM VALIDATION
+</script>
+
+</body>
+</html>
