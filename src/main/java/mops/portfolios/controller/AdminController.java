@@ -33,14 +33,14 @@ public class AdminController {
   private transient final AsciiDocConverter asciiConverter;
 
   /**
-   * Index mapping for GET requests.
+   * Redirect to main page
    *
    * @param model The Spring Model to add the attributes to
    * @return The page to load
    */
   @SuppressWarnings("PMD")
-  @GetMapping("/")
-  public String index(Model model, KeycloakAuthenticationToken token) {
+  @GetMapping("")
+  public String redirect(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
     return "redirect:/admin/list";
