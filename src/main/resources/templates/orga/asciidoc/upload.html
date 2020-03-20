@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Upload Template', headcontent=~{:: headcontent}, navigation=~{fragments/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Upload Template', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 
 <head>
     <th:block th:fragment="headcontent">
-        <th:block th:insert="fragments/dependencies :: dependencyFragment"></th:block>
+        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
     </th:block>
+
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+    </nav>
 </head>
 
 <body th:fragment="bodycontent">

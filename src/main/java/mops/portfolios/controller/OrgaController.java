@@ -20,17 +20,32 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-@Controller
+//@Controller
 @AllArgsConstructor
 public class OrgaController {
 
   @Autowired
-  private transient TemplateService templateService;
-
-  @Autowired
   private transient final AccountService accountService;
 
+  @Autowired
+  private transient TemplateService templateService;
+
   private transient AsciiDocConverter asciiConverter;
+
+  /**
+   * Index mapping for GET requests.
+   *
+   * @param model The Spring Model to add the attributes to
+   * @return The page to load
+   */
+  @SuppressWarnings("PMD")
+  @GetMapping("/")
+  @RolesAllowed({"ROLE_orga"})
+  public String index(Model model, KeycloakAuthenticationToken token) {
+    accountService.authorize(model, token);
+
+    return "redirect:/list";
+  }
 
   /**
    * List mapping for GET requests.

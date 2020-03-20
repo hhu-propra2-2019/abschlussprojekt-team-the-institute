@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Portfolio Liste', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+
+<head>
+    <th:block th:fragment="headcontent">
+        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
+    </th:block>
+
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li>
+                <a href="/list">
+                    <p><i class="fa fa-archive fa-lg"></i> Portfolio Liste</p>
+                </a>
+            </li>
+            <li>
+                <a href="/create">
+                    <p><i class="fas fa-book-medical fa-lg"></i> Portfolio erstellen</p>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</head>
+
+<body th:fragment="bodycontent">
+
+<div class="jumbotron pt-1 font-italic">
+
+    <h1 class="display-5">Portfolio Liste</h1>
+    <p class="lead">Hier findest du eine Übersicht aller Portfolios</p>
+    <hr class="my-4">
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#all">Alle Portfolios</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#private">Private Portfolios</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#group">Gruppen Portfolios</a>
+        </li>
+    </ul>
+
+    <br>
+
+    <div class="tab-content">
+
+        <div class="tab-pane fade show active" id="all">
+
+            <div class="card border-dark w-50 mb-2">
+                <h5 class="card-header">Alle Portfolios:</h5>
+                <div class="card-body text-dark">
+                    <p>TODO: Nach Datum (zuletzt geändert) sortieren falls noch nicht der Fall</p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:each="portfolio : ${allPortfolios}">
+                            <a th:text="${portfolio.getTitle()}" th:href="@{/view(portfolioId=${portfolio.getId()})}">Title</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="tab-pane fade" id="private">
+
+            <div class="card border-dark w-50 mb-2">
+                <h5 class="card-header">Private Portfolios:</h5>
+                <div class="card-body text-dark">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:each="portfolio : ${userPortfolios}">
+                            <a th:text="${portfolio.getTitle()}" th:href="@{/view(portfolioId=${portfolio.getId()})}">Title</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="tab-pane fade" id="group">
+
+            <div class="card border-dark w-50 mb-2">
+                <h5 class="card-header">Gruppen Portfolios:</h5>
+                <div class="card-body text-dark">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:each="portfolio : ${groupPortfolios}">
+                            <a th:text="${portfolio.getTitle()}" th:href="@{/view(portfolioId=${portfolio.getId()})}">Title</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
+

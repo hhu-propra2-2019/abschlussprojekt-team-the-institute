@@ -25,7 +25,7 @@ public class HtmlErrorController implements ErrorController {
 
     //TODO: ADD LOG ENTRY
 
-    return "error";
+    return "common/error";
   }
 
   @Override

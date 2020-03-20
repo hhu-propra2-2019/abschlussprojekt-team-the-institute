@@ -4,14 +4,14 @@
 
 <head>
     <th:block th:fragment="headcontent">
-        <th:block th:insert="fragments/dependencies :: dependencyFragment"></th:block>
+        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
     </th:block>
 
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
             <li>
                 <a href="/list">
-                    <p><i class="fa fa-archive fa-lg"></i> Zurück</p>
+                    <p><i class="fa fa-chevron-circle-left fa-lg"></i> Zurück</p>
                 </a>
             </li>
         </ul>
