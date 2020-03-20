@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupRepository;
+import mops.portfolios.domain.user.User;
 import mops.portfolios.tools.HttpClient;
 import mops.portfolios.tools.IHttpClient;
 import org.json.JSONArray;
@@ -160,14 +162,21 @@ public class DatabaseUpdater {
         JSONObject group = (JSONObject) groupElement;
         long groupId = group.getBigInteger("id").longValue();
         String title = group.getString("title");
+        JSONArray members = group.getJSONArray("members");
 
-        // TODO: Add once the own methods are implemented
-        //        if (title == null || title.isEmpty()) {
-        //          userGroupRepository.deleteById(groupId);
-        //        } else if (groupExists(groupId)) {
-        //          groupRepository.deleteById(groupId);
-        //        }
-        //groupRepository.createGroupById( , id, jsonObject.getString("title"));
+        List<User> userList = new ArrayList<>();
+
+        for (Object member: members) {
+          userList.add((User) member);
+        }
+
+        if (title == null || title.isEmpty()) {
+          groupRepository.deleteById(groupId);
+        } else if (groupExists(groupId)) {
+          groupRepository.deleteById(groupId);
+        }
+        // TODO: Add once the own method is implemented
+        //groupRepository.save(new Group(groupId, title, userList));
       }
     } catch (Exception e) {
       logger.error("Couldn't parse JSONObject:" + e.getMessage());
