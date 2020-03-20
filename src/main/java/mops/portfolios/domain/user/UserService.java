@@ -5,6 +5,7 @@ import mops.portfolios.domain.group.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,12 +17,10 @@ public class UserService {
     @Autowired
     transient GroupRepository groupRepository;
 
-    public User findByUserName(String userName) {
-        return repository.findById(userName).get();
-    }
-
-    public List<Group> getGroupsByUser(User user) {
-        return repository.findById(user.getName()).get().getGroups();
+    public List<Group> getGroupsByUserName(String userName) {
+        User user = repository.findOneByName(userName);
+        if (null == user) return new ArrayList<>();
+        return user.getGroups();
     }
 
     public boolean isUserNameInGroup(String userName, Group group) {

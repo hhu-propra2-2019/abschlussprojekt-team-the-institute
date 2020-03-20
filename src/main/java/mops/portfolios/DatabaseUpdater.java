@@ -3,6 +3,8 @@ package mops.portfolios;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import mops.portfolios.domain.group.GroupRepository;
+import mops.portfolios.tools.HttpClient;
+import mops.portfolios.tools.IHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,7 +60,7 @@ public class DatabaseUpdater {
   /**
    * Use this method to get the updates from Gruppenbildung regarding groups.
    */
-  void updateDatabaseEvents() {
+  public void updateDatabaseEvents() {
     HttpClient httpClient = new HttpClient();
     updateDatabaseEvents(httpClient, this.url);
   }
@@ -68,7 +70,7 @@ public class DatabaseUpdater {
    * @param httpClient The IHttpClient to use
    */
   @SuppressWarnings("PMD")
-  void updateDatabaseEvents(IHttpClient httpClient, String url) {
+  public void updateDatabaseEvents(IHttpClient httpClient, String url) {
     String responseBody;
 
     // try to receive data from service Gruppenbildung
@@ -91,7 +93,7 @@ public class DatabaseUpdater {
    * @param jsonUpdate The String containing the JSON data to update the database
    */
   @SuppressWarnings("PMD")
-  void updateDatabaseEvents(String jsonUpdate) {
+  public void updateDatabaseEvents(String jsonUpdate) {
 
     // check for possible errors
     JSONObject jsonObject = null;
@@ -142,12 +144,12 @@ public class DatabaseUpdater {
    * @param jsonUpdate The JSONObject to check
    * @return <b>true</b> if not modified, <b>false</b> if modified
    */
-  boolean isNotModified(JSONObject jsonUpdate) {
+  public boolean isNotModified(JSONObject jsonUpdate) {
     JSONArray groupList = jsonUpdate.getJSONArray("groupList");
     return groupList.isEmpty();
   }
 
-  List<Long> getDeletedGroups(JSONObject jsonUpdate) {
+  public List<Long> getDeletedGroups(JSONObject jsonUpdate) {
     List<Long> deletedGroups = new ArrayList<>();
 
     JSONArray groupList;

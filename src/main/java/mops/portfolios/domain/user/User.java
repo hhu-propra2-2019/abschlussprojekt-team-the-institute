@@ -17,5 +17,5 @@ public class User {
   @OneToMany
   List<Portfolio> portfolios;
   @ManyToMany
-  private List<Group> groups = new ArrayList<Group>();
+  private List<Group> groups = new ArrayList<>();
 }

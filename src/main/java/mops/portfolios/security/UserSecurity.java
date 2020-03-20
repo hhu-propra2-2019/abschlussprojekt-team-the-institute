@@ -1,4 +1,4 @@
-package mops.portfolios;
+package mops.portfolios.security;
 
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupService;
@@ -41,7 +41,7 @@ public class UserSecurity {
     return false;
   }
 
-  public boolean isAllowedToViewPortfolio (String userName, Portfolio portfolio) {
+  public boolean isAllowedToViewOrEditPortfolio (String userName, Portfolio portfolio) {
     if (null != portfolio.getGroupId()) {
       Group group = groupService.getGroup(portfolio.getGroupId());
       return userService.isUserNameInGroup(userName, group);

@@ -29,19 +29,15 @@ public class PortfolioService {
    * @return - all Portfolios
    */
   public List<Portfolio> findAll() {
-    List<Portfolio> portfolioList = new ArrayList<>();
-    Iterator iterator = repository.findAll().iterator();
-    while (iterator.hasNext()) {
-      portfolioList.add((Portfolio) iterator.next());
-    }
-    return portfolioList;
+    return repository.findAll();
   }
 
   public List<Portfolio> findAllByGroupList(List<Group> groups) {
     List<Long> ids = groups.stream().map(Group::getId).collect(Collectors.toList());
-    return repository.findAllByGroupIdIn(ids);
 
+    return repository.findAllByGroupIdIn(ids);
   }
+
 
   public Portfolio findPortfolioById(Long id) {
     return repository.findById(id).get();
@@ -61,5 +57,37 @@ public class PortfolioService {
       }
     }
     return null;
+  }
+
+  /**
+   *  Finds all Portfolios that are templates
+   * @return - list of portfolios
+   */
+  @SuppressWarnings("PMD")
+  public List<Portfolio> getAllTemplates() {
+    List<Portfolio> templates = new ArrayList<>();
+    List<Portfolio> allPortfolios = findAll();
+    for(Portfolio p : allPortfolios) {
+      if (p.isTemplate()) {
+        templates.add(p);
+      }
+    }
+    return templates;
+  }
+
+  /**
+   * Finds all actual non-template portfolios
+   * @return - list of portfolios
+   */
+  @SuppressWarnings("PMD")
+  public List<Portfolio> getAllPortfolios() {
+    List<Portfolio> templates = new ArrayList<>();
+    List<Portfolio> allPortfolios = findAll();
+    for(Portfolio p : allPortfolios) {
+      if (!p.isTemplate()) {
+        templates.add(p);
+      }
+    }
+    return templates;
   }
 }

@@ -122,4 +122,12 @@ public class DemoDataGenerator {
     group.setUsers(Arrays.asList(user, user2));
     return group;
   }
+
+  public Portfolio generateTemplate() {
+    Portfolio template = new Portfolio(faker.shakespeare().asYouLikeItQuote(), generateUser());
+    template.getEntries().addAll(generateUserEntryList());
+    template.setTemplate(true);
+    return template;
+  }
+
 }
