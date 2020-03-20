@@ -18,10 +18,10 @@
 
     <div class="input-group w-50">
         <div class="input-group-prepend">
-            <label class="input-group-text" for="SELECT_PORTFOLIO">Portfolio auswählen</label>
+            <label class="input-group-text" for="SELECT_PORTFOLIO">Vorlage auswählen</label>
         </div>
         <select class="custom-select" id="SELECT_PORTFOLIO">
-            <option th:each="portfolio : ${portfolioList}" th:text="${portfolio.getTitle()}"></option>
+            <option th:each="template : ${templateList}" th:text="${template.getTitle()}"></option>
         </select>
     </div>
 

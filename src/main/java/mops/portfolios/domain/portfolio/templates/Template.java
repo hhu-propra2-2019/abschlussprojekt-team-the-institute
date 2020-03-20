@@ -14,4 +14,8 @@ public class Template {
   private String title;
 
   private List<TemplateEntry> entries;
+
+  public TemplateEntry getLastEntry() {
+    return entries.get(entries.size() - 1);
+  }
 }
