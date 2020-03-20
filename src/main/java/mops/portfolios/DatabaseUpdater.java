@@ -2,7 +2,7 @@ package mops.portfolios;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import mops.portfolios.domain.usergroup.UserGroupRepository;
+import mops.portfolios.domain.group.GroupRepository;
 import mops.portfolios.tools.HttpClient;
 import mops.portfolios.tools.IHttpClient;
 import org.json.JSONArray;
@@ -24,7 +24,7 @@ public class DatabaseUpdater {
   transient String url;
 
   @Autowired
-  UserGroupRepository userGroupRepository;
+  GroupRepository groupRepository;
 
 
   /**
@@ -134,7 +134,7 @@ public class DatabaseUpdater {
 
     List<Long> deletedGroups = getDeletedGroups(jsonObject);
     for(Long groupId : deletedGroups) {
-      userGroupRepository.deleteById(groupId);
+      groupRepository.deleteById(groupId);
     }
     // TODO: Process the received data
   }
