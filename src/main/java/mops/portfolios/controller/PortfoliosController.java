@@ -56,7 +56,7 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestList(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
-    
+
     List<Portfolio> portfoliosList = portfolioService.findFirstFew();
 
     List<Portfolio> groupPortfolios = accountService
@@ -180,6 +180,25 @@ public class PortfoliosController {
     model.addAttribute("portfolio", portfolio);
     model.addAttribute("entry", entry);
     return "entry";
+  }
+
+  /**
+   * CreatePortfolio mapping for GET requests.
+   *
+   * @param model The spring model to add the attributes to
+   * @return The page to load
+   */
+  @SuppressWarnings("PMD")
+  @GetMapping("/createPortfolio")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String createPortfolio(Model model, KeycloakAuthenticationToken token) {
+
+    accountService.authorize(model, token);
+
+    List<Portfolio> portfolioList = portfolioService.findAll();
+
+    model.addAttribute("portfolioList", portfolioList);
+    return "create_portfolio";
   }
 
   /**
