@@ -1,6 +1,9 @@
 package mops.portfolios.controller;
 
-
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
 import mops.portfolios.domain.portfolio.templates.Template;
@@ -15,30 +18,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.security.RolesAllowed;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
 @Controller
 @RequestMapping("/admin")
 @RolesAllowed({"ROLE_orga"})
 @AllArgsConstructor
 public class AdminController {
 
-  private transient final AccountService accountService;
+  private transient AccountService accountService;
 
-  private transient final TemplateService templateService;
+  private transient TemplateService templateService;
 
-  private transient final AsciiDocConverter asciiConverter;
+  private transient AsciiDocConverter asciiConverter;
 
   /**
-   * Redirect to main page
+   * Redirect to main page.
    *
    * @param model The Spring Model to add the attributes to
    * @return The page to load
    */
-  @SuppressWarnings("PMD")
   @GetMapping("")
   public String redirect(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
@@ -52,7 +49,6 @@ public class AdminController {
    * @param model The Spring Model to add the attributes to
    * @return The page to load
    */
-  @SuppressWarnings("PMD")
   @GetMapping("/list")
   public String listTemplates(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
@@ -70,7 +66,6 @@ public class AdminController {
    * @param model The spring model to add the attributes to
    * @return The page to load
    */
-  @SuppressWarnings("PMD")
   @GetMapping("/create")
   public String createTemplate(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
@@ -85,9 +80,9 @@ public class AdminController {
    * @param templateId The ID of the template
    * @return The page to load
    */
-  @SuppressWarnings("PMD")
   @GetMapping("/edit")
-  public String editTemplate(Model model, @RequestParam Long templateId, KeycloakAuthenticationToken token) {
+  public String editTemplate(Model model, @RequestParam Long templateId,
+                             KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
     Template template = templateService.getById(templateId);
@@ -104,9 +99,9 @@ public class AdminController {
    * @param templateId The ID of the template
    * @return The page to load
    */
-  @SuppressWarnings("PMD")
   @GetMapping("/view")
-  public String viewTemplate(Model model, @RequestParam Long templateId, KeycloakAuthenticationToken token) {
+  public String viewTemplate(Model model, @RequestParam Long templateId,
+                             KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
     Template template = templateService.getById(templateId);
@@ -122,7 +117,6 @@ public class AdminController {
    * @param model The spring model to add the attributes to
    * @return The page to load
    */
-  @SuppressWarnings("PMD")
   @GetMapping("/upload")
   public String uploadAscii(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
@@ -141,7 +135,8 @@ public class AdminController {
    */
   @SuppressWarnings("PMD")
   @PostMapping("/viewAscii")
-  public String viewUploadedAscii(Model model, @RequestParam("file") MultipartFile file, KeycloakAuthenticationToken token) {
+  public String viewUploadedAscii(Model model, @RequestParam("file") MultipartFile file,
+                                  KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
     byte[] fileBytes;
