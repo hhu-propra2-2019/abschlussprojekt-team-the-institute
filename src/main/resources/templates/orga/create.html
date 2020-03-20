@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Vorlage erstellen', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<html lang="en" th:replace="~{mopslayout :: html(name='Lernportfolio', title='Vorlage erstellen', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <th:block th:fragment="headcontent">
@@ -10,7 +10,7 @@
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
             <li>
-                <a href="/list">
+                <a href="list">
                     <p><i class="fa fa-chevron-circle-left fa-lg"></i> Zurück</p>
                 </a>
             </li>

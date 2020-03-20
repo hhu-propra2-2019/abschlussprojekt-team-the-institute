@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Vorlagen Liste', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<html lang="en" th:replace="~{mopslayout :: html(name='Lernportfolio', title='Vorlagen Liste', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <th:block th:fragment="headcontent">
@@ -10,12 +10,12 @@
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
             <li>
-                <a href="/list">
+                <a href="list">
                     <p><i class="fa fa-archive fa-lg"></i> Vorlagen Liste</p>
                 </a>
             </li>
             <li>
-                <a href="/create">
+                <a href="create">
                     <p><i class="fas fa-book-medical fa-lg"></i> Vorlage erstellen</p>
                 </a>
             </li>
@@ -36,9 +36,11 @@
         <div class="card-body text-dark">
             <p class="card-text">Some text</p>
             <a class="btn btn-primary"
-               th:href="@{/view(templateId=${template.getId()})}">Anzeigen</a>
+               th:href="@{view(templateId=${template.getId()})}">Anzeigen</a>
         </div>
-        <div class="card-footer" th:text="'Zuletzt geändert am ' + ${template.getLastEntry().getLastChanged()}">Last change</div>
+        <div class="card-footer" th:text="'Zuletzt geändert am ' + ${template.getLastEntry().getLastChanged()}">Last
+            change
+        </div>
     </div>
 
 </div>
