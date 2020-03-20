@@ -7,6 +7,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
+import mops.portfolios.domain.portfolio.templates.Template;
+import mops.portfolios.domain.portfolio.templates.TemplateService;
 import mops.portfolios.security.UserSecurity;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.group.Group;
@@ -34,6 +36,11 @@ public class PortfoliosController {
   private transient UserService userService;
 
   private transient PortfolioService portfolioService;
+  @Autowired
+  private transient TemplateService templateService;
+  @Autowired
+  private transient UserGroupService userGroupService;
+  @Autowired
   private transient final AccountService accountService;
 
   @Autowired
@@ -56,6 +63,8 @@ public class PortfoliosController {
 
     accountService.authorize(model, token);
     String userName = accountService.getUserName(token);
+
+    List<Portfolio> portfoliosList = portfolioService.findFirstFew();
 
     List<Group> groups = userService.getGroupsByUserName(userName);
     // TODO Implement optional sublisting with method overload in portfolioService
@@ -188,6 +197,25 @@ public class PortfoliosController {
   }
 
   /**
+   * CreatePortfolio mapping for GET requests.
+   *
+   * @param model The spring model to add the attributes to
+   * @return The page to load
+   */
+  @SuppressWarnings("PMD")
+  @GetMapping("/createPortfolio")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String createPortfolio(Model model, KeycloakAuthenticationToken token) {
+
+    accountService.authorize(model, token);
+
+    List<Portfolio> portfolioList = portfolioService.findAll();
+
+    model.addAttribute("portfolioList", portfolioList);
+    return "create_portfolio";
+  }
+
+  /**
    * Edit mapping for GET requests.
    *
    * @param model The spring model to add the attributes to
@@ -246,6 +274,26 @@ public class PortfoliosController {
     model.addAttribute("html", html);
 
     return "view_template";
+  }
+
+  /**
+   * Submit mapping for GET requests.
+   *
+   * @param model       The spring model to add the attributes to
+   * @param portfolioId The portfolio id
+   * @return The page to load
+   */
+  @GetMapping("/submit")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String submit(Model model, /*@RequestParam Long portfolioId,*/ KeycloakAuthenticationToken token) {
+    accountService.authorize(model, token);
+
+    //Template template = templateService.getById(portfolioId);
+    Template template = templateService.getByTitle("Propra2");
+
+    model.addAttribute("template", template);
+
+    return "submit";
   }
 
   @SuppressWarnings("PMD")
