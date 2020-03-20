@@ -10,12 +10,12 @@
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
             <li>
-                <a href="/list">
+                <a href="list">
                     <p><i class="fa fa-archive fa-lg"></i> Portfolio Liste</p>
                 </a>
             </li>
             <li>
-                <a href="/create">
+                <a href="create">
                     <p><i class="fas fa-book-medical fa-lg"></i> Portfolio erstellen</p>
                 </a>
             </li>
@@ -55,7 +55,7 @@
                     <p>TODO: Nach Datum (zuletzt geändert) sortieren falls noch nicht der Fall</p>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item" th:each="portfolio : ${allPortfolios}">
-                            <a th:text="${portfolio.getTitle()}" th:href="@{/view(portfolioId=${portfolio.getId()})}">Title</a>
+                            <a th:text="${portfolio.getTitle()}" th:href="@{view(portfolioId=${portfolio.getId()})}">Title</a>
                         </li>
                     </ul>
                 </div>
@@ -70,7 +70,7 @@
                 <div class="card-body text-dark">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item" th:each="portfolio : ${userPortfolios}">
-                            <a th:text="${portfolio.getTitle()}" th:href="@{/view(portfolioId=${portfolio.getId()})}">Title</a>
+                            <a th:text="${portfolio.getTitle()}" th:href="@{view(portfolioId=${portfolio.getId()})}">Title</a>
                         </li>
                     </ul>
                 </div>
@@ -85,7 +85,7 @@
                 <div class="card-body text-dark">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item" th:each="portfolio : ${groupPortfolios}">
-                            <a th:text="${portfolio.getTitle()}" th:href="@{/view(portfolioId=${portfolio.getId()})}">Title</a>
+                            <a th:text="${portfolio.getTitle()}" th:href="@{view(portfolioId=${portfolio.getId()})}">Title</a>
                         </li>
                     </ul>
                 </div>
