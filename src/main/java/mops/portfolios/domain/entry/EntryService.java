@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class EntryService {
 
-    @Autowired
-    EntryRepository entryRepository;
+  @Autowired
+  EntryRepository entryRepository;
 
-    @Autowired
-    EntryFieldRepository entryFieldRepository;
+  @Autowired
+  EntryFieldRepository entryFieldRepository;
 }

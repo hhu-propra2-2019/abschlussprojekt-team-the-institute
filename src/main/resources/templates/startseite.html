@@ -27,7 +27,7 @@
         <div class="card-body text-dark">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
-                    <a class="card-text" th:text="${last.getTitle()}" th:href="@{/portfolio(id=${last.getId()})}">Letztes
+                    <a class="card-text" th:text="${last?.getTitle()}" th:href="@{/portfolio(id=${last?.getId()})}">Letztes
                         Portfolio</a>
                 </li>
             </ul>

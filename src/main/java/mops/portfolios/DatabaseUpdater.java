@@ -1,8 +1,12 @@
 package mops.portfolios;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import mops.portfolios.domain.usergroup.UserGroupRepository;
+import mops.portfolios.domain.group.GroupRepository;
+import mops.portfolios.tools.HttpClient;
+import mops.portfolios.tools.IHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,7 +23,7 @@ public class DatabaseUpdater {
   transient String url;
 
   @Autowired
-  UserGroupRepository userGroupRepository;
+  GroupRepository groupRepository;
 
   //  @Autowired
   //  StateService stateService;
@@ -92,7 +96,7 @@ public class DatabaseUpdater {
    * @param jsonUpdate The String containing the JSON data to update the database
    */
   @SuppressWarnings("PMD")
-  void updateDatabaseEvents(String jsonUpdate) {
+  public void updateDatabaseEvents(String jsonUpdate) {
 
     // check for possible errors
     JSONObject jsonObject = null;
@@ -141,7 +145,7 @@ public class DatabaseUpdater {
    * @param jsonUpdate The JSONObject to check
    * @return <b>true</b> if not modified, <b>false</b> if modified
    */
-  boolean isNotModified(JSONObject jsonUpdate) {
+  public boolean isNotModified(JSONObject jsonUpdate) {
     JSONArray groupList = jsonUpdate.getJSONArray("groupList");
     return groupList.isEmpty();
   }
@@ -158,13 +162,12 @@ public class DatabaseUpdater {
         String title = group.getString("title");
 
         // TODO: Add once the own methods are implemented
-
-//        if (title == null || title.isEmpty()) {
-//          userGroupRepository.deleteById(groupId);
-//        } else if (groupExists(groupId)) {
-//          userGroupRepository.deleteById(groupId);
-//        }
-        //userGroupRepository.createGroupById( , id, jsonObject.getString("title"));
+        //        if (title == null || title.isEmpty()) {
+        //          userGroupRepository.deleteById(groupId);
+        //        } else if (groupExists(groupId)) {
+        //          groupRepository.deleteById(groupId);
+        //        }
+        //groupRepository.createGroupById( , id, jsonObject.getString("title"));
       }
     } catch (Exception e) {
       logger.error("Couldn't parse JSONObject:" + e.getMessage());
@@ -173,7 +176,9 @@ public class DatabaseUpdater {
   }
 
   boolean groupExists(Long groupId) {
-    return userGroupRepository.findAllByGroupId(groupId) != null;
+    List<Long> groupIds = new ArrayList<>();
+    groupIds.add(groupId);
+    return groupRepository.findAllById(groupIds) != null;
   }
 
 }

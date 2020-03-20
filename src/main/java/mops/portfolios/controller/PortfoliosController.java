@@ -1,16 +1,21 @@
-package mops.portfolios;
+package mops.portfolios.controller;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import mops.portfolios.AccountService;
+import mops.portfolios.domain.portfolio.templates.Template;
+import mops.portfolios.domain.portfolio.templates.TemplateService;
+import mops.portfolios.security.UserSecurity;
 import mops.portfolios.domain.entry.Entry;
-import mops.portfolios.domain.entry.EntryRepository;
-import mops.portfolios.domain.entry.EntryService;
+import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
-import mops.portfolios.domain.portfolio.PortfolioRepository;
 import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.usergroup.UserGroupService;
-import mops.portfolios.keycloak.Account;
+import mops.portfolios.domain.user.UserService;
 import mops.portfolios.tools.AsciiDocConverter;
-import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,78 +25,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 @AllArgsConstructor
 public class PortfoliosController {
-  private transient HardMock hardMock;
+
+
   private transient AsciiDocConverter asciiConverter;
   private transient UserSecurity userSecurity;
 
-  @Autowired
-  private transient EntryService entryService;
-  @Autowired
-  private transient EntryRepository entryRepository;
-  @Autowired
+  private transient UserService userService;
+
   private transient PortfolioService portfolioService;
   @Autowired
-  private transient PortfolioRepository portfolioRepository;
+  private transient TemplateService templateService;
   @Autowired
-  private transient UserGroupService userGroupService;
+  private transient final AccountService accountService;
 
-  /**
-   * Takes the auth-token from Keycloak and generates an AccounDTO for the views.
-   *
-   * @param token the auth-token from Keycloak
-   * @return new Account to be used in the templates
-   */
-  private Account createAccountFromPrincipal(KeycloakAuthenticationToken token) {
-    KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
-    return new Account(
-        principal.getName(),
-        principal.getKeycloakSecurityContext().getIdToken().getEmail(),
-        ((KeycloakPrincipal) token.getPrincipal()).getKeycloakSecurityContext().getIdToken()
-            .getPicture(),
-        token.getAccount().getRoles(),
-        ((KeycloakPrincipal) token.getPrincipal()).getName());
-  }
-
-  private void authorize(Model model, KeycloakAuthenticationToken token) {
-    Account account = createAccountFromPrincipal(token);
-    model.addAttribute("account", account);
-  }
-
-  private String getUserName(KeycloakAuthenticationToken token) {
-    return ((KeycloakPrincipal) token.getPrincipal()).getName();
-  }
-
-  private String getOrgaRole(KeycloakAuthenticationToken token) {
-    return token.getAccount().getRoles().toString();
-  }
-
-  @SuppressWarnings("PMD")
-  private List<Portfolio> getPortfolios(KeycloakAuthenticationToken token, List<Portfolio> p) {
-    List<Portfolio> portfolios = new ArrayList<>();
-
-    // TODO: Changing userId since it is dynamic and can therefore not be used
-
-    for (Portfolio portfolio : p) {
-
-      if (portfolio.getUserId() == null) {
-        continue;
-      }
-
-      if (portfolio.getUserId().equals(getUserName(token))) {
-        portfolios.add(portfolio);
-      }
-    }
-    return portfolios;
+  @Autowired
+  public PortfoliosController(UserService userService, PortfolioService portfolioService, AccountService accountService) {
+    this.userService = userService;
+    this.portfolioService = portfolioService;
+    this.accountService = accountService;
   }
 
   /**
@@ -104,15 +58,20 @@ public class PortfoliosController {
   @GetMapping("/")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestList(Model model, KeycloakAuthenticationToken token) {
-    authorize(model, token);
 
-    List<Portfolio> portfoliosList = portfolioService.findFirstFew();
+    accountService.authorize(model, token);
+    String userName = accountService.getUserName(token);
 
-    List<Portfolio> groupPortfolios = /*getPortfolios(token, */portfoliosList.subList(0, 4);
-    List<Portfolio> userPortfolios = getPortfolios(token,
-        portfoliosList.subList(4, portfoliosList.size() - 1));
+    List<Group> groups = userService.getGroupsByUserName(userName);
+    // TODO Implement optional sublisting with method overload in portfolioService
+    List<Portfolio> groupPortfolios = portfolioService.findAllByGroupList(groups);
+    List<Portfolio> userPortfolios = portfolioService.findAllByUserId(userName);
 
-    model.addAttribute("last", groupPortfolios.get(0));
+    // You should probably do this in view against "gruppen" attribute of the model
+    if (groupPortfolios.size() > 0) {
+      model.addAttribute("last", groupPortfolios.get(0));
+    }
+
     model.addAttribute("gruppen", groupPortfolios);
     model.addAttribute("vorlesungen", userPortfolios);
 
@@ -128,12 +87,13 @@ public class PortfoliosController {
   @GetMapping("/index")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
-    authorize(model, token);
+    accountService.authorize(model, token);
+    String userName = accountService.getUserName(token);
 
-    List<Portfolio> groupPortfolios = getPortfolios(token,
-        portfolioService.getGroupPortfolios(userGroupService, "userId"));
-    List<Portfolio> userPortfolios = getPortfolios(token,
-        portfolioService.findAllByUserId("userId"));
+    List<Group> groups = userService.getGroupsByUserName(userName);
+
+    List<Portfolio> groupPortfolios = portfolioService.findAllByGroupList(groups);
+    List<Portfolio> userPortfolios = portfolioService.findAllByUserId(userName);
 
     model.addAttribute("gruppen", groupPortfolios);
     model.addAttribute("vorlesungen", userPortfolios);
@@ -151,10 +111,12 @@ public class PortfoliosController {
   @GetMapping("/gruppen")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
-    authorize(model, token);
+    accountService.authorize(model, token);
+    String userName = accountService.getUserName(token);
 
-    List<Portfolio> groupPortfolios = getPortfolios(token,
-        portfolioService.getGroupPortfolios(userGroupService, "userId"));
+
+    List<Group> groups = userService.getGroupsByUserName(userName);
+    List<Portfolio> groupPortfolios = portfolioService.findAllByGroupList(groups);
 
     model.addAttribute("gruppen", groupPortfolios);
 
@@ -168,10 +130,10 @@ public class PortfoliosController {
   @GetMapping("/privat")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
-    authorize(model, token);
+    accountService.authorize(model, token);
+    String userName = accountService.getUserName(token);
 
-    List<Portfolio> userPortfolios = getPortfolios(token,
-        portfolioService.findAllByUserId("userId"));
+    List<Portfolio> userPortfolios = portfolioService.findAllByUserId(userName);
 
     model.addAttribute("vorlesungen", userPortfolios);
 
@@ -191,18 +153,18 @@ public class PortfoliosController {
   public String clickPortfolio(Model model, @RequestParam Long id,
                                KeycloakAuthenticationToken token) {
 
-    authorize(model, token);
+    accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(id);
 
     model.addAttribute("portfolio", portfolio);
 
-    if (getOrgaRole(token).contains("orga")) {
+    if (accountService.getOrgaRole(token).contains("orga")) {
       return "portfolio";
-    } else if (userSecurity.hasUserName(getUserName(token))) {
+    } else if (userSecurity.isAllowedToViewOrEditPortfolio(accountService.getUserName(token), portfolio)) {
       return "portfolio";
     } else {
-      return "redirect://localhost:8081"; // TODO: redirect to error page
+      return "../error";
     }
   }
 
@@ -220,7 +182,7 @@ public class PortfoliosController {
   public String clickEntry(Model model, @RequestParam Long portfolioId,
                            @RequestParam Long entryId, KeycloakAuthenticationToken token) {
 
-    authorize(model, token);
+    accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
     Entry entry = portfolioService.findEntryById(portfolio, entryId);
@@ -228,6 +190,25 @@ public class PortfoliosController {
     model.addAttribute("portfolio", portfolio);
     model.addAttribute("entry", entry);
     return "entry";
+  }
+
+  /**
+   * CreatePortfolio mapping for GET requests.
+   *
+   * @param model The spring model to add the attributes to
+   * @return The page to load
+   */
+  @SuppressWarnings("PMD")
+  @GetMapping("/createPortfolio")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String createPortfolio(Model model, KeycloakAuthenticationToken token) {
+
+    accountService.authorize(model, token);
+
+    List<Portfolio> portfolioList = portfolioService.findAll();
+
+    model.addAttribute("portfolioList", portfolioList);
+    return "create_portfolio";
   }
 
   /**
@@ -240,7 +221,7 @@ public class PortfoliosController {
   @GetMapping("/edit")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String editTemplate(Model model, KeycloakAuthenticationToken token) {
-    authorize(model, token);
+    accountService.authorize(model, token);
 
     return "edit_template";
   }
@@ -255,10 +236,9 @@ public class PortfoliosController {
   @GetMapping("/upload")
   @RolesAllowed({"ROLE_orga"})
   public String uploadTemplate(Model model, KeycloakAuthenticationToken token) {
-    authorize(model, token);
+    accountService.authorize(model, token);
 
     model.addAttribute("portfolioList", portfolioService.findAll());
-    model.addAttribute("entryList", hardMock.getMockEntry());
 
     return "upload_template";
   }
@@ -275,7 +255,7 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga"})
   public String viewUploadedTemplate(Model model, @RequestParam("file") MultipartFile file,
                                      KeycloakAuthenticationToken token) {
-    authorize(model, token);
+    accountService.authorize(model, token);
 
     byte[] fileBytes;
     try {
@@ -290,6 +270,26 @@ public class PortfoliosController {
     model.addAttribute("html", html);
 
     return "view_template";
+  }
+
+  /**
+   * Submit mapping for GET requests.
+   *
+   * @param model       The spring model to add the attributes to
+   * @param portfolioId The portfolio id
+   * @return The page to load
+   */
+  @GetMapping("/submit")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String submit(Model model, /*@RequestParam Long portfolioId,*/ KeycloakAuthenticationToken token) {
+    accountService.authorize(model, token);
+
+    //Template template = templateService.getById(portfolioId);
+    Template template = templateService.getByTitle("Propra2");
+
+    model.addAttribute("template", template);
+
+    return "submit";
   }
 
   @SuppressWarnings("PMD")

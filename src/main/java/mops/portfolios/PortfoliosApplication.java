@@ -9,6 +9,9 @@ import mops.portfolios.domain.entry.EntryFieldRepository;
 import mops.portfolios.domain.entry.EntryRepository;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioRepository;
+import mops.portfolios.domain.portfolio.PortfolioService;
+import mops.portfolios.domain.state.State;
+import mops.portfolios.domain.state.StateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -16,6 +19,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.List;
+import java.util.Random;
 
 
 @SpringBootApplication
@@ -24,8 +29,8 @@ public class PortfoliosApplication {
 
   private static final Logger log = LoggerFactory.getLogger(PortfoliosApplication.class);
 
-    final @NonNull EntityManager entityManager;
-    final @NonNull PortfolioRepository repository;
+  final @NonNull EntityManager entityManager;
+  final @NonNull PortfolioRepository repository;
 
   /** Starts the application.
    * @param args - command-line arguments
@@ -34,8 +39,9 @@ public class PortfoliosApplication {
     SpringApplication.run(PortfoliosApplication.class, args);
   }
 
+    // PLS DO NOT document this - we remove this before release, this runner is just a playground.
     @Bean
-    public CommandLineRunner demo(PortfolioRepository PortfolioRepository, EntryRepository entryRepository, EntryFieldRepository entryFieldRepository) {
+    public CommandLineRunner demo(StateService stateService, PortfolioService portfolioService) {
         return (args) -> {
       /*      Set<String> roles = new HashSet<>(Arrays.asList("student"));
 
@@ -63,13 +69,28 @@ public class PortfoliosApplication {
             for (int i = 0; i < 10; i++) {
                 repository.save(demo.generateUserPortfolio());
                 repository.save(demo.generateGroupPortfolio());
+                repository.save(demo.generateTemplate());
             }
 
+            log.info("8==================================================================================");
+            log.info("Non-templates:");
 
-
-            for (Portfolio portfolio : repository.findAll()) {
+            for (Portfolio portfolio : portfolioService.getAllPortfolios()) {
                 log.info(portfolio.toString());
             }
+
+            log.info("9==================================================================================");
+            log.info("Templates:");
+            for (Portfolio portfolio : portfolioService.getAllTemplates()) {
+                log.info(portfolio.toString());
+            }
+
+            log.info(stateService.getState("gruppenbildung2").toString());
+
+            stateService.setState("gruppenbildung2", Math.abs(new Random().nextLong()));
+
+            log.info(stateService.getState("gruppenbildung2").toString());
+
 
         };
     }
