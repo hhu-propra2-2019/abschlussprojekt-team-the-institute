@@ -8,6 +8,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
+import mops.portfolios.domain.portfolio.templates.Template;
+import mops.portfolios.domain.portfolio.templates.TemplateService;
 import mops.portfolios.security.UserSecurity;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryService;
@@ -28,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class PortfoliosController {
 
-  private final AccountService accountService = new AccountService(this);
+
   private transient AsciiDocConverter asciiConverter;
   private transient UserSecurity userSecurity;
 
@@ -37,7 +39,11 @@ public class PortfoliosController {
   @Autowired
   private transient PortfolioService portfolioService;
   @Autowired
+  private transient TemplateService templateService;
+  @Autowired
   private transient UserGroupService userGroupService;
+  @Autowired
+  private transient final AccountService accountService;
 
   /**
    * Root mapping for GET requests.
@@ -254,6 +260,26 @@ public class PortfoliosController {
     model.addAttribute("html", html);
 
     return "view_template";
+  }
+
+  /**
+   * Submit mapping for GET requests.
+   *
+   * @param model       The spring model to add the attributes to
+   * @param portfolioId The portfolio id
+   * @return The page to load
+   */
+  @GetMapping("/submit")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String submit(Model model, /*@RequestParam Long portfolioId,*/ KeycloakAuthenticationToken token) {
+    accountService.authorize(model, token);
+
+    //Template template = templateService.getById(portfolioId);
+    Template template = templateService.getByTitle("Propra2");
+
+    model.addAttribute("template", template);
+
+    return "submit";
   }
 
   @SuppressWarnings("PMD")

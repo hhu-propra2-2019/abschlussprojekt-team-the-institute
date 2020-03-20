@@ -9,6 +9,7 @@ import mops.portfolios.domain.entry.EntryFieldRepository;
 import mops.portfolios.domain.entry.EntryRepository;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioRepository;
+import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.state.State;
 import mops.portfolios.domain.state.StateService;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.List;
 import java.util.Random;
 
 
@@ -39,7 +41,7 @@ public class PortfoliosApplication {
 
     // PLS DO NOT document this - we remove this before release, this runner is just a playground.
     @Bean
-    public CommandLineRunner demo(StateService stateService, EntryRepository entryRepository, EntryFieldRepository entryFieldRepository) {
+    public CommandLineRunner demo(StateService stateService, PortfolioService portfolioService) {
         return (args) -> {
       /*      Set<String> roles = new HashSet<>(Arrays.asList("student"));
 
@@ -67,21 +69,29 @@ public class PortfoliosApplication {
             for (int i = 0; i < 10; i++) {
                 repository.save(demo.generateUserPortfolio());
                 repository.save(demo.generateGroupPortfolio());
-            }
-
-
-
-            for (Portfolio portfolio : repository.findAll()) {
-                log.info(portfolio.toString());
+                repository.save(demo.generateTemplate());
             }
 
             log.info("8==================================================================================");
+            log.info("Non-templates:");
+
+            for (Portfolio portfolio : portfolioService.getAllPortfolios()) {
+                log.info(portfolio.toString());
+            }
+
+            log.info("9==================================================================================");
+            log.info("Templates:");
+            for (Portfolio portfolio : portfolioService.getAllTemplates()) {
+                log.info(portfolio.toString());
+            }
 
             log.info(stateService.getState("gruppenbildung2").toString());
 
             stateService.setState("gruppenbildung2", Math.abs(new Random().nextLong()));
 
             log.info(stateService.getState("gruppenbildung2").toString());
+
+
         };
     }
 }
