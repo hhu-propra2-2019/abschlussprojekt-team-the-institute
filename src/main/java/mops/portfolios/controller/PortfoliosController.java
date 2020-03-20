@@ -216,7 +216,7 @@ public class PortfoliosController {
   /**
    * Submit mapping for GET requests.
    *
-   * @param model       The spring model to add the attributes to
+   * @param model The spring model to add the attributes to
    * @return The page to load
    */
   @GetMapping("/submit")
@@ -240,4 +240,10 @@ public class PortfoliosController {
     return "redirect:/";
   }
 
+  @SuppressWarnings("PMD")
+  @GetMapping("/create_entry")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String createNewEntry(Model model) {
+    return "/create_entry";
+  }
 }
