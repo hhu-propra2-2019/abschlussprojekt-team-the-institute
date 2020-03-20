@@ -47,4 +47,8 @@ public class AccountService {
     return token.getAccount().getRoles().toString();
   }
 
+  public boolean isOrga(KeycloakAuthenticationToken token) {
+    return token.getAccount().getRoles().contains("orga");
+  }
+
 }

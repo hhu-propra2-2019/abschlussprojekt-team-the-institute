@@ -10,10 +10,10 @@ import mops.portfolios.domain.portfolio.templates.Template;
 import mops.portfolios.domain.portfolio.templates.TemplateService;
 import mops.portfolios.domain.user.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.security.RolesAllowed;
@@ -23,19 +23,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Controller
+@RequestMapping("/user")
+@RolesAllowed({"ROLE_studentin"})
 @AllArgsConstructor
-public class StudentController {
+public class UserController {
 
-  @Autowired
   private transient final AccountService accountService;
+  private transient final UserService userService;
 
-  @Autowired
-  private transient UserService userService;
-
-  @Autowired
-  private transient PortfolioService portfolioService;
-  @Autowired
-  private transient TemplateService templateService;
+  private transient final PortfolioService portfolioService;
+  private transient final TemplateService templateService;
 
   /**
    * Index mapping for GET requests.
@@ -45,11 +42,10 @@ public class StudentController {
    */
   @SuppressWarnings("PMD")
   @GetMapping("/")
-  @RolesAllowed({"ROLE_studentin"})
   public String index(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    return "redirect:/list";
+    return "redirect:/user/list";
   }
 
   /**
@@ -60,7 +56,6 @@ public class StudentController {
    */
   @SuppressWarnings("PMD")
   @GetMapping("/list")
-  @RolesAllowed({"ROLE_studentin"})
   public String listPortfolios(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
@@ -88,7 +83,6 @@ public class StudentController {
    */
   @SuppressWarnings("PMD")
   @GetMapping("/view")
-  @RolesAllowed({"ROLE_studentin"})
   public String viewPortfolio(Model model, @RequestParam Long portfolioId, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
@@ -107,7 +101,6 @@ public class StudentController {
    */
   @SuppressWarnings("PMD")
   @GetMapping("/create")
-  @RolesAllowed({"ROLE_studentin"})
   public String createPortfolio(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
@@ -126,7 +119,6 @@ public class StudentController {
    * @return The page to load
    */
   @GetMapping("/submit")
-  @RolesAllowed({"ROLE_studentin"})
   public String submitPortfolio(Model model, /*@RequestParam Long portfolioId,*/ KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 

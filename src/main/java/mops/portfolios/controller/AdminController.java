@@ -7,11 +7,11 @@ import mops.portfolios.domain.portfolio.templates.Template;
 import mops.portfolios.domain.portfolio.templates.TemplateService;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,17 +20,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-//@Controller
+@Controller
+@RequestMapping("/admin")
+@RolesAllowed({"ROLE_orga"})
 @AllArgsConstructor
-public class OrgaController {
+public class AdminController {
 
-  @Autowired
   private transient final AccountService accountService;
 
-  @Autowired
-  private transient TemplateService templateService;
+  private transient final TemplateService templateService;
 
-  private transient AsciiDocConverter asciiConverter;
+  private transient final AsciiDocConverter asciiConverter;
 
   /**
    * Index mapping for GET requests.
@@ -40,11 +40,10 @@ public class OrgaController {
    */
   @SuppressWarnings("PMD")
   @GetMapping("/")
-  @RolesAllowed({"ROLE_orga"})
   public String index(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    return "redirect:/list";
+    return "redirect:/admin/list";
   }
 
   /**
@@ -55,7 +54,6 @@ public class OrgaController {
    */
   @SuppressWarnings("PMD")
   @GetMapping("/list")
-  @RolesAllowed({"ROLE_orga"})
   public String listTemplates(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
@@ -74,7 +72,6 @@ public class OrgaController {
    */
   @SuppressWarnings("PMD")
   @GetMapping("/create")
-  @RolesAllowed({"ROLE_orga"})
   public String createTemplate(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
@@ -90,7 +87,6 @@ public class OrgaController {
    */
   @SuppressWarnings("PMD")
   @GetMapping("/edit")
-  @RolesAllowed({"ROLE_orga"})
   public String editTemplate(Model model, @RequestParam Long templateId, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
@@ -110,7 +106,6 @@ public class OrgaController {
    */
   @SuppressWarnings("PMD")
   @GetMapping("/view")
-  @RolesAllowed({"ROLE_orga"})
   public String viewTemplate(Model model, @RequestParam Long templateId, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
@@ -129,7 +124,6 @@ public class OrgaController {
    */
   @SuppressWarnings("PMD")
   @GetMapping("/upload")
-  @RolesAllowed({"ROLE_orga"})
   public String uploadAscii(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
@@ -147,7 +141,6 @@ public class OrgaController {
    */
   @SuppressWarnings("PMD")
   @PostMapping("/viewAscii")
-  @RolesAllowed({"ROLE_orga"})
   public String viewUploadedAscii(Model model, @RequestParam("file") MultipartFile file, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
