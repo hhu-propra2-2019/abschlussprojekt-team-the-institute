@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{mopslayout :: html(name='Lernportfolio', title='Vorlage ansehen', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+<html lang="en"
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Vorlage ansehen', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -89,7 +90,8 @@
                     </label>
                     <br>
                     <input class="custom-range w-50" data-placement="top" data-toggle="tooltip" id="INPUT_RANGE"
-                           oninput="$('#INPUT_RANGE').tooltip('dispose'); this.title = this.value; $('#INPUT_RANGE').tooltip('show');" required th:max="${range[1]}"
+                           oninput="$('#INPUT_RANGE').tooltip('dispose'); this.title = this.value; $('#INPUT_RANGE').tooltip('show');"
+                           required th:max="${range[1]}"
                            th:min="${range[0]}" th:title="${range[0]}" th:value="${range[0]}"
                            type="range">
                 </div>
@@ -121,6 +123,10 @@
     </div>
 
 </div>
+
+<script>
+    $('.nav-tabs a:first').tab('show');
+</script>
 
 </body>
 </html>

@@ -47,7 +47,7 @@
     <div class="tab-content">
 
         <div class="tab-pane fade" th:each="entry : ${portfolio.getEntries()}"
-              th:id="'tab'+${entry.getId()}">
+             th:id="'tab'+${entry.getId()}">
 
             <div class="card border-dark w-50 mb-2" th:each="field : ${entry.getFields()}">
                 <h5 class="card-header" th:text="${entry.getTitle()}">Entry title</h5>
@@ -64,6 +64,10 @@
     </div>
 
 </div>
+
+<script>
+    $('.nav-tabs a:first').tab('show');
+</script>
 
 </body>
 </html>
