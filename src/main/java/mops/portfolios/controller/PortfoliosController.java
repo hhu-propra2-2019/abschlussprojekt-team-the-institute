@@ -29,8 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class PortfoliosController {
 
-
-  private transient AsciiDocConverter asciiConverter;
   private transient UserSecurity userSecurity;
 
   private transient UserService userService;
@@ -209,67 +207,6 @@ public class PortfoliosController {
 
     model.addAttribute("portfolioList", portfolioList);
     return "create_portfolio";
-  }
-
-  /**
-   * Edit mapping for GET requests.
-   *
-   * @param model The spring model to add the attributes to
-   * @return The page to load
-   */
-  @SuppressWarnings("PMD")
-  @GetMapping("/edit")
-  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String editTemplate(Model model, KeycloakAuthenticationToken token) {
-    accountService.authorize(model, token);
-
-    return "edit_template";
-  }
-
-  /**
-   * Upload mapping for GET requests.
-   *
-   * @param model The spring model to add the attributes to
-   * @return The page to load
-   */
-  @SuppressWarnings("PMD")
-  @GetMapping("/upload")
-  @RolesAllowed({"ROLE_orga"})
-  public String uploadTemplate(Model model, KeycloakAuthenticationToken token) {
-    accountService.authorize(model, token);
-
-    model.addAttribute("portfolioList", portfolioService.findAll());
-
-    return "upload_template";
-  }
-
-  /**
-   * View mapping for POST requests.
-   *
-   * @param model The spring model to add the attributes to
-   * @param file  The uploaded (AsciiDoc) template file
-   * @return The page to load
-   */
-  @SuppressWarnings("PMD")
-  @PostMapping("/view")
-  @RolesAllowed({"ROLE_orga"})
-  public String viewUploadedTemplate(Model model, @RequestParam("file") MultipartFile file,
-                                     KeycloakAuthenticationToken token) {
-    accountService.authorize(model, token);
-
-    byte[] fileBytes;
-    try {
-      fileBytes = file.getBytes();
-    } catch (IOException e) {
-      e.printStackTrace();
-      return "upload_template";
-    }
-
-    String text = new String(fileBytes, StandardCharsets.UTF_8);
-    String html = asciiConverter.convertToHtml(text);
-    model.addAttribute("html", html);
-
-    return "view_template";
   }
 
   /**

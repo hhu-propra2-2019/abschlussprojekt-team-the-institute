@@ -1,23 +1,33 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Submit', headcontent=~{:: headcontent}, navigation=~{fragments/navigation :: navigationFragment}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Vorlage ansehen', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 
 <head>
     <th:block th:fragment="headcontent">
         <th:block th:insert="fragments/dependencies :: dependencyFragment"></th:block>
-
-        <style>
-
-        </style>
-
     </th:block>
+
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li>
+                <a href="/list">
+                    <p><i class="fa fa-archive fa-lg"></i> Zurück</p>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/edit(templateId=${template.getId()})}">
+                    <p><i class="fas fa-edit fa-lg"></i> Vorlage editieren</p>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </head>
 
 <body th:fragment="bodycontent">
 
 <div class="jumbotron pt-1 font-italic">
 
-    <h1 class="display-5">Portfolio Abgabe</h1>
+    <h1 class="display-5">Vorlage ansehen</h1>
     <p class="lead">Du siehst die Vorlage <u th:text="${template.getTitle()}">Title</u></p>
     <hr class="my-4">
 
@@ -111,10 +121,6 @@
     </div>
 
 </div>
-
-<script>
-    //TODO: FORM VALIDATION
-</script>
 
 </body>
 </html>
