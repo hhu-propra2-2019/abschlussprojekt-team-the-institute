@@ -71,7 +71,7 @@ public class UserController {
     model.addAttribute("userPortfolios", userPortfolios);
     model.addAttribute("allPortfolios", allPortfolios);
 
-    return "student/list";
+    return "user/list";
   }
 
   /**
@@ -90,7 +90,7 @@ public class UserController {
 
     model.addAttribute("portfolio", portfolio);
 
-    return "student/view";
+    return "user/view";
   }
 
   /**
@@ -108,7 +108,7 @@ public class UserController {
 
     model.addAttribute("templateList", templateList);
 
-    return "student/create";
+    return "user/create";
   }
 
   /**
@@ -127,6 +127,6 @@ public class UserController {
 
     model.addAttribute("template", template);
 
-    return "student/submit";
+    return "user/submit";
   }
 }

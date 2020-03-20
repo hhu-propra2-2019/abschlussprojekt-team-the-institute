@@ -61,7 +61,7 @@ public class AdminController {
 
     model.addAttribute("templateList", templateList);
 
-    return "orga/list";
+    return "admin/list";
   }
 
   /**
@@ -75,7 +75,7 @@ public class AdminController {
   public String createTemplate(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    return "orga/create";
+    return "admin/create";
   }
 
   /**
@@ -94,7 +94,7 @@ public class AdminController {
 
     model.addAttribute("template", template);
 
-    return "orga/edit";
+    return "admin/edit";
   }
 
   /**
@@ -113,7 +113,7 @@ public class AdminController {
 
     model.addAttribute("template", template);
 
-    return "orga/view";
+    return "admin/view";
   }
 
   /**
@@ -129,7 +129,7 @@ public class AdminController {
 
     model.addAttribute("templateList", templateService.getAll());
 
-    return "orga/asciidoc/upload";
+    return "admin/asciidoc/upload";
   }
 
   /**
@@ -149,13 +149,13 @@ public class AdminController {
       fileBytes = file.getBytes();
     } catch (IOException e) {
       e.printStackTrace();
-      return "orga/asciidoc/upload";
+      return "admin/asciidoc/upload";
     }
 
     String text = new String(fileBytes, StandardCharsets.UTF_8);
     String html = asciiConverter.convertToHtml(text);
     model.addAttribute("html", html);
 
-    return "orga/asciidoc/view";
+    return "admin/asciidoc/view";
   }
 }
