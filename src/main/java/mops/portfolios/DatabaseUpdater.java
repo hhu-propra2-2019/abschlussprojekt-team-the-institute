@@ -160,23 +160,27 @@ public class DatabaseUpdater {
       for (Object groupElement : groupList) {
 
         JSONObject group = (JSONObject) groupElement;
-        long groupId = group.getBigInteger("id").longValue();
+        Long groupId = group.getBigInteger("id").longValue();
         String title = group.getString("title");
         JSONArray members = group.getJSONArray("members");
 
         List<User> userList = new ArrayList<>();
 
-        for (Object member: members) {
-          userList.add((User) member);
-        }
+        if (members != null) {
+          for (Object member : members) {
+            User user = new User();
+            JSONObject users = (JSONObject) member;
+            user.setName(users.getString("user_id"));
+            userList.add(user);
+          }
 
-        if (title == null || title.isEmpty()) {
-          groupRepository.deleteById(groupId);
-        } else if (groupExists(groupId)) {
-          groupRepository.deleteById(groupId);
+          if (title == null || title.isEmpty()) {
+            groupRepository.deleteById(groupId);
+          } //else if (groupId != null && groupExists(groupId)) {
+//            groupRepository.deleteById(groupId);
+//          }
+          //groupRepository.save(new Group(groupId, title, userList));
         }
-        // TODO: Add once the own method is implemented
-        //groupRepository.save(new Group(groupId, title, userList));
       }
     } catch (Exception e) {
       logger.error("Couldn't parse JSONObject:" + e.getMessage());
