@@ -93,16 +93,6 @@ public class PortfolioService {
     return templates;
   }
 
-  public Portfolio findByTitle(String portfolioTitle) {
-    List<Portfolio> portfolios = repository.findAll();
-    for (Portfolio p : portfolios) {
-      if (p.getTitle().equals(portfolioTitle)){
-        return p;
-      }
-    }
-    return null;
-  }
-
   public void replace(Portfolio p) {
     repository.deleteById(p.getId());
     repository.save(p);
