@@ -8,6 +8,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
+import mops.portfolios.domain.portfolio.templates.Template;
+import mops.portfolios.domain.portfolio.templates.TemplateService;
 import mops.portfolios.security.UserSecurity;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryService;
@@ -36,6 +38,8 @@ public class PortfoliosController {
   private transient EntryService entryService;
   @Autowired
   private transient PortfolioService portfolioService;
+  @Autowired
+  private transient TemplateService templateService;
   @Autowired
   private transient UserGroupService userGroupService;
   @Autowired
@@ -237,6 +241,26 @@ public class PortfoliosController {
     model.addAttribute("html", html);
 
     return "view_template";
+  }
+
+  /**
+   * Submit mapping for GET requests.
+   *
+   * @param model       The spring model to add the attributes to
+   * @param portfolioId The portfolio id
+   * @return The page to load
+   */
+  @GetMapping("/submit")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String submit(Model model, /*@RequestParam Long portfolioId,*/ KeycloakAuthenticationToken token) {
+    accountService.authorize(model, token);
+
+    //Template template = templateService.getById(portfolioId);
+    Template template = templateService.getByTitle("Propra2");
+
+    model.addAttribute("template", template);
+
+    return "submit";
   }
 
   @SuppressWarnings("PMD")
