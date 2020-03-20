@@ -29,10 +29,11 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class PortfoliosController {
 
+  @Autowired
   private transient UserSecurity userSecurity;
-
+  @Autowired
   private transient UserService userService;
-
+  @Autowired
   private transient PortfolioService portfolioService;
   @Autowired
   private transient TemplateService templateService;
@@ -159,7 +160,10 @@ public class PortfoliosController {
 
     if (accountService.getOrgaRole(token).contains("orga")) {
       return "portfolio";
-    } else if (userSecurity.isAllowedToViewOrEditPortfolio(accountService.getUserName(token), portfolio)) {
+    } else if (
+        userSecurity.isAllowedToViewOrEditPortfolio(
+            accountService.getUserName(token),
+            portfolio)) {
       return "portfolio";
     } else {
       return "../error";
@@ -213,7 +217,6 @@ public class PortfoliosController {
    * Submit mapping for GET requests.
    *
    * @param model       The spring model to add the attributes to
-   * @param portfolioId The portfolio id
    * @return The page to load
    */
   @GetMapping("/submit")

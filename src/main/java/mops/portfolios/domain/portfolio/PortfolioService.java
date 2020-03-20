@@ -10,6 +10,8 @@ import mops.portfolios.domain.group.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.sound.sampled.Port;
+
 @Service
 public class PortfolioService {
 
@@ -89,5 +91,20 @@ public class PortfolioService {
       }
     }
     return templates;
+  }
+
+  public Portfolio findByTitle(String portfolioTitle) {
+    List<Portfolio> portfolios = repository.findAll();
+    for (Portfolio p : portfolios) {
+      if (p.getTitle().equals(portfolioTitle)){
+        return p;
+      }
+    }
+    return null;
+  }
+
+  public void replace(Portfolio p) {
+    repository.deleteById(p.getId());
+    repository.save(p);
   }
 }

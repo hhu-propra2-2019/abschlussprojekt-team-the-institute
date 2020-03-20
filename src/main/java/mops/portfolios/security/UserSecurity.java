@@ -3,6 +3,7 @@ package mops.portfolios.security;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupService;
 import mops.portfolios.domain.portfolio.Portfolio;
+import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.user.User;
 import mops.portfolios.domain.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,10 @@ public class UserSecurity {
 
   @Autowired
   private transient UserService userService;
+  @Autowired
   private transient GroupService groupService;
+  @Autowired
+  private transient PortfolioService portfolioService;
 
   /**
    * Checks if the user is allowed to view this portfolio.
