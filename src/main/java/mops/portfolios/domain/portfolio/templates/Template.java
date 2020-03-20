@@ -1,4 +1,4 @@
-package mops.portfolios.templates;
+package mops.portfolios.domain.portfolio.templates;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,9 +9,9 @@ import java.util.List;
 @AllArgsConstructor
 public class Template {
 
-  private String portfolioTitle;
+  private long id;
 
-  private String entryTitle;
+  private String title;
 
   private List<TemplateEntry> entries;
 }

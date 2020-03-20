@@ -1,6 +1,5 @@
 package mops.portfolios.controller;
 
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -8,12 +7,14 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
+import mops.portfolios.domain.portfolio.templates.Template;
+import mops.portfolios.domain.portfolio.templates.TemplateService;
 import mops.portfolios.security.UserSecurity;
 import mops.portfolios.domain.entry.Entry;
-import mops.portfolios.domain.entry.EntryService;
+import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.usergroup.UserGroupService;
+import mops.portfolios.domain.user.UserService;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +33,20 @@ public class PortfoliosController {
   private transient AsciiDocConverter asciiConverter;
   private transient UserSecurity userSecurity;
 
-  @Autowired
-  private transient EntryService entryService;
-  @Autowired
+  private transient UserService userService;
+
   private transient PortfolioService portfolioService;
   @Autowired
-  private transient UserGroupService userGroupService;
+  private transient TemplateService templateService;
   @Autowired
   private transient final AccountService accountService;
+
+  @Autowired
+  public PortfoliosController(UserService userService, PortfolioService portfolioService, AccountService accountService) {
+    this.userService = userService;
+    this.portfolioService = portfolioService;
+    this.accountService = accountService;
+  }
 
   /**
    * Root mapping for GET requests.
@@ -51,16 +58,20 @@ public class PortfoliosController {
   @GetMapping("/")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestList(Model model, KeycloakAuthenticationToken token) {
+
     accountService.authorize(model, token);
-    
-    List<Portfolio> portfoliosList = portfolioService.findFirstFew();
+    String userName = accountService.getUserName(token);
 
-    List<Portfolio> groupPortfolios = accountService
-            .getGroupPortfolios(token, portfoliosList.subList(0, 4));
-    List<Portfolio> userPortfolios = accountService.getPortfolios(token,
-            portfoliosList.subList(4, portfoliosList.size() - 1));
+    List<Group> groups = userService.getGroupsByUserName(userName);
+    // TODO Implement optional sublisting with method overload in portfolioService
+    List<Portfolio> groupPortfolios = portfolioService.findAllByGroupList(groups);
+    List<Portfolio> userPortfolios = portfolioService.findAllByUserId(userName);
 
-    model.addAttribute("last", groupPortfolios.get(0));
+    // You should probably do this in view against "gruppen" attribute of the model
+    if (groupPortfolios.size() > 0) {
+      model.addAttribute("last", groupPortfolios.get(0));
+    }
+
     model.addAttribute("gruppen", groupPortfolios);
     model.addAttribute("vorlesungen", userPortfolios);
 
@@ -77,11 +88,12 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestIndex(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
+    String userName = accountService.getUserName(token);
 
-    List<Portfolio> groupPortfolios = accountService.getGroupPortfolios(token,
-            portfolioService.getGroupPortfolios(userGroupService, "userId"));
-    List<Portfolio> userPortfolios = accountService.getPortfolios(token,
-            portfolioService.findAllByUserId("userId"));
+    List<Group> groups = userService.getGroupsByUserName(userName);
+
+    List<Portfolio> groupPortfolios = portfolioService.findAllByGroupList(groups);
+    List<Portfolio> userPortfolios = portfolioService.findAllByUserId(userName);
 
     model.addAttribute("gruppen", groupPortfolios);
     model.addAttribute("vorlesungen", userPortfolios);
@@ -100,9 +112,11 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestGruppen(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
+    String userName = accountService.getUserName(token);
 
-    List<Portfolio> groupPortfolios = accountService.getGroupPortfolios(token,
-            portfolioService.getGroupPortfolios(userGroupService, "userId"));
+
+    List<Group> groups = userService.getGroupsByUserName(userName);
+    List<Portfolio> groupPortfolios = portfolioService.findAllByGroupList(groups);
 
     model.addAttribute("gruppen", groupPortfolios);
 
@@ -117,9 +131,9 @@ public class PortfoliosController {
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
   public String requestPrivate(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
+    String userName = accountService.getUserName(token);
 
-    List<Portfolio> userPortfolios = accountService.getPortfolios(token,
-            portfolioService.findAllByUserId("userId"));
+    List<Portfolio> userPortfolios = portfolioService.findAllByUserId(userName);
 
     model.addAttribute("vorlesungen", userPortfolios);
 
@@ -147,7 +161,7 @@ public class PortfoliosController {
 
     if (accountService.getOrgaRole(token).contains("orga")) {
       return "portfolio";
-    } else if (userSecurity.hasUserName(accountService.getUserName(token))) {
+    } else if (userSecurity.isAllowedToViewOrEditPortfolio(accountService.getUserName(token), portfolio)) {
       return "portfolio";
     } else {
       return "../error";
@@ -176,6 +190,25 @@ public class PortfoliosController {
     model.addAttribute("portfolio", portfolio);
     model.addAttribute("entry", entry);
     return "entry";
+  }
+
+  /**
+   * CreatePortfolio mapping for GET requests.
+   *
+   * @param model The spring model to add the attributes to
+   * @return The page to load
+   */
+  @SuppressWarnings("PMD")
+  @GetMapping("/createPortfolio")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String createPortfolio(Model model, KeycloakAuthenticationToken token) {
+
+    accountService.authorize(model, token);
+
+    List<Portfolio> portfolioList = portfolioService.findAll();
+
+    model.addAttribute("portfolioList", portfolioList);
+    return "create_portfolio";
   }
 
   /**
@@ -239,6 +272,26 @@ public class PortfoliosController {
     return "view_template";
   }
 
+  /**
+   * Submit mapping for GET requests.
+   *
+   * @param model       The spring model to add the attributes to
+   * @param portfolioId The portfolio id
+   * @return The page to load
+   */
+  @GetMapping("/submit")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String submit(Model model, /*@RequestParam Long portfolioId,*/ KeycloakAuthenticationToken token) {
+    accountService.authorize(model, token);
+
+    //Template template = templateService.getById(portfolioId);
+    Template template = templateService.getByTitle("Propra2");
+
+    model.addAttribute("template", template);
+
+    return "submit";
+  }
+
   @SuppressWarnings("PMD")
   @GetMapping("/logout")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
@@ -247,7 +300,4 @@ public class PortfoliosController {
     return "redirect:/";
   }
 
-  public UserGroupService getUserGroupService() {
-    return userGroupService;
-  }
 }
