@@ -185,7 +185,7 @@ public class PortfoliosController {
   @SuppressWarnings("PMD")
   @GetMapping("/createPortfolio")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String clickEntry(Model model, KeycloakAuthenticationToken token) {
+  public String createPortfolio(Model model, KeycloakAuthenticationToken token) {
 
     accountService.authorize(model, token);
 
