@@ -39,8 +39,6 @@ public class PortfoliosController {
   @Autowired
   private transient TemplateService templateService;
   @Autowired
-  private transient UserGroupService userGroupService;
-  @Autowired
   private transient final AccountService accountService;
 
   @Autowired
@@ -63,8 +61,6 @@ public class PortfoliosController {
 
     accountService.authorize(model, token);
     String userName = accountService.getUserName(token);
-
-    List<Portfolio> portfoliosList = portfolioService.findFirstFew();
 
     List<Group> groups = userService.getGroupsByUserName(userName);
     // TODO Implement optional sublisting with method overload in portfolioService
