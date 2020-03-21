@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupRepository;
+import mops.portfolios.domain.state.StateService;
 import mops.portfolios.domain.user.User;
 import mops.portfolios.tools.HttpClient;
 import mops.portfolios.tools.IHttpClient;
@@ -33,8 +34,8 @@ public class DatabaseUpdater {
   final @NonNull
   GroupRepository groupRepository;
 
-  //  @Autowired
-  //  StateService stateService;
+    @Autowired
+    StateService stateService;
 
 
   /**
@@ -62,7 +63,7 @@ public class DatabaseUpdater {
    *                              The interrupted status of the current thread is cleared when this exception is thrown.
    */
   public void updateDatabase(long timeout) throws InterruptedException {
-    long updateStatus = 0; // TODO: insert "stateService.getState("gruppen2");"
+    long updateStatus = stateService.getState("gruppen2");
     this.url = "/gruppen2/api/updateGroups/" + updateStatus;
     DatabaseUpdaterThread databaseUpdaterThread = new DatabaseUpdaterThread(timeout);
     databaseUpdaterThread.run();
