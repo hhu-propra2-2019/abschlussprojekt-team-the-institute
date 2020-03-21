@@ -2,7 +2,10 @@ package mops.portfolios;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupRepository;
@@ -15,16 +18,19 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @SuppressWarnings("PMD")
+@RequiredArgsConstructor
 public class DatabaseUpdater {
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
   transient String url;
 
-  @Autowired
+
+  final @NonNull
   GroupRepository groupRepository;
 
   //  @Autowired
@@ -50,9 +56,10 @@ public class DatabaseUpdater {
 
   /**
    * Runs the database updater.
+   *
    * @param timeout The timeout between each update
    * @throws InterruptedException if another thread has interrupted the current thread. \
-   The interrupted status of the current thread is cleared when this exception is thrown.
+   *                              The interrupted status of the current thread is cleared when this exception is thrown.
    */
   public void updateDatabase(long timeout) throws InterruptedException {
     long updateStatus = 0; // TODO: insert "stateService.getState("gruppen2");"
@@ -72,6 +79,7 @@ public class DatabaseUpdater {
 
   /**
    * This method updates the database using an injected HttpClient and url, easing up testing.
+   *
    * @param httpClient The IHttpClient to use
    */
   @SuppressWarnings("PMD")
@@ -95,6 +103,7 @@ public class DatabaseUpdater {
 
   /**
    * This method updates the database using the injected JSON String, easing up testing.
+   *
    * @param jsonUpdate The String containing the JSON data to update the database
    */
   @SuppressWarnings("PMD")
@@ -144,6 +153,7 @@ public class DatabaseUpdater {
 
   /**
    * Checks if there are any modifications.
+   *
    * @param jsonUpdate The JSONObject to check
    * @return <b>true</b> if not modified, <b>false</b> if modified
    */
@@ -154,41 +164,39 @@ public class DatabaseUpdater {
 
   void processGroupUpdates(JSONObject jsonUpdate) {
 
-    try {
-      JSONArray groupList = jsonUpdate.getJSONArray("groupList");
 
-      for (Object groupElement : groupList) {
+    JSONArray groupList = jsonUpdate.getJSONArray("groupList");
 
-        JSONObject group = (JSONObject) groupElement;
-        Long groupId = group.getBigInteger("id").longValue();
-        String title = group.getString("title");
-        JSONArray members = group.getJSONArray("members");
+    for (Object groupElement : groupList) {
 
-        List<User> userList = new ArrayList<>();
+      JSONObject group = (JSONObject) groupElement;
+      Long groupId = group.getBigInteger("id").longValue();
+      String title = group.getString("title");
+      JSONArray members = group.getJSONArray("members");
 
-        if (members != null) {
-          for (Object member : members) {
-            User user = new User();
-            JSONObject users = (JSONObject) member;
-            user.setName(users.getString("user_id"));
-            userList.add(user);
-          }
+      List<User> userList = new ArrayList<>();
 
-          if (title == null || title.isEmpty()) {
-            groupRepository.deleteById(groupId);
-          } //else if (groupId != null && groupExists(groupId)) {
-//            groupRepository.deleteById(groupId);
-//          }
-          //groupRepository.save(new Group(groupId, title, userList));
+      if (members != null) {
+        for (Object member : members) {
+          User user = new User();
+          JSONObject users = (JSONObject) member;
+          user.setName(users.getString("user_id"));
+          userList.add(user);
         }
+
+        if (title == null || title.isEmpty()) {
+          groupRepository.deleteById(groupId);
+        } else if (groupExists(groupId)) {
+          groupRepository.deleteById(groupId);
+        }
+        groupRepository.save(new Group(groupId, title, userList));
       }
-    } catch (Exception e) {
-      logger.error("Couldn't parse JSONObject:" + e.getMessage());
-      throw e;
     }
+
   }
 
-  boolean groupExists(Long groupId) {
+  private boolean groupExists(Long groupId) {
+    Objects.requireNonNull(groupId);
     List<Long> groupIds = new ArrayList<>();
     groupIds.add(groupId);
     return groupRepository.findAllById(groupIds) != null;
