@@ -107,6 +107,8 @@ konnten wir nur ein Gerüst entwickeln. Bislang ist nur bekannt, dass wir JSON v
 So nutzen wir jetzt `Asserions.assertThrows`.
 . Zum Testen des HttpClient haben wir uns entschieden, einen Interface und FakeHttpClient zu nutzen.
 Der Response des Clients ist sofort schon die Response Body, wie wir später bemerkten.
+. Die `processUpdates` Methode hat anfangs nicht funktioniert. Das lag daran, dass wir das GroupRepository mit `Autowired` annotiert hatten. Wir brauchten allerdings eine `final @NonNull` Deklaration.
+
 . Auf private Felder einer Klasse kann man im Test leider nicht zugreifen.
 Das Nutzen von `manifold.ext.api.Jailbreak` hilft auch nicht.
 Wir haben das Problem gelöst, indem wir Felder und Methoden package-private eingestellt haben.
