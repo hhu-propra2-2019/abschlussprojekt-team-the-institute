@@ -1,8 +1,10 @@
 package mops.portfolios;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import mops.portfolios.domain.usergroup.UserGroupRepository;
+import mops.portfolios.domain.group.GroupRepository;
 import mops.portfolios.tools.HttpClient;
 import mops.portfolios.tools.IHttpClient;
 import org.json.JSONArray;
@@ -14,9 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 @SuppressWarnings("PMD")
 public class DatabaseUpdater {
@@ -24,7 +23,10 @@ public class DatabaseUpdater {
   transient String url;
 
   @Autowired
-  UserGroupRepository userGroupRepository;
+  GroupRepository groupRepository;
+
+  //  @Autowired
+  //  StateService stateService;
 
 
   /**
@@ -38,7 +40,7 @@ public class DatabaseUpdater {
     @Override
     public void run() {
       while (true) {
-        updateDatabaseEvents();
+        getUpdatesFromJsonObject();
         Thread.sleep(timeout);
       }
     }
@@ -51,7 +53,7 @@ public class DatabaseUpdater {
    The interrupted status of the current thread is cleared when this exception is thrown.
    */
   public void updateDatabase(long timeout) throws InterruptedException {
-    long updateStatus = 0; // TODO: will be retrieved through a database call later. Not yet available
+    long updateStatus = 0; // TODO: insert "stateService.getState("gruppen2");"
     this.url = "/gruppen2/api/updateGroups/" + updateStatus;
     DatabaseUpdaterThread databaseUpdaterThread = new DatabaseUpdaterThread(timeout);
     databaseUpdaterThread.run();
@@ -60,9 +62,10 @@ public class DatabaseUpdater {
   /**
    * Use this method to get the updates from Gruppenbildung regarding groups.
    */
-  public void updateDatabaseEvents() {
+
+  void getUpdatesFromJsonObject() {
     HttpClient httpClient = new HttpClient();
-    updateDatabaseEvents(httpClient, this.url);
+    getGroupUpdatesFromUrl(httpClient, this.url);
   }
 
   /**
@@ -70,7 +73,7 @@ public class DatabaseUpdater {
    * @param httpClient The IHttpClient to use
    */
   @SuppressWarnings("PMD")
-  public void updateDatabaseEvents(IHttpClient httpClient, String url) {
+  void getGroupUpdatesFromUrl(IHttpClient httpClient, String url) {
     String responseBody;
 
     // try to receive data from service Gruppenbildung
@@ -118,25 +121,23 @@ public class DatabaseUpdater {
       return; // no need to update local database
     }
 
+    processStatusUpdate(jsonObject);
+
+    processGroupUpdates(jsonObject);
+
+  }
+
+  private void processStatusUpdate(JSONObject jsonObject) {
     Long newStatus;
-    JSONArray groupList;
 
     try {
       newStatus = jsonObject.getBigInteger("status").longValue();
-      groupList = jsonObject.getJSONArray("groupList");
-
-
+      // stateService.setState("gruppen2", newStatus);
 
     } catch (Exception e) {
       logger.error("Couldn't parse JSONObject:" + e.getMessage());
       throw e;
     }
-
-    List<Long> deletedGroups = getDeletedGroups(jsonObject);
-    for(Long groupId : deletedGroups) {
-      userGroupRepository.deleteById(groupId);
-    }
-    // TODO: Process the received data
   }
 
   /**
@@ -149,28 +150,35 @@ public class DatabaseUpdater {
     return groupList.isEmpty();
   }
 
-  public List<Long> getDeletedGroups(JSONObject jsonUpdate) {
-    List<Long> deletedGroups = new ArrayList<>();
+  void processGroupUpdates(JSONObject jsonUpdate) {
 
-    JSONArray groupList;
     try {
-      groupList = jsonUpdate.getJSONArray("groupList");
+      JSONArray groupList = jsonUpdate.getJSONArray("groupList");
 
-      for(Object groupElement : groupList) {
+      for (Object groupElement : groupList) {
+
         JSONObject group = (JSONObject) groupElement;
-          long id = group.getBigInteger("id").longValue();
-          String title = group.getString("title");
-          if (title == null || title.isEmpty()) {
-            deletedGroups.add(id);
-          }
-      }
+        long groupId = group.getBigInteger("id").longValue();
+        String title = group.getString("title");
 
+        // TODO: Add once the own methods are implemented
+        //        if (title == null || title.isEmpty()) {
+        //          userGroupRepository.deleteById(groupId);
+        //        } else if (groupExists(groupId)) {
+        //          groupRepository.deleteById(groupId);
+        //        }
+        //groupRepository.createGroupById( , id, jsonObject.getString("title"));
+      }
     } catch (Exception e) {
       logger.error("Couldn't parse JSONObject:" + e.getMessage());
       throw e;
     }
+  }
 
-    return deletedGroups;
+  boolean groupExists(Long groupId) {
+    List<Long> groupIds = new ArrayList<>();
+    groupIds.add(groupId);
+    return groupRepository.findAllById(groupIds) != null;
   }
 
 }

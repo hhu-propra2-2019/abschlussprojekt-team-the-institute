@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Error', headcontent=~{:: headcontent}, navigation=~{fragments/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Error', headcontent=~{:: headcontent}, navigation=~{common/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
 
 <head>
     <th:block th:fragment="headcontent">
-        <th:block th:insert="fragments/dependencies :: dependencyFragment"></th:block>
+        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
     </th:block>
 </head>
 
@@ -13,6 +13,7 @@
 <div class="jumbotron pt-1 font-italic">
     <h1 class="display-5" th:text="'HTTP Error ' + ${errorCode}">Error code</h1>
     <p class="lead" th:text="${errorMessage}">Error message</p>
+    <p>TODO: Custom error page or description (for 403, 404,...)</p>
     <hr class="my-4">
     <p>Klicke hier um zurück zur Startseite zu gelangen:</p>
     <a class="btn btn-primary btn-lg" href="/">Zur Startseite</a>

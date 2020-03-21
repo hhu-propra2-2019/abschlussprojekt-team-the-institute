@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{mopslayout :: html(name='Lernportfolio', title='Vorlagen Liste', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:fragment="headcontent">
+        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
+    </th:block>
+
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li>
+                <a href="list">
+                    <p><i class="fa fa-archive fa-lg"></i> Vorlagen Liste</p>
+                </a>
+            </li>
+            <li>
+                <a href="create">
+                    <p><i class="fas fa-book-medical fa-lg"></i> Vorlage erstellen</p>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</head>
+
+<body th:fragment="bodycontent">
+
+<div class="jumbotron pt-1 font-italic">
+
+    <h1 class="display-5">Vorlagen Liste</h1>
+    <p class="lead">Hier findest du eine Übersicht aller Vorlagen</p>
+    <hr class="my-4">
+
+    <div class="card border-dark w-50 mb-2" th:each="template : ${templateList}">
+        <h5 class="card-header" th:text="${template.getTitle()}">Title</h5>
+        <div class="card-body text-dark">
+            <p class="card-text">Some text</p>
+            <a class="btn btn-primary"
+               th:href="@{view(templateId=${template.getId()})}">Anzeigen</a>
+        </div>
+        <div class="card-footer" th:text="'Zuletzt geändert am ' + ${template.getLastEntry().getLastChanged()}">Last
+            change
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+</html>
+

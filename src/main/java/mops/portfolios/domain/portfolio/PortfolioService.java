@@ -3,9 +3,10 @@ package mops.portfolios.domain.portfolio;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import mops.portfolios.domain.entry.Entry;
-import mops.portfolios.domain.usergroup.UserGroup;
-import mops.portfolios.domain.usergroup.UserGroupService;
+import mops.portfolios.domain.group.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,45 +29,15 @@ public class PortfolioService {
    * @return - all Portfolios
    */
   public List<Portfolio> findAll() {
-    List<Portfolio> portfolioList = new ArrayList<>();
-    Iterator iterator = repository.findAll().iterator();
-    while (iterator.hasNext()) {
-      portfolioList.add((Portfolio) iterator.next());
-    }
-    return portfolioList;
+    return repository.findAll();
   }
 
-  /**
-   * Returns the first ten portfolios.
-   * @return - the first ten.
-   */
-  public List<Portfolio> findFirstFew() {
-    return findAll().subList(0, 10);
+  public List<Portfolio> findAllByGroupList(List<Group> groups) {
+    List<Long> ids = groups.stream().map(Group::getId).collect(Collectors.toList());
+
+    return repository.findAllByGroupIdIn(ids);
   }
 
-  /**
-   * Returns all group-portfolios for a user.
-   * @param userGroupService - injects the userGroupService that will be used
-   * @param userId - the Id of the user we are checking for
-   * @return - the group portfolios
-   */
-  @SuppressWarnings("PMD")
-  public List<Portfolio> getGroupPortfolios(UserGroupService userGroupService, String userId) {
-    List<UserGroup> userGroups = userGroupService.findAllByUserId(userId);
-    List<Long> groups = new ArrayList<>();
-
-    for (UserGroup u: userGroups) {
-      groups.add(u.getGroupId());
-    }
-
-    List<Portfolio> q = new ArrayList<>();
-
-    for (Long l : groups) {
-      q.addAll(findAllByGroupId(l));
-    }
-
-    return q;
-  }
 
   public Portfolio findPortfolioById(Long id) {
     return repository.findById(id).get();
@@ -86,5 +57,37 @@ public class PortfolioService {
       }
     }
     return null;
+  }
+
+  /**
+   *  Finds all Portfolios that are templates
+   * @return - list of portfolios
+   */
+  @SuppressWarnings("PMD")
+  public List<Portfolio> getAllTemplates() {
+    List<Portfolio> templates = new ArrayList<>();
+    List<Portfolio> allPortfolios = findAll();
+    for(Portfolio p : allPortfolios) {
+      if (p.isTemplate()) {
+        templates.add(p);
+      }
+    }
+    return templates;
+  }
+
+  /**
+   * Finds all actual non-template portfolios
+   * @return - list of portfolios
+   */
+  @SuppressWarnings("PMD")
+  public List<Portfolio> getAllPortfolios() {
+    List<Portfolio> templates = new ArrayList<>();
+    List<Portfolio> allPortfolios = findAll();
+    for(Portfolio p : allPortfolios) {
+      if (!p.isTemplate()) {
+        templates.add(p);
+      }
+    }
+    return templates;
   }
 }

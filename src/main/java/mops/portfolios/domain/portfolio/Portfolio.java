@@ -13,8 +13,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import mops.portfolios.domain.entry.Entry;
-import mops.portfolios.domain.usergroup.Group;
-import mops.portfolios.domain.usergroup.User;
+import mops.portfolios.domain.group.Group;
+import mops.portfolios.domain.user.User;
 
 @Entity
 @Data
@@ -26,6 +26,8 @@ public class Portfolio {
   private @Getter String userId;
 
   private @Getter Long groupId;
+
+  private @Setter @Getter boolean isTemplate;
 
   @OneToMany(
       cascade = CascadeType.ALL,
@@ -39,7 +41,7 @@ public class Portfolio {
 
   public Portfolio(String title, User user) {
     this.title = title;
-    this.userId = user.getId();
+    this.userId = user.getName();
   }
 
   public Portfolio(String title, Group group) {

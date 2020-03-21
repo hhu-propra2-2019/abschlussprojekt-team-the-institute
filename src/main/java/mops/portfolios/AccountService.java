@@ -3,23 +3,17 @@ package mops.portfolios;
 import java.util.ArrayList;
 import java.util.List;
 
-import mops.portfolios.controller.PortfoliosController;
+import lombok.AllArgsConstructor;
 import mops.portfolios.domain.portfolio.Portfolio;
-import mops.portfolios.domain.usergroup.Group;
-import mops.portfolios.domain.usergroup.UserGroup;
 import mops.portfolios.security.Account;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-
+@Service
+@AllArgsConstructor
 public class AccountService {
-  private final transient PortfoliosController portfoliosController;
-
-  public AccountService(PortfoliosController portfoliosController) {
-    this.portfoliosController = portfoliosController;
-  }
-
   /**
    * Takes the auth-token from Keycloak and generates an AccounDTO for the views.
    *
@@ -53,42 +47,8 @@ public class AccountService {
     return token.getAccount().getRoles().toString();
   }
 
-  @SuppressWarnings("PMD")
-  public List<Portfolio> getPortfolios(KeycloakAuthenticationToken token, List<Portfolio> p) {
-    List<Portfolio> portfolios = new ArrayList<Portfolio>();
-
-    // TODO: Changing userId since it is dynamic and can therefore not be used
-
-    for (Portfolio portfolio : p) {
-
-      if (portfolio.getUserId() == null) {
-        continue;
-      }
-
-      if (portfolio.getUserId().equals(getUserName(token))) {
-        portfolios.add(portfolio);
-      }
-    }
-    return portfolios;
+  public boolean isOrga(KeycloakAuthenticationToken token) {
+    return token.getAccount().getRoles().contains("orga");
   }
 
-  @SuppressWarnings("PMD")
-  public List<Portfolio> getGroupPortfolios(KeycloakAuthenticationToken token, List<Portfolio> p) {
-    List<Portfolio> portfolios = new ArrayList<Portfolio>();
-    List<UserGroup> groups = portfoliosController.getUserGroupService()
-            .findAllByUserId(getUserName(token));
-    Portfolio staticPortfolio = new Portfolio("Lorem ipsum", new Group(1L, "Group 1"));
-
-    for (Portfolio portfolio : p) {
-      if (portfolio.getGroupId() == null) {
-        portfolios.add(staticPortfolio);
-      }
-      for (UserGroup group : groups) {
-        if (portfolio.getGroupId() == group.getGroupId()) {
-          portfolios.add(portfolio);
-        }
-      }
-    }
-    return portfolios;
-  }
 }

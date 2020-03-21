@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Submit', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+
+<head>
+    <th:block th:fragment="headcontent">
+        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
+
+        <style>
+
+        </style>
+
+    </th:block>
+
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li>
+                <a href="list">
+                    <p><i class="fa fa-chevron-circle-left fa-lg"></i> Zurück</p>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</head>
+
+<body th:fragment="bodycontent">
+
+<div class="jumbotron pt-1 font-italic">
+
+    <h1 class="display-5">Portfolio Abgabe</h1>
+    <p class="lead">Du siehst die Vorlage <u th:text="${template.getTitle()}">Title</u></p>
+    <hr class="my-4">
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item" th:each="entry : ${template.getEntries()}">
+            <a class="nav-link" data-toggle="tab" th:href="'#tab' + ${entry.getId()}"
+               th:text="${entry.getTitle()}">Entry title</a>
+        </li>
+    </ul>
+
+    <hr>
+    <br>
+
+    <div class="tab-content">
+
+        <form class="tab-pane fade" th:each="entry : ${template.getEntries()}"
+              th:id="'tab'+${entry.getId()}">
+
+            <div th:each="field : ${entry.getFields()}" th:switch="${field.getType()}"
+                 th:with="AnswerType = ${T(mops.portfolios.domain.portfolio.templates.AnswerType)}">
+
+                <div th:case="${AnswerType.TEXT}">
+                    <label for="INPUT_TEXT">
+                        <u th:text="${field.getQuestion()}">Question</u>
+                    </label>
+                    <textarea class="form-control" id="INPUT_TEXT" th:placeholder="${field.getHint()}"
+                              required></textarea>
+                </div>
+
+                <div th:case="${AnswerType.SINGLE_CHOICE}">
+                    <label>
+                        <u th:text="${field.getQuestion()}">Question</u>
+                    </label>
+                    <div class="form-check" th:each="choice : ${field.getHint().split(',')}"
+                         th:with="id=${choice.replace(' ', '')}">
+                        <input class="form-check-input" type="radio" name="radio" th:id="${id}" required>
+                        <label class="form-check-label" th:for="id" th:text="${choice}">
+                            Choice
+                        </label>
+                    </div>
+                </div>
+
+                <div th:case="${AnswerType.MULTIPLE_CHOICE}">
+                    <label>
+                        <u th:text="${field.getQuestion()}">Question</u>
+                    </label>
+                    <div class="form-check" th:each="choice : ${field.getHint().split(',')}"
+                         th:with="id=${choice.replace(' ', '')}">
+                        <input class="form-check-input" type="checkbox" th:id="${id}" required>
+                        <label class="form-check-label" th:for="${id}" th:text="${choice}">
+                            Choice
+                        </label>
+                    </div>
+                </div>
+
+                <div th:case="${AnswerType.NUMBER_SLIDER}" th:with="range = ${field.getHint().split(',')}">
+                    <label for="INPUT_RANGE">
+                        <u th:text="${field.getQuestion()}">Question</u>
+                    </label>
+                    <br>
+                    <input class="custom-range w-50" id="INPUT_RANGE" type="range" required
+                           th:value="${range[0]}" th:min="${range[0]}" th:max="${range[1]}"
+                           data-toggle="tooltip" data-placement="top" th:title="${range[0]}"
+                           oninput="$('#INPUT_RANGE').tooltip('dispose'); this.title = this.value; $('#INPUT_RANGE').tooltip('show');">
+                </div>
+
+                <div th:case="${AnswerType.ATTACHEMENT}">
+                    <label>
+                        <u th:text="${field.getQuestion()}">Question</u>
+                    </label>
+                    <br>
+                    <div class="custom-file w-50">
+                        <input type="file" class="custom-file-input" id="INPUT_FILE" th:accept="${field.getHint()}"
+                               required>
+                        <label class="custom-file-label" for="INPUT_FILE">Datei auswählen</label>
+                    </div>
+                </div>
+
+                <p th:case="*">Type not found</p>
+
+                <hr>
+                <br>
+
+            </div>
+
+            <button class="btn btn-primary" type="submit" disabled>Absenden</button>
+
+        </form>
+
+
+    </div>
+
+</div>
+
+<script>
+    $('.nav-tabs a:first').tab('show');
+    //TODO: FORM VALIDATION
+</script>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-package mops.portfolios.templates;
+package mops.portfolios.domain.portfolio.templates;
 
 public enum AnswerType {
   TEXT,
