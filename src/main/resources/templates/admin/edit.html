@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Vorlage erstellen', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+<html lang="en" th:replace="~{mopslayout :: html(name='Lernportfolio', title='Vorlage editieren', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <th:block th:fragment="headcontent">
@@ -10,7 +10,7 @@
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
             <li>
-                <a href="/list">
+                <a th:href="@{view(templateId=${template.getId()})}">
                     <p><i class="fa fa-chevron-circle-left fa-lg"></i> Zurück</p>
                 </a>
             </li>
@@ -22,8 +22,8 @@
 
 <div class="jumbotron pt-1 font-italic">
 
-    <h1 class="display-5">Vorlage erstellen</h1>
-    <p class="lead">Hier kannst du eine neue Vorlage erstellen</p>
+    <h1 class="display-5">Vorlage editieren</h1>
+    <p class="lead">Du editierst die Vorlage <u th:text="${template.getTitle()}">Title</u></p>
     <hr class="my-4">
 
     <p>TODO</p>

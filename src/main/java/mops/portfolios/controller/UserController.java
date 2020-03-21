@@ -1,6 +1,11 @@
 package mops.portfolios.controller;
 
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
 import mops.portfolios.domain.group.Group;
@@ -10,46 +15,35 @@ import mops.portfolios.domain.portfolio.templates.Template;
 import mops.portfolios.domain.portfolio.templates.TemplateService;
 import mops.portfolios.domain.user.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.annotation.security.RolesAllowed;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 @Controller
+@RequestMapping("/user")
+@RolesAllowed({"ROLE_studentin"})
 @AllArgsConstructor
-public class StudentController {
+public class UserController {
 
-  @Autowired
-  private transient final AccountService accountService;
-
-  @Autowired
+  private transient AccountService accountService;
   private transient UserService userService;
 
-  @Autowired
   private transient PortfolioService portfolioService;
-  @Autowired
   private transient TemplateService templateService;
 
   /**
-   * Index mapping for GET requests.
+   * Redirect to main page.
    *
    * @param model The Spring Model to add the attributes to
    * @return The page to load
    */
-  @SuppressWarnings("PMD")
-  @GetMapping("/")
-  @RolesAllowed({"ROLE_studentin"})
-  public String index(Model model, KeycloakAuthenticationToken token) {
+  @GetMapping("")
+  public String redirect(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    return "redirect:/list";
+    return "redirect:/user/list";
   }
 
   /**
@@ -58,9 +52,7 @@ public class StudentController {
    * @param model The Spring Model to add the attributes to
    * @return The page to load
    */
-  @SuppressWarnings("PMD")
   @GetMapping("/list")
-  @RolesAllowed({"ROLE_studentin"})
   public String listPortfolios(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
@@ -70,13 +62,14 @@ public class StudentController {
     // TODO Implement optional sublisting with method overload in portfolioService
     List<Portfolio> groupPortfolios = portfolioService.findAllByGroupList(groups);
     List<Portfolio> userPortfolios = portfolioService.findAllByUserId(userName);
-    List<Portfolio> allPortfolios = Stream.of(userPortfolios, groupPortfolios).flatMap(Collection::stream).collect(Collectors.toList());
+    List<Portfolio> allPortfolios = Stream.of(userPortfolios, groupPortfolios)
+        .flatMap(Collection::stream).collect(Collectors.toList());
 
     model.addAttribute("groupPortfolios", groupPortfolios);
     model.addAttribute("userPortfolios", userPortfolios);
     model.addAttribute("allPortfolios", allPortfolios);
 
-    return "student/list";
+    return "user/list";
   }
 
   /**
@@ -86,17 +79,16 @@ public class StudentController {
    * @param portfolioId The ID of the portfolio
    * @return The page to load
    */
-  @SuppressWarnings("PMD")
   @GetMapping("/view")
-  @RolesAllowed({"ROLE_studentin"})
-  public String viewPortfolio(Model model, @RequestParam Long portfolioId, KeycloakAuthenticationToken token) {
+  public String viewPortfolio(Model model, @RequestParam Long portfolioId,
+                              KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
 
     model.addAttribute("portfolio", portfolio);
 
-    return "student/view";
+    return "user/view";
   }
 
   /**
@@ -105,9 +97,7 @@ public class StudentController {
    * @param model The spring model to add the attributes to
    * @return The page to load
    */
-  @SuppressWarnings("PMD")
   @GetMapping("/create")
-  @RolesAllowed({"ROLE_studentin"})
   public String createPortfolio(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
@@ -115,7 +105,7 @@ public class StudentController {
 
     model.addAttribute("templateList", templateList);
 
-    return "student/create";
+    return "user/create";
   }
 
   /**
@@ -126,8 +116,8 @@ public class StudentController {
    * @return The page to load
    */
   @GetMapping("/submit")
-  @RolesAllowed({"ROLE_studentin"})
-  public String submitPortfolio(Model model, /*@RequestParam Long portfolioId,*/ KeycloakAuthenticationToken token) {
+  public String submitPortfolio(Model model, /*@RequestParam Long portfolioId,*/
+                                KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
     //Template template = templateService.getById(portfolioId);
@@ -135,6 +125,6 @@ public class StudentController {
 
     model.addAttribute("template", template);
 
-    return "student/submit";
+    return "user/submit";
   }
 }
