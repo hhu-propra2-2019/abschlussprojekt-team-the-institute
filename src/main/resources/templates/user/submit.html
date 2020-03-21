@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Submit', headcontent=~{:: headcontent}, navigation=~{fragments/navigation :: navigationFragment}, bodycontent=~{:: bodycontent})}">
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Submit', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 
 <head>
     <th:block th:fragment="headcontent">
-        <th:block th:insert="fragments/dependencies :: dependencyFragment"></th:block>
+        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
 
         <style>
 
         </style>
 
     </th:block>
+
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li>
+                <a href="list">
+                    <p><i class="fa fa-chevron-circle-left fa-lg"></i> Zurück</p>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </head>
 
 <body th:fragment="bodycontent">
@@ -113,6 +123,7 @@
 </div>
 
 <script>
+    $('.nav-tabs a:first').tab('show');
     //TODO: FORM VALIDATION
 </script>
 

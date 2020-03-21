@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Portfolio ansehen', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
+
+<head>
+    <th:block th:fragment="headcontent">
+        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
+    </th:block>
+
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li>
+                <a href="list">
+                    <p><i class="fa fa-archive fa-lg"></i> Zurück</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <p><i class="fa fa-plus fa-lg"></i> Neuer Eintrag?</p>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</head>
+
+<body th:fragment="bodycontent">
+
+<div class="jumbotron pt-1 font-italic">
+
+    <h1 class="display-5">Portfolio ansehen</h1>
+    <p class="lead">Du siehst das Portfolio <u th:text="${portfolio.getTitle()}">Title</u></p>
+    <hr class="my-4">
+
+    <p>TODO: Vorlagen View einbinden -> <a class="btn btn-primary" href="submit">Klick mich</a></p>
+    <br>
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item" th:each="entry : ${portfolio.getEntries()}">
+            <a class="nav-link" data-toggle="tab" th:href="'#tab' + ${entry.getId()}"
+               th:text="${entry.getTitle().subSequence(0, 4)} +'..'">Entry title</a>
+        </li>
+    </ul>
+
+    <hr>
+    <br>
+
+    <div class="tab-content">
+
+        <div class="tab-pane fade" th:each="entry : ${portfolio.getEntries()}"
+             th:id="'tab'+${entry.getId()}">
+
+            <div class="card border-dark w-50 mb-2" th:each="field : ${entry.getFields()}">
+                <h5 class="card-header" th:text="${entry.getTitle()}">Entry title</h5>
+                <div class="card-body text-dark" th:each="field : ${entry.getFields()}">
+                    <h5 class="card-title" th:text="${field.getTitle()}">Field title</h5>
+                    <p class="card-text" th:text="${field.getContent()}">Field content</p>
+                    <a class="btn btn-primary" th:text="${field.getAttachment()}">Attachement</a>
+                </div>
+                <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()}">Date created</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    $('.nav-tabs a:first').tab('show');
+</script>
+
+</body>
+</html>
