@@ -120,7 +120,8 @@ public class UserController {
                                 KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    Template template = templateService.getById(portfolioId);
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+    Template template = templateService.convertPortfolioToTemplate(portfolio);
 
     model.addAttribute("template", template);
 

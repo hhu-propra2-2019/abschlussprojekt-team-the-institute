@@ -16,12 +16,6 @@ public class TemplateService {
   @Autowired
   private PortfolioService portfolioService;
 
-  public Template getById(long templateId) {
-    Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    return convertPortfolioToTemplate(portfolio);
-  }
-
-
   public List<Template> getAll() {
     List<Template> templateList = new ArrayList<>();
     for (Portfolio portfolio : portfolioService.getAllTemplates()) {
@@ -30,7 +24,16 @@ public class TemplateService {
     return templateList;
   }
 
-  private Template convertPortfolioToTemplate(Portfolio portfolio) {
+  public TemplateEntry getTemplateEntryById(Template template, Long entryId) {
+    for(TemplateEntry entry : template.getEntries()) {
+      if(entry.getId() == entryId) {
+        return entry;
+      }
+    }
+    return null;
+  }
+
+  public Template convertPortfolioToTemplate(Portfolio portfolio) {
     List<TemplateEntry> entries = new ArrayList<>();
     for (Entry entry : portfolio.getEntries()) {
       List<TemplateField> fields = new ArrayList<>();

@@ -133,6 +133,11 @@ public class DemoDataGenerator {
       AnswerType.NUMBER_SLIDER.name() + ";1,10",
       AnswerType.ATTACHEMENT.name() + ";.ascii,.pdf,.java"
   );
+  private final List<String> templateEntryFieldTitles = Arrays.asList(
+      "Woche 1",
+      "Woche 2",
+      "Woche 3"
+  );
 
   private String getRandomElement(List<String> list) {
     return list.get(new Random().nextInt(list.size()));
@@ -165,9 +170,9 @@ public class DemoDataGenerator {
    * Generates an entry for a template.
    * @return - the entry
    */
-  private Entry generateTemplateEntry() {
+  private Entry generateTemplateEntry(int value) {
     Entry entry = new Entry();
-    entry.setTitle(faker.shakespeare().romeoAndJulietQuote());
+    entry.setTitle(templateEntryFieldTitles.get(value));
     entry.getFields().addAll(generateTemplateEntryFieldList(entry));
     return entry;
   }
@@ -178,7 +183,7 @@ public class DemoDataGenerator {
    */
   private List<Entry> generateTemplateEntryList() {
     return IntStream.range(0, 3).mapToObj(
-        value -> generateTemplateEntry()).collect(Collectors.toList());
+        value -> generateTemplateEntry(value)).collect(Collectors.toList());
   }
 
   public Portfolio generateTemplate() {

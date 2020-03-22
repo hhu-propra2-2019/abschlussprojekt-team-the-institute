@@ -16,9 +16,33 @@
                 </a>
             </li>
             <li>
-                <a th:href="@{edit(templateId=${template.getId()})}">
-                    <p><i class="fas fa-edit fa-lg"></i> Vorlage editieren</p>
+                <a href="#" data-toggle="modal" data-target="#MODAL_ADD_ENTRY">
+                    <p><i class="far fa-calendar-plus fa-lg"></i> Eintrag hinzufügen</p>
                 </a>
+            </li>
+            <li>
+                <div class="dropdown">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown" th:if="${templateEntry != null}">
+                        <p><i class="far fa-plus-square fa-lg"></i> Feld hinzufügen</p>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD">
+                            <p><i class="fas fa-align-left"></i> Text Feld</p>
+                        </a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD" >
+                            <p><i class="fas fa-list-ul"></i> Single Choice Feld</p>
+                        </a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD" >
+                            <p><i class="fas fa-tasks"></i> Multiple Choice Feld</p>
+                        </a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD" >
+                            <p><i class="fas fa-sliders-h"></i> Range Slider Feld</p>
+                        </a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD" >
+                            <p><i class="fas fa-paperclip"></i> Anhang Feld</p>
+                        </a>
+                    </div>
+                </div>
             </li>
         </ul>
     </nav>
@@ -32,22 +56,21 @@
     <p class="lead">Du siehst die Vorlage <u th:text="${template.getTitle()}">Title</u></p>
     <hr class="my-4">
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs"  th:if="${templateEntry != null}">
         <li class="nav-item" th:each="entry : ${template.getEntries()}">
-            <a class="nav-link" data-toggle="tab" th:href="'#tab' + ${entry.getId()}"
-               th:text="${entry.getTitle()}">Entry title</a>
+            <a class="nav-link" th:href="@{view(templateId=${template.getId()}, entryId=${entry.getId()})}"
+               th:text="${entry.getTitle()}" th:classappend="${templateEntry.getId() == entry.getId()} ? 'active'">Entry title</a>
         </li>
     </ul>
 
     <hr>
     <br>
 
-    <div class="tab-content">
+    <div class="tab-content"  th:if="${templateEntry != null}">
 
-        <form class="tab-pane fade" th:each="entry : ${template.getEntries()}"
-              th:id="'tab'+${entry.getId()}">
+        <form>
 
-            <div th:each="field : ${entry.getFields()}" th:switch="${field.getType()}"
+            <div th:each="field : ${templateEntry.getFields()}" th:switch="${field.getType()}"
                  th:with="AnswerType = ${T(mops.portfolios.domain.portfolio.templates.AnswerType)}">
 
                 <div th:case="${AnswerType.TEXT}">
@@ -123,9 +146,60 @@
 
 </div>
 
-<script>
-    $('.nav-tabs a:first').tab('show');
+<div class="modal fade" id="MODAL_ADD_ENTRY">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" th:method="post" th:action="@{createTemplateEntry(templateId=${template.getId()})}">
+            <div class="modal-header">
+                <h5 class="modal-title"><u>Neuen Vorlagen Eintrag erstellen</u></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Titel</span>
+                    </div>
+                    <input type="text" class="form-control" name="title"
+                           placeholder="zB. Woche 1, Woche 2, ..." required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Eintrag erstellen</button>
+            </div>
+        </form>
+    </div>
+</div>
 
+<div class="modal fade" id="MODAL_ADD_FIELD"  th:if="${templateEntry != null}">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" th:method="post"
+              th:action="@{createTemplateField(templateId=${template.getId()}, entryId=${templateEntry.getId()})}">
+            <div class="modal-header">
+                <h5 class="modal-title"><u>Neues Vorlagen Eintrag Feld erstellen</u></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Frage / Aufgabe</span>
+                    </div>
+                    <input type="text" class="form-control" name="question"
+                           placeholder="zB. Was hat dir an der Vorlesung gefallen?" required>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Feld erstellen</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
     function updatePopover(popover, value) {
         $(popover).attr('data-content', value);
         $(popover).popover('show')
