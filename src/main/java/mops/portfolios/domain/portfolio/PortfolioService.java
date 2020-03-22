@@ -90,4 +90,8 @@ public class PortfolioService {
     }
     return templates;
   }
+
+  public Portfolio save(Portfolio portfolio) {
+    return repository.save(portfolio);
+  }
 }

@@ -9,6 +9,7 @@ import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.group.Group;
+import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.User;
 
 public class DemoDataGenerator {
@@ -123,9 +124,66 @@ public class DemoDataGenerator {
     return group;
   }
 
+  //=========================For templates
+
+  private final List<String> templateEntryFieldContents = Arrays.asList(
+      AnswerType.TEXT.name() + ";Some hint",
+      AnswerType.SINGLE_CHOICE.name() + ";Ja,Nein",
+      AnswerType.MULTIPLE_CHOICE.name() + ";Mehr auf Schüler eingehen,Umfangreicher erklären,Weniger Hausaufgaben",
+      AnswerType.NUMBER_SLIDER.name() + ";1,10",
+      AnswerType.ATTACHEMENT.name() + ";.ascii,.pdf,.java"
+  );
+
+  private String getRandomElement(List<String> list) {
+    return list.get(new Random().nextInt(list.size()));
+  }
+
+  /**
+   * Generates a single template EntryField.
+   * @param entry - the Entry that will contain it
+   * @return - the EntryField
+   */
+  private EntryField generateTemplateEntryField(Entry entry) {
+    EntryField entryField = new EntryField();
+    entryField.setAttachment(faker.shakespeare().hamletQuote());
+    entryField.setContent(getRandomElement(templateEntryFieldContents));
+    entryField.setTitle(faker.shakespeare().romeoAndJulietQuote());
+    return entryField;
+  }
+
+  /**
+   * Fills the template entry with "content".
+   * @param entry - the entry to fill
+   * @return - the EntryFields
+   */
+  private List<EntryField> generateTemplateEntryFieldList(Entry entry) {
+    return IntStream.range(0, 3).mapToObj(
+        value -> generateTemplateEntryField(entry)).collect(Collectors.toList());
+  }
+
+  /**
+   * Generates an entry for a template.
+   * @return - the entry
+   */
+  private Entry generateTemplateEntry() {
+    Entry entry = new Entry();
+    entry.setTitle(faker.shakespeare().romeoAndJulietQuote());
+    entry.getFields().addAll(generateTemplateEntryFieldList(entry));
+    return entry;
+  }
+
+  /**
+   * Generates a list of Entries for a template.
+   * @return - the list
+   */
+  private List<Entry> generateTemplateEntryList() {
+    return IntStream.range(0, 3).mapToObj(
+        value -> generateTemplateEntry()).collect(Collectors.toList());
+  }
+
   public Portfolio generateTemplate() {
     Portfolio template = new Portfolio(faker.shakespeare().asYouLikeItQuote(), generateUser());
-    template.getEntries().addAll(generateUserEntryList());
+    template.getEntries().addAll(generateTemplateEntryList());
     template.setTemplate(true);
     return template;
   }

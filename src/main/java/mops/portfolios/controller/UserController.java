@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/user")
-@RolesAllowed({"ROLE_studentin"})
+@RolesAllowed( {"ROLE_studentin"})
 @AllArgsConstructor
 public class UserController {
 
@@ -116,12 +116,11 @@ public class UserController {
    * @return The page to load
    */
   @GetMapping("/submit")
-  public String submitPortfolio(Model model, /*@RequestParam Long portfolioId,*/
+  public String submitPortfolio(Model model, @RequestParam Long portfolioId,
                                 KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    //Template template = templateService.getById(portfolioId);
-    Template template = templateService.getByTitle("Propra2");
+    Template template = templateService.getById(portfolioId);
 
     model.addAttribute("template", template);
 

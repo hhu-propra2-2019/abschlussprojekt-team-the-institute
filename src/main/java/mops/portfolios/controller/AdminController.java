@@ -6,8 +6,11 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
+import mops.portfolios.domain.portfolio.Portfolio;
+import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.portfolio.templates.Template;
 import mops.portfolios.domain.portfolio.templates.TemplateService;
+import mops.portfolios.domain.user.User;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin")
@@ -26,6 +30,7 @@ public class AdminController {
 
   private transient AccountService accountService;
 
+  private transient PortfolioService portfolioService;
   private transient TemplateService templateService;
 
   private transient AsciiDocConverter asciiConverter;
@@ -61,35 +66,26 @@ public class AdminController {
   }
 
   /**
-   * Create mapping for GET requests.
+   * Create mapping for POST requests.
    *
    * @param model The spring model to add the attributes to
    * @return The page to load
    */
-  @GetMapping("/create")
-  public String createTemplate(Model model, KeycloakAuthenticationToken token) {
+  @PostMapping("/create")
+  public String createTemplate(Model model, KeycloakAuthenticationToken token,
+                               RedirectAttributes redirect, @RequestParam("title") String title) {
     accountService.authorize(model, token);
 
-    return "admin/create";
-  }
+    User user = new User();
+    user.setName(token.getName());
 
-  /**
-   * Edit mapping for GET requests.
-   *
-   * @param model      The spring model to add the attributes to
-   * @param templateId The ID of the template
-   * @return The page to load
-   */
-  @GetMapping("/edit")
-  public String editTemplate(Model model, @RequestParam Long templateId,
-                             KeycloakAuthenticationToken token) {
-    accountService.authorize(model, token);
+    Portfolio portfolio = new Portfolio(title, user);
+    portfolio.setTemplate(true);
+    portfolio = portfolioService.save(portfolio);
 
-    Template template = templateService.getById(templateId);
+    redirect.addAttribute("templateId", portfolio.getId());
 
-    model.addAttribute("template", template);
-
-    return "admin/edit";
+    return "redirect:/admin/view";
   }
 
   /**
@@ -103,6 +99,8 @@ public class AdminController {
   public String viewTemplate(Model model, @RequestParam Long templateId,
                              KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
+
+    //Portfolio portfolio = portfolioService.findPortfolioById(templateId);
 
     Template template = templateService.getById(templateId);
 

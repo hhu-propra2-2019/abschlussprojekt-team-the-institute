@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{mopslayout :: html(name='Lernportfolio', title='Vorlagen Liste', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+<html lang="en"
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Vorlagen Liste', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -15,7 +16,7 @@
                 </a>
             </li>
             <li>
-                <a href="create">
+                <a href="#" data-toggle="modal" data-target="#MODAL_CREATE_TEMPLATE">
                     <p><i class="fas fa-book-medical fa-lg"></i> Vorlage erstellen</p>
                 </a>
             </li>
@@ -38,11 +39,34 @@
             <a class="btn btn-primary"
                th:href="@{view(templateId=${template.getId()})}">Anzeigen</a>
         </div>
-        <div class="card-footer" th:text="'Zuletzt geändert am ' + ${template.getLastEntry().getLastChanged()}">Last
-            change
-        </div>
+        <div class="card-footer" th:text="'Zuletzt geändert am ' + ${template.getLastChanged()}">Last changed</div>
     </div>
 
+</div>
+
+<div class="modal fade" id="MODAL_CREATE_TEMPLATE">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" th:method="post" th:action="@{create}">
+            <div class="modal-header">
+                <h5 class="modal-title"><u>Neue Portfolio Vorlage erstellen</u></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Titel</span>
+                    </div>
+                    <input id="INPUT_TEMPLATE_TITLE" type="text" class="form-control" name="title"
+                           placeholder="zB. Propra2 Praktikum" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Erstellen</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 </body>
