@@ -89,11 +89,10 @@
                         <u th:text="${field.getQuestion()}">Question</u>
                     </label>
                     <br>
-                    <input class="custom-range w-50" data-placement="top" data-toggle="tooltip" id="INPUT_RANGE"
-                           oninput="$('#INPUT_RANGE').tooltip('dispose'); this.title = this.value; $('#INPUT_RANGE').tooltip('show');"
-                           required th:max="${range[1]}"
-                           th:min="${range[0]}" th:title="${range[0]}" th:value="${range[0]}"
-                           type="range">
+                    <input class="custom-range w-50" type="range" id="INPUT_RANGE" required
+                           data-toggle="popover" data-placement="right"
+                           oninput="updatePopover(this, this.value);"
+                           th:max="${range[1]}" th:min="${range[0]}" th:value="${range[0]}">
                 </div>
 
                 <div th:case="${AnswerType.ATTACHEMENT}">
@@ -126,6 +125,11 @@
 
 <script>
     $('.nav-tabs a:first').tab('show');
+
+    function updatePopover(popover, value) {
+        $(popover).attr('data-content', value);
+        $(popover).popover('show')
+    }
 </script>
 
 </body>
