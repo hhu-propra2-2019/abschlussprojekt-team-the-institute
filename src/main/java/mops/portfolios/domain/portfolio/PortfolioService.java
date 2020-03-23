@@ -93,13 +93,8 @@ public class PortfolioService {
     return templates;
   }
 
-  public void replace(Portfolio p) {
+  public void update(Portfolio p) {
     repository.deleteById(p.getId());
-    repository.save(p);
-  }
-
-  public void updateEntries(Portfolio p) {
-    repository.delete(p);
     repository.save(p);
   }
 }

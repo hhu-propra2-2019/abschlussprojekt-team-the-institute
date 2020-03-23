@@ -3,6 +3,8 @@ package mops.portfolios.controller;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
+
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
 import mops.portfolios.domain.portfolio.templates.Template;
@@ -252,11 +254,14 @@ public class PortfoliosController {
   public String createNewEntry(Model model, RedirectAttributes redirectAttributes,
                                KeycloakAuthenticationToken token, @RequestParam Long id, String titel) {
     accountService.authorize(model, token);
+
     redirectAttributes.addAttribute("id", id);
     Portfolio p = portfolioService.findPortfolioById(id);
     List<Entry> e = p.getEntries();
     e.add(new Entry(titel));
     p.setEntries(e);
+    // TODO: Update!
+    portfolioService.update(p);
     return "redirect:/portfolio";
   }
 }
