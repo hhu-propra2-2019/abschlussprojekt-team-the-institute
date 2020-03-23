@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div class="jumbotron pt-1 font-italic" th:fragment="defaultBody(title, description, content)">
+
+    <h1 class="display-5" th:text="${title}">Title</h1>
+    <p class="lead" th:text="${description}">Description</p>
+    <hr class="my-4">
+
+    <div th:replace="${content}">
+        Test
+    </div>
+
+</div>
+
+</html>

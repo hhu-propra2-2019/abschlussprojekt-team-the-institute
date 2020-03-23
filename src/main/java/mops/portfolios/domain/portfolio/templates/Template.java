@@ -1,5 +1,6 @@
 package mops.portfolios.domain.portfolio.templates;
 
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,7 +16,11 @@ public class Template {
 
   private List<TemplateEntry> entries;
 
-  public TemplateEntry getLastEntry() {
-    return entries.get(entries.size() - 1);
+  public Date getLastChanged() {
+    if(!entries.isEmpty()) {
+      TemplateEntry lastEntry = entries.get(entries.size() - 1);
+      return lastEntry.getLastChanged();
+    }
+    return null;
   }
 }
