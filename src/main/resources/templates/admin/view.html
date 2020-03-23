@@ -26,13 +26,13 @@
                         <p><i class="far fa-plus-square fa-lg"></i> Feld hinzufügen</p>
                     </a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_TEXT_FIELD">
                             <p><i class="fas fa-align-left"></i> Text Feld</p>
                         </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_SINGLECHOICE_FIELD">
                             <p><i class="fas fa-list-ul"></i> Single Choice Feld</p>
                         </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_MULTICHOICE_FIELD">
                             <p><i class="fas fa-tasks"></i> Multiple Choice Feld</p>
                         </a>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD">
@@ -111,9 +111,13 @@
     <div th:replace="fragments/modals :: addEntryModal(templateId=${template.getId()})"></div>
 
     <div th:if="${templateEntry != null}">
-        <div th:replace="fragments/modals :: addFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()})"></div>
+        <div th:replace="fragments/modals :: addFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
+         modalId = ${'MODAL_ADD_TEXT_FIELD'}, fieldFragment=~{fragments/entryfields :: textAdd})"></div>
+        <div th:replace="fragments/modals :: addFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
+         modalId = ${'MODAL_ADD_SINGLECHOICE_FIELD'}, fieldFragment=~{fragments/entryfields :: singlechoiceAdd})"></div>
+        <div th:replace="fragments/modals :: addFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
+         modalId = ${'MODAL_ADD_MULTICHOICE_FIELD'}, fieldFragment=~{fragments/entryfields :: multichoiceAdd})"></div>
     </div>
-
 
 </div>
 

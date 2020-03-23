@@ -51,7 +51,7 @@
     </div>
 </div>
 
-<div id="MODAL_ADD_FIELD" class="modal fade" th:fragment="addFieldModal(templateId, entryId)">
+<div th:id="${modalId}" class="modal fade" th:fragment="addFieldModal(templateId, entryId, modalId, fieldFragment)">
     <div class="modal-dialog modal-dialog-centered">
         <form class="modal-content" th:method="post"
               th:action="@{createTemplateField(templateId=${templateId}, entryId=${entryId})}">
@@ -70,6 +70,10 @@
                     <input type="text" class="form-control" name="question"
                            placeholder="zB. Was hat dir an der Vorlesung gefallen?" required>
                 </div>
+
+                <br>
+
+                <div th:replace="${fieldFragment}"></div>
 
             </div>
             <div class="modal-footer">

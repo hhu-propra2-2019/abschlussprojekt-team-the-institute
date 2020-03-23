@@ -1,6 +1,52 @@
 <!DOCTYPE html>
 <html lang="en"  xmlns:th="http://www.thymeleaf.org">
 
+<div th:fragment="textAdd">
+
+    <div class="input-group">
+        <div class="input-group-text">
+            <input type="text">
+        </div>
+    </div>
+
+</div>
+
+<div th:fragment="singlechoiceAdd">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <input type="radio">
+            </div>
+        </div>
+        <input type="text" class="form-control">
+    </div>
+
+    <button class="btn" type="button"
+            onclick="let option = this.previousElementSibling; let optionClone = option.cloneNode(true); option.parentNode.insertBefore(optionClone, this);">
+        <i class="fas fa-plus"></i>
+    </button>
+
+</div>
+
+<div th:fragment="multichoiceAdd">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <input type="checkbox">
+            </div>
+        </div>
+        <input type="text" class="form-control">
+    </div>
+
+    <button class="btn" type="button"
+            onclick="let option = this.previousElementSibling; let optionClone = option.cloneNode(true); option.parentNode.insertBefore(optionClone, this);">
+        <i class="fas fa-plus"></i>
+    </button>
+
+</div>
+
 <div th:fragment="textField(question, hint)">
     <label for="INPUT_TEXT">
         <u th:text="${question}">Question</u>
