@@ -23,13 +23,10 @@
     </nav>
 </head>
 
-<body th:fragment="bodycontent">
+<body th:fragment="bodycontent"
+      th:replace="fragments/defaults :: defaultBody(title='Portfolio erstellen', description='Hier kannst du ein neues Portfolio anlegen.', content=~{::content})">
 
-<div class="jumbotron pt-1 font-italic">
-
-    <h1 class="display-5">Neues Portfolio</h1>
-    <p class="lead">Hier kannst du ein neues Portfolio anlegen</p>
-    <hr class="my-4">
+<div th:fragment="content">
 
     <ul class="nav nav-tabs">
         <li class="nav-item">

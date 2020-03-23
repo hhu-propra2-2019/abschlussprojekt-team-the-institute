@@ -24,49 +24,23 @@
     </nav>
 </head>
 
-<body th:fragment="bodycontent">
+<body th:fragment="bodycontent"
+      th:replace="fragments/defaults :: defaultBody(title='Vorlagen Liste', description='Hier findest du eine Übersicht aller Vorlagen.', content=~{::content})">
 
-<div class="jumbotron pt-1 font-italic">
-
-    <h1 class="display-5">Vorlagen Liste</h1>
-    <p class="lead">Hier findest du eine Übersicht aller Vorlagen</p>
-    <hr class="my-4">
+<div th:fragment="content">
 
     <div class="card border-dark w-50 mb-2" th:each="template : ${templateList}">
         <h5 class="card-header" th:text="${template.getTitle()}">Title</h5>
         <div class="card-body text-dark">
-            <p class="card-text">Some text</p>
+            <p class="card-text" th:text="${template.getEntries().size()} + ' Einträge'">Entries</p>
             <a class="btn btn-primary"
                th:href="@{view(templateId=${template.getId()})}">Anzeigen</a>
         </div>
-        <div class="card-footer" th:text="'Zuletzt geändert am ' + ${template.getLastChanged()}">Last changed</div>
+        <div class="card-footer text-muted" th:text="'Zuletzt geändert am ' + ${template.getLastChanged()}">Last changed</div>
     </div>
 
-</div>
+    <div th:replace="fragments/modals :: createTemplateModal"></div>
 
-<div class="modal fade" id="MODAL_CREATE_TEMPLATE">
-    <div class="modal-dialog modal-dialog-centered">
-        <form class="modal-content" th:method="post" th:action="@{createTemplate}">
-            <div class="modal-header">
-                <h5 class="modal-title"><u>Neue Portfolio Vorlage erstellen</u></h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Titel</span>
-                    </div>
-                    <input type="text" class="form-control" name="title"
-                           placeholder="zB. Propra2 Praktikum" required>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Template erstellen</button>
-            </div>
-        </form>
-    </div>
 </div>
 
 </body>
