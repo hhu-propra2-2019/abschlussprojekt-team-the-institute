@@ -46,13 +46,34 @@
 
 === Technische Randbedingungen
 
+|===
+
+| Randbedingung | Erläuterung
+
+| Nutzung von JDK 11 | Wir brauchen ein Package, das in JDK 8 nicht funktioniert.
+
+| Einbau von Fremdsoftware | MinIo für Dateiuploads; Keycloak zur Authentifizierung
+
+|===
+
+=== Organisatorische Randbedingungen
+
+|===
+
+| Randbedingung | Erläuterung
+
+| Entwicklung | Nutzung von Intellij; Mockups per Hand
+
+| Testing | JUnit 5 und SpringBoot Tests Version 2.2.5; Checkstyle, PMD, SpotBugs
+
+|===
+
+
+
 == Kontextabgrenzung
 
 === Bestandteile des Systems
 . MinIO, damit Anhänge hinzugefügt werden können
-//. Korrekturverteilung
-//.. Code aus Projekt 4 aus ProPra 1 als Vorlage
-//.. Aufteilen der Korrektorengruppe in einzelne Benutzer, dann Zuordnung zu einzelnen Portfolios/Journals
 
 === Externe Systeme und Schnittstelle
 . Gruppenbildung, damit Gruppenportfolios möglich sind
@@ -68,13 +89,13 @@ image::Diagramm.png[]
 ==== Gruppenbildung
 . Wir stellen einen GetRequest an die Schnittstelle der Gruppenbildung
 .. welche Informationen benötigt die Gruppe von uns?
-. Gruppenbildung gibt uns eine GruppenID mit Veranstaltung zurück
-. Gruppenbildung übergibt uns eine Korrektorengruppe
+. Gruppenbildung gibt uns ein JSONObject zurück, dass eine Statusid und die Gruppe enthält.
 
 ==== Keycloak
 . Die Authentifizierung wird hierüber gemacht.
-. `application.properties`, sowie `KeycloakConfig` haben wir aus der "Keycloak Demo" übernommen.
+. `application.properties`, sowie `KeycloakConfig` und `SecurityConfig` haben wir aus der "Keycloak Demo" übernommen.
 . Die `application.properties` haben wir auf unser Projekt angepasst.
+
 
 == Entscheidungen
 
@@ -98,7 +119,7 @@ image::Diagramm.png[]
 .. Wir sind dann auf JDK11 umgestiegen. Damit lief der Test durch. Die Applikation funktionierte weiterhin.
 .. Gradle build funktionierte lokal, aber nicht beim push in github. Daher haben wir noch die github actions in JDK11 geändert.
 . Wir haben die `application.properties` an die Keycloak Clients angepasst.
-. Beim Zuordnen der Portfolios auf den angemeldeten Benutzer kam es zu dem Problem, dass wir immer die Errorpage angezeigt bekommen haben. Das ist passiert, weil wir der Benutzer noch keine Portfolios hatte, jedoch in dem HTML-Dokument auf das letzte Portfolio zugegriffen wurde. Wir haben das jetzt so gelöst, dass wir ein statisches Portfolio ausgeben.
+. Die Zuordnung von Portfolios zu Usern beziehungsweise Gruppen erfolgt nun über die Repositories.Vorher hatten wir eigene Methoden dafür geschrieben. Die Zuweisung über die Repositories ist jedoch verständlicher und weniger fehleranfällig.
 
 ===== Datenbank Update Service
 . Da wir das genaue Format, das wir von der Gruppenbildung erhalten werden, noch nicht kennen,
@@ -108,18 +129,16 @@ So nutzen wir jetzt `Asserions.assertThrows`.
 . Zum Testen des HttpClient haben wir uns entschieden, einen Interface und FakeHttpClient zu nutzen.
 Der Response des Clients ist sofort schon die Response Body, wie wir später bemerkten.
 . Die `processUpdates` Methode hat anfangs nicht funktioniert. Das lag daran, dass wir das GroupRepository mit `Autowired` annotiert hatten. Wir brauchten allerdings eine `final @NonNull` Deklaration.
-
 . Auf private Felder einer Klasse kann man im Test leider nicht zugreifen.
 Das Nutzen von `manifold.ext.api.Jailbreak` hilft auch nicht.
 Wir haben das Problem gelöst, indem wir Felder und Methoden package-private eingestellt haben.
 . Beim Testen müssen wir teilweise auch auf die Logeinträge achten.
 Dazu mussten wir diese in einer Liste speichern.
+. Wir haben uns entschieden, keinen Test für den Accountservice zu schreiben. Es wird kaum Logik genutzt, so dass es sich um einen Test handeln würde, der Implementierungsdetails testet.
 
 ==== Beim Bau des Frontends / der Website
 . In unserem Mock haben wir Bootstrap verwendet, um neue Elemente anzeigen zu lassen. Dabei traten Probleme auf, was für uns ein Hinweis war, dass wir unser Design vereinfachen sollten.
 
 
-== Konzepte
 
-=== Domänenmodell
 
