@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/user")
-@RolesAllowed( {"ROLE_studentin"})
+@RolesAllowed({"ROLE_studentin"})
 @AllArgsConstructor
 public class UserController {
 

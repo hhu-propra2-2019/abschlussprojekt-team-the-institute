@@ -79,7 +79,8 @@ public class AdminController {
    */
   @GetMapping("/view")
   public String viewTemplate(Model model, KeycloakAuthenticationToken token,
-                             @RequestParam Long templateId, @RequestParam(required = false) Long entryId) {
+                             @RequestParam Long templateId,
+                             @RequestParam(required = false) Long entryId) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
@@ -176,7 +177,8 @@ public class AdminController {
   @PostMapping("/createTemplateEntry")
   public String createTemplateEntry(Model model,
                                     KeycloakAuthenticationToken token, RedirectAttributes redirect,
-                                    @RequestParam Long templateId, @RequestParam("title") String title) {
+                                    @RequestParam Long templateId,
+                                    @RequestParam("title") String title) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);

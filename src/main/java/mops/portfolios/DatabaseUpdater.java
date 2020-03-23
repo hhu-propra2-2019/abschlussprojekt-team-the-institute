@@ -30,11 +30,14 @@ public class DatabaseUpdater {
   transient String url;
 
 
-  final @NonNull GroupRepository groupRepository;
+  final @NonNull
+      GroupRepository groupRepository;
 
-  final @NonNull UserRepository userRepository;
+  final @NonNull
+      UserRepository userRepository;
 
-  final @NonNull StateService stateService;
+  final @NonNull
+      StateService stateService;
 
 
   /**
@@ -59,7 +62,8 @@ public class DatabaseUpdater {
    *
    * @param timeout The timeout between each update
    * @throws InterruptedException if another thread has interrupted the current thread. \
-   * The interrupted status of the current thread is cleared when this exception is thrown.
+   *                              The interrupted status of the current thread is cleared \
+   *                              when this exception is thrown.
    */
   public void updateDatabase(long timeout) throws InterruptedException {
     long updateStatus = stateService.getState("gruppen2");
@@ -116,15 +120,10 @@ public class DatabaseUpdater {
     } catch (JSONException jsonErr) {
       logger.error("An error occured while parsing the JSON data "
               + "received by the service Gruppenbildung ", jsonErr);
-      // FIXME: keep this only while in development
-      throw new RuntimeException("Error while trying to parse HTTP response to JSON object: "
-              + jsonErr.getMessage());
     }
     if (jsonObject == null) {
       logger.error("An error occured while parsing the JSON data "
               + "received by the service Gruppenbildung");
-      // FIXME: Keep this only while in development
-      throw new RuntimeException("JSON Object is null");
     }
 
     if (isNotModified(jsonObject)) {
@@ -184,7 +183,7 @@ public class DatabaseUpdater {
         } else if (groupExists(groupId)) {
           groupRepository.deleteById(groupId);
         }
-        for (User user: userList) {
+        for (User user : userList) {
           if (userRepository.findOneByName(user.getName()) == null) {
             userRepository.save(user);
           }
