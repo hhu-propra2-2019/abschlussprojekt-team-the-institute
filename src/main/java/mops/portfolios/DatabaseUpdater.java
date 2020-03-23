@@ -3,7 +3,6 @@ package mops.portfolios;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -19,7 +18,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -61,7 +59,7 @@ public class DatabaseUpdater {
    *
    * @param timeout The timeout between each update
    * @throws InterruptedException if another thread has interrupted the current thread. \
-   *                              The interrupted status of the current thread is cleared when this exception is thrown.
+   * The interrupted status of the current thread is cleared when this exception is thrown.
    */
   public void updateDatabase(long timeout) throws InterruptedException {
     long updateStatus = stateService.getState("gruppen2");
@@ -184,7 +182,7 @@ public class DatabaseUpdater {
         if (title == null || title.isEmpty()) {
           groupRepository.deleteById(groupId);
         } else if (groupExists(groupId)) {
-           groupRepository.deleteById(groupId);
+          groupRepository.deleteById(groupId);
         }
         for (User user: userList) {
           if (userRepository.findOneByName(user.getName()) == null) {
