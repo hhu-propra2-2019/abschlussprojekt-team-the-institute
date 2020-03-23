@@ -52,7 +52,7 @@ public class PortfolioService {
   @SuppressWarnings("PMD")
   public Entry findEntryById(Portfolio portfolio, Long id) {
     for (Entry entry : portfolio.getEntries()) {
-      if (entry.getId() == id) {
+      if (entry.getId().equals(id)) {
         return entry;
       }
     }
