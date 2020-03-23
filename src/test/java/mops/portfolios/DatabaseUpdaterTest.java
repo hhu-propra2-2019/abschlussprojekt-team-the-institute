@@ -4,6 +4,7 @@ import java.util.List;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import mops.portfolios.domain.group.GroupRepository;
+import mops.portfolios.domain.user.UserRepository;
 import mops.portfolios.tools.FakeHttpClient;
 import mops.portfolios.tools.IHttpClient;
 import org.json.JSONObject;
@@ -29,9 +30,12 @@ public class DatabaseUpdaterTest {
   @Autowired
   transient GroupRepository groupRepository;
 
+  @Autowired
+  transient UserRepository userRepository;
+
   @BeforeEach
   public void init() {
-    databaseUpdater = new DatabaseUpdater(groupRepository);
+    databaseUpdater = new DatabaseUpdater(groupRepository, userRepository);
   }
 
   @Test
@@ -128,34 +132,34 @@ public class DatabaseUpdaterTest {
     assertEquals(false, result);
   }
 
-//  @Test
-//  public void extractJsonObject() {
-//    String response = "{\n" +
-//            "  \"status\": 4,\n" +
-//            "  \"groupList\": [\n" +
-//            "    {\n" +
-//            "      \"id\": 2,\n" +
-//            "      \"title\": \"Lorem\",\n" +
-//            "      \"description\": null,\n" +
-//            "      \"members\": [\n" +
-//            "        {\n" +
-//            "          \"user_id\": \"studentin\",\n" +
-//            "          \"givenname\": \"studentin\",\n" +
-//            "          \"familyname\": \"studentin\",\n" +
-//            "          \"email\": \"studentin@student.in\"\n" +
-//            "        }\n" +
-//            "      ],\n" +
-//            "      \"roles\": {\n" +
-//            "\"studentin\": \"ADMIN\"" +
-//            "},\n"+
-//            "      \"type\": \"LECTURE\",\n" +
-//            "      \"visibility\": \"PUBLIC\",\n" +
-//            "      \"parent\": null\n" +
-//            "    }\n" +
-//            "  ]\n" +
-//            "}";
-//
-//    databaseUpdater.updateDatabaseEvents(response);
-//  }
+  @Test
+  public void extractJsonObject() {
+    String response = "{\n" +
+            "  \"status\": 4,\n" +
+            "  \"groupList\": [\n" +
+            "    {\n" +
+            "      \"id\": 2,\n" +
+            "      \"title\": \"Lorem\",\n" +
+            "      \"description\": null,\n" +
+            "      \"members\": [\n" +
+            "        {\n" +
+            "          \"user_id\": \"studentin\",\n" +
+            "          \"givenname\": \"studentin\",\n" +
+            "          \"familyname\": \"studentin\",\n" +
+            "          \"email\": \"studentin@student.in\"\n" +
+            "        }\n" +
+            "      ],\n" +
+            "      \"roles\": {\n" +
+            "\"studentin\": \"ADMIN\"" +
+            "},\n"+
+            "      \"type\": \"LECTURE\",\n" +
+            "      \"visibility\": \"PUBLIC\",\n" +
+            "      \"parent\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    databaseUpdater.updateDatabaseEvents(response);
+  }
 
 }

@@ -11,6 +11,7 @@ import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupRepository;
 import mops.portfolios.domain.state.StateService;
 import mops.portfolios.domain.user.User;
+import mops.portfolios.domain.user.UserRepository;
 import mops.portfolios.tools.HttpClient;
 import mops.portfolios.tools.IHttpClient;
 import org.json.JSONArray;
@@ -31,11 +32,12 @@ public class DatabaseUpdater {
   transient String url;
 
 
-  final @NonNull
-  GroupRepository groupRepository;
+  final @NonNull GroupRepository groupRepository;
 
-    @Autowired
-    StateService stateService;
+  final @NonNull UserRepository userRepository;
+
+  @Autowired
+  StateService stateService;
 
 
   /**
@@ -188,9 +190,14 @@ public class DatabaseUpdater {
         if (title == null || title.isEmpty()) {
           groupRepository.deleteById(groupId);
         } else if (groupExists(groupId)) {
-          groupRepository.deleteById(groupId);
+           groupRepository.deleteById(groupId);
         }
-        groupRepository.save(new Group(groupId, title, userList));
+        for (User user: userList) {
+          if (userRepository.findOneByName(user.getName()) == null) {
+            userRepository.save(user);
+          }
+          groupRepository.save(new Group(groupId, title, userList));
+        }
       }
     }
 
@@ -200,7 +207,8 @@ public class DatabaseUpdater {
     Objects.requireNonNull(groupId);
     List<Long> groupIds = new ArrayList<>();
     groupIds.add(groupId);
-    return groupRepository.findAllById(groupIds) != null;
+
+    return !groupRepository.findAllById(groupIds).equals(new ArrayList<>());
   }
 
 }
