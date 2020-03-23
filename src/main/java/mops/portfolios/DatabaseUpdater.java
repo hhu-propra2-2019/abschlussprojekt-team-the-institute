@@ -142,7 +142,7 @@ public class DatabaseUpdater {
     Long newStatus;
 
     newStatus = jsonObject.getBigInteger("status").longValue();
-    stateService.setState("gruppenbildung", newStatus);
+    stateService.setState("gruppen2", newStatus);
 
   }
 
