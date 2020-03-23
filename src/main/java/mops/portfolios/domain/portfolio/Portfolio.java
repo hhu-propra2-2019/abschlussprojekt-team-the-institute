@@ -1,7 +1,8 @@
 package mops.portfolios.domain.portfolio;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,8 +36,8 @@ public class Portfolio {
       orphanRemoval = true,
       fetch = FetchType.EAGER
   )
-  private @Getter List<Entry> entries = new ArrayList<>();
-
+  @OrderBy("id ASC")
+  private @Getter Set<Entry> entries = new HashSet<>();
 
   public Portfolio() {}
 
@@ -47,5 +49,14 @@ public class Portfolio {
   public Portfolio(String title, Group group) {
     this.title = title;
     this.groupId = group.getId();
+  }
+
+  public Entry getLastEntry() {
+    Iterator<Entry> iterator = entries.iterator();
+    Entry lastEntry = null;
+    while (iterator.hasNext()) {
+      lastEntry = iterator.next();
+    }
+    return lastEntry;
   }
 }

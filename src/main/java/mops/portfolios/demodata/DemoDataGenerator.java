@@ -193,9 +193,13 @@ public class DemoDataGenerator {
     return entries;
   }
 
+  /**
+   * Generates a template.
+   * @return - the template
+   */
   public Portfolio generateTemplate() {
     Portfolio template = new Portfolio(faker.shakespeare().asYouLikeItQuote(), generateUser());
-    template.setEntries(generateTemplateEntryList());
+    template.setEntries(new LinkedHashSet<>(generateTemplateEntryList()));
     template.setTemplate(true);
     return template;
   }
