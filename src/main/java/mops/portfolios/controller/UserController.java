@@ -8,9 +8,12 @@ import java.util.stream.Stream;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
+import mops.portfolios.domain.entry.Entry;
+import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
+import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.portfolio.templates.Template;
 import mops.portfolios.domain.portfolio.templates.TemplateService;
 import mops.portfolios.domain.user.UserService;
@@ -18,8 +21,10 @@ import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/user")
@@ -126,5 +131,60 @@ public class UserController {
     model.addAttribute("template", template);
 
     return "user/submit";
+  }
+
+  /**
+   * Create Template Entry mapping for POST requests.
+   *
+   * @param model The spring model to add the attributes to
+   * @return The page to load
+   */
+  @PostMapping("/createTemplateEntry")
+  public String createTemplateEntry(Model model,
+                                    KeycloakAuthenticationToken token, RedirectAttributes redirect,
+                                    @RequestParam Long templateId, @RequestParam("title") String title) {
+    accountService.authorize(model, token);
+
+    Portfolio portfolio = portfolioService.findPortfolioById(templateId);
+    Entry entry = new Entry(title);
+    portfolio.getEntries().add(entry);
+    portfolio = portfolioService.save(portfolio);
+
+    entry = portfolio.getEntries().get(portfolio.getEntries().size() - 1);
+
+    redirect.addAttribute("templateId", portfolio.getId());
+    redirect.addAttribute("entryId", entry.getId());
+
+    return "redirect:/user/view";
+  }
+
+
+  /**
+   * Create Template Entry mapping for POST requests.
+   *
+   * @param model The spring model to add the attributes to
+   * @return The page to load
+   */
+  @PostMapping("/createTemplateField")
+  public String createTemplateField(Model model,
+                                    KeycloakAuthenticationToken token, RedirectAttributes redirect,
+                                    @RequestParam Long templateId, @RequestParam Long entryId,
+                                    @RequestParam("question") String question) {
+    accountService.authorize(model, token);
+
+    Portfolio portfolio = portfolioService.findPortfolioById(templateId);
+    Entry entry = portfolioService.findEntryById(portfolio, entryId);
+
+    EntryField field = new EntryField();
+    field.setTitle(question);
+    field.setContent(AnswerType.TEXT + ";Some hint");
+    entry.getFields().add(field);
+
+    portfolio = portfolioService.save(portfolio);
+
+    redirect.addAttribute("templateId", portfolio.getId());
+    redirect.addAttribute("entryId", entry.getId());
+
+    return "redirect:/user/view";
   }
 }
