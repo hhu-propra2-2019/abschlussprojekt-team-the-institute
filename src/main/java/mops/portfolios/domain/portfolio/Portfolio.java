@@ -51,6 +51,7 @@ public class Portfolio {
     this.groupId = group.getId();
   }
 
+  @SuppressWarnings("PMD")
   public Entry getLastEntry() {
     Iterator<Entry> iterator = entries.iterator();
     Entry lastEntry = null;
