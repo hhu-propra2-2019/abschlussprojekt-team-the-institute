@@ -13,7 +13,7 @@ services:
   minio:
     image: minio/minio:latest
     volumes:
-      - miniio:/data
+      - minio:/data
     ports:
       - "9001:9000"
     environment:
@@ -27,4 +27,4 @@ services:
       retries: 3
 
 volumes:
-  miniio:
+  minio:
