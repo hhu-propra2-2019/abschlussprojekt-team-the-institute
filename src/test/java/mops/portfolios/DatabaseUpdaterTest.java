@@ -4,6 +4,7 @@ import java.util.List;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import mops.portfolios.domain.group.GroupRepository;
+import mops.portfolios.domain.state.StateService;
 import mops.portfolios.domain.user.UserRepository;
 import mops.portfolios.tools.FakeHttpClient;
 import mops.portfolios.tools.IHttpClient;
@@ -33,9 +34,12 @@ public class DatabaseUpdaterTest {
   @Autowired
   transient UserRepository userRepository;
 
+  @Autowired
+  transient StateService stateService;
+
   @BeforeEach
   public void init() {
-    databaseUpdater = new DatabaseUpdater(groupRepository, userRepository);
+    databaseUpdater = new DatabaseUpdater(groupRepository, userRepository, stateService);
   }
 
   @Test

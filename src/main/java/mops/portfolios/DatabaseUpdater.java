@@ -36,8 +36,7 @@ public class DatabaseUpdater {
 
   final @NonNull UserRepository userRepository;
 
-  @Autowired
-  StateService stateService;
+  final @NonNull StateService stateService;
 
 
   /**
@@ -144,14 +143,9 @@ public class DatabaseUpdater {
   private void processStatusUpdate(JSONObject jsonObject) {
     Long newStatus;
 
-    try {
-      newStatus = jsonObject.getBigInteger("status").longValue();
-      // stateService.setState("gruppen2", newStatus);
+    newStatus = jsonObject.getBigInteger("status").longValue();
+    stateService.setState("gruppenbildung", newStatus);
 
-    } catch (Exception e) {
-      logger.error("Couldn't parse JSONObject:" + e.getMessage());
-      throw e;
-    }
   }
 
   /**
