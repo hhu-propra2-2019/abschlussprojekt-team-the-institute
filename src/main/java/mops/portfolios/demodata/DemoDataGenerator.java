@@ -126,14 +126,14 @@ public class DemoDataGenerator {
 
   //=========================For templates
 
-  private final List<String> templateEntryFieldContents = Arrays.asList(
+  private transient List<String> templateEntryFieldContents = Arrays.asList(
       AnswerType.TEXT.name() + ";Some hint",
       AnswerType.SINGLE_CHOICE.name() + ";Ja,Nein",
       AnswerType.MULTIPLE_CHOICE.name() + ";Mehr auf Schüler eingehen,Umfangreicher erklären,Weniger Hausaufgaben",
       AnswerType.NUMBER_SLIDER.name() + ";1,10",
       AnswerType.ATTACHEMENT.name() + ";.ascii,.pdf,.java"
   );
-  private final List<String> templateEntryFieldTitles = Arrays.asList(
+  private transient List<String> templateEntryFieldTitles = Arrays.asList(
       "Woche 1",
       "Woche 2",
       "Woche 3"
