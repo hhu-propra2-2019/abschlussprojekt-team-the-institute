@@ -24,7 +24,10 @@
 
     <br>
 
-    <form class="tab-content">
+    <form th:action="@{/create(id=${id})}" method="post">
+        <label>
+            <input type="text" name="titel" value="Titel des neuen Eintrags">
+        </label>
         <br>
         <button class="btn btn-primary" type="submit">Erstellen</button>
     </form>

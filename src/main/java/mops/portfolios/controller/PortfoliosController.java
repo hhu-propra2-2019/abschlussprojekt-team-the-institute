@@ -1,7 +1,5 @@
 package mops.portfolios.controller;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +13,6 @@ import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.user.UserService;
-import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @AllArgsConstructor
@@ -243,7 +240,23 @@ public class PortfoliosController {
   @SuppressWarnings("PMD")
   @GetMapping("/create_entry")
   @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
-  public String createNewEntry(Model model) {
+  public String createNewEntry(Model model, KeycloakAuthenticationToken token, @RequestParam Long portfolioId) {
+    accountService.authorize(model, token);
+    model.addAttribute("id", portfolioId);
     return "/create_entry";
+  }
+
+  @SuppressWarnings("PMD")
+  @PostMapping("/create")
+  @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
+  public String createNewEntry(Model model, RedirectAttributes redirectAttributes,
+                               KeycloakAuthenticationToken token, @RequestParam Long id, String titel) {
+    accountService.authorize(model, token);
+    redirectAttributes.addAttribute("id", id);
+    Portfolio p = portfolioService.findPortfolioById(id);
+    List<Entry> e = p.getEntries();
+    e.add(new Entry(titel));
+    p.setEntries(e);
+    return "redirect:/portfolio";
   }
 }
