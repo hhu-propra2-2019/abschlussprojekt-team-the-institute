@@ -11,9 +11,6 @@ import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
-import mops.portfolios.domain.portfolio.templates.Template;
-import mops.portfolios.domain.portfolio.templates.TemplateEntry;
-import mops.portfolios.domain.portfolio.templates.TemplateService;
 import mops.portfolios.domain.user.User;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -35,7 +32,6 @@ public class AdminController {
   private transient AccountService accountService;
 
   private transient PortfolioService portfolioService;
-  private transient TemplateService templateService;
 
   private transient AsciiDocConverter asciiConverter;
 
@@ -62,7 +58,7 @@ public class AdminController {
   public String listTemplates(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    List<Template> templateList = templateService.getAll();
+    List<Portfolio> templateList = portfolioService.getAllTemplates();
 
     model.addAttribute("templateList", templateList);
 
@@ -81,18 +77,16 @@ public class AdminController {
                              @RequestParam Long templateId, @RequestParam(required = false) Long entryId) {
     accountService.authorize(model, token);
 
-    Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-
-    Template template = templateService.convertPortfolioToTemplate(portfolio);
+    Portfolio template = portfolioService.findPortfolioById(templateId);
     model.addAttribute("template", template);
 
-    if (entryId == null && !portfolio.getEntries().isEmpty()) {
-      entryId = portfolio.getEntries().get(0).getId();
+    if (entryId == null && !template.getEntries().isEmpty()) {
+      entryId = template.getEntries().get(0).getId();
     }
 
     if (entryId != null) {
-      TemplateEntry templateEntry = templateService.getTemplateEntryById(template, entryId);
-      model.addAttribute("templateEntry", templateEntry);
+      Entry entry = portfolioService.findEntryById(template, entryId);
+      model.addAttribute("templateEntry", entry);
     }
 
     return "admin/view";
@@ -108,7 +102,7 @@ public class AdminController {
   public String uploadAscii(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    model.addAttribute("templateList", templateService.getAll());
+    model.addAttribute("templateList", portfolioService.getAllTemplates());
 
     return "admin/asciidoc/upload";
   }

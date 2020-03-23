@@ -36,7 +36,7 @@
             <a class="btn btn-primary"
                th:href="@{view(templateId=${template.getId()})}">Anzeigen</a>
         </div>
-        <div class="card-footer text-muted" th:text="'Zuletzt geändert am ' + ${template.getLastChanged()}">Last changed</div>
+        <div class="card-footer text-muted" th:text="'Zuletzt geändert am '">Last changed</div>
     </div>
 
     <div th:replace="fragments/modals :: createTemplateModal"></div>

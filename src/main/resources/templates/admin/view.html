@@ -70,23 +70,28 @@
 
         <form th:if="${templateEntry != null}">
 
-            <div th:each="field : ${templateEntry.getFields()}" th:switch="${field.getType()}"
-                 th:with="AnswerType = ${T(mops.portfolios.domain.portfolio.templates.AnswerType)}">
+            <div th:each="field : ${templateEntry.getFields()}" th:switch="${fieldType}"
+                 th:with="
+                  AnswerType = ${T(mops.portfolios.domain.portfolio.templates.AnswerType)},
+                  fieldQuestion = ${field.getTitle()},
+                  fieldData = ${field.getContent().split(';')},
+                  fieldType = ${AnswerType.valueOf(fieldData[0])},
+                  fieldHint = ${fieldData[1]}">
 
                 <div th:case="${AnswerType.TEXT}"
-                     th:insert="fragments/entryfields :: textField(field=${field})"></div>
+                     th:insert="fragments/entryfields :: textField(${fieldQuestion}, ${fieldHint})"></div>
 
                 <div th:case="${AnswerType.SINGLE_CHOICE}"
-                     th:insert="fragments/entryfields :: singlechoiceField(field=${field})"></div>
+                     th:insert="fragments/entryfields :: singlechoiceField(${fieldQuestion}, ${fieldHint})"></div>
 
                 <div th:case="${AnswerType.MULTIPLE_CHOICE}"
-                     th:insert="fragments/entryfields :: multichoiceField(field=${field})"></div>
+                     th:insert="fragments/entryfields :: multichoiceField(${fieldQuestion}, ${fieldHint})"></div>
 
                 <div th:case="${AnswerType.NUMBER_SLIDER}"
-                     th:insert="fragments/entryfields :: sliderField(field=${field})"></div>
+                     th:insert="fragments/entryfields :: sliderField(${fieldQuestion}, ${fieldHint})"></div>
 
                 <div th:case="${AnswerType.ATTACHEMENT}"
-                     th:insert="fragments/entryfields :: attachementField(field=${field})"></div>
+                     th:insert="fragments/entryfields :: attachementField(${fieldQuestion}, ${fieldHint})"></div>
 
                 <div th:case="*">Type not found</div>
 
