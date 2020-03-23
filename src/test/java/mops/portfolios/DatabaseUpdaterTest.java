@@ -1,14 +1,18 @@
 package mops.portfolios;
 
+import java.util.ArrayList;
 import java.util.List;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupRepository;
 import mops.portfolios.domain.state.StateService;
+import mops.portfolios.domain.user.User;
 import mops.portfolios.domain.user.UserRepository;
 import mops.portfolios.tools.FakeHttpClient;
 import mops.portfolios.tools.IHttpClient;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ch.qos.logback.classic.Logger;
@@ -164,6 +168,51 @@ public class DatabaseUpdaterTest {
             "}";
 
     databaseUpdater.updateDatabaseEvents(response);
+  }
+
+  @Test
+  public void deletedGroupTest() {
+
+    List<User> userList = new ArrayList<>();
+    User user = new User();
+    user.setName("studentin");
+    userList.add(user);
+    userRepository.save(user);
+
+    groupRepository.save(new Group(2L, "Lorem", userList));
+
+    String response = "{\n" +
+            "  \"status\": 4,\n" +
+            "  \"groupList\": [\n" +
+            "    {\n" +
+            "      \"id\": 2,\n" +
+            "      \"title\": null,\n" +
+            "      \"description\": null,\n" +
+            "      \"members\": [\n" +
+            "        {\n" +
+            "          \"user_id\": \"studentin\",\n" +
+            "          \"givenname\": \"studentin\",\n" +
+            "          \"familyname\": \"studentin\",\n" +
+            "          \"email\": \"studentin@student.in\"\n" +
+            "        }\n" +
+            "      ],\n" +
+            "      \"roles\": {\n" +
+            "\"studentin\": \"ADMIN\"" +
+            "},\n"+
+            "      \"type\": \"LECTURE\",\n" +
+            "      \"visibility\": \"PUBLIC\",\n" +
+            "      \"parent\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    databaseUpdater.updateDatabaseEvents(response);
+
+    List<Long> groupIds = new ArrayList<>();
+    groupIds.add(2L);
+
+    Assert.assertEquals(new ArrayList<>(), groupRepository.findAllById(groupIds));
+
   }
 
 }
