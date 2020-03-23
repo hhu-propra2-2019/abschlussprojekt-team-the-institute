@@ -46,7 +46,7 @@ public class DemoDataGenerator {
   private Entry generateGroupEntry() {
     Entry entry = new Entry();
     entry.setTitle(faker.shakespeare().romeoAndJulietQuote());
-    entry.getFields().addAll(generateEntryFieldList(entry));
+    entry.setFields(generateEntryFieldList(entry));
     return entry;
   }
 
@@ -65,7 +65,7 @@ public class DemoDataGenerator {
    */
   public Portfolio generateGroupPortfolio() {
     Portfolio portfolio = new Portfolio(faker.shakespeare().romeoAndJulietQuote(),generateGroup());
-    portfolio.getEntries().addAll(generateGroupEntryList());
+    portfolio.setEntries(generateGroupEntryList());
     return portfolio;
   }
 
@@ -95,7 +95,7 @@ public class DemoDataGenerator {
    */
   public Portfolio generateUserPortfolio() {
     Portfolio portfolio = new Portfolio(faker.shakespeare().romeoAndJulietQuote(), generateUser());
-    portfolio.getEntries().addAll(generateUserEntryList());
+    portfolio.setEntries(generateUserEntryList());
     return portfolio;
   }
 
@@ -173,7 +173,7 @@ public class DemoDataGenerator {
   private Entry generateTemplateEntry(int value) {
     Entry entry = new Entry();
     entry.setTitle(templateEntryFieldTitles.get(value));
-    entry.getFields().addAll(generateTemplateEntryFieldList(entry));
+    entry.setFields(generateTemplateEntryFieldList(entry));
     return entry;
   }
 
@@ -183,14 +183,13 @@ public class DemoDataGenerator {
    */
   private List<Entry> generateTemplateEntryList() {
     return IntStream.range(0, 3).mapToObj(
-        value -> generateTemplateEntry(value)).collect(Collectors.toList());
+        this::generateTemplateEntry).collect(Collectors.toList());
   }
 
   public Portfolio generateTemplate() {
     Portfolio template = new Portfolio(faker.shakespeare().asYouLikeItQuote(), generateUser());
-    template.getEntries().addAll(generateTemplateEntryList());
+    template.setEntries(generateTemplateEntryList());
     template.setTemplate(true);
     return template;
   }
-
 }

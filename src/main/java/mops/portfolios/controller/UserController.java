@@ -139,23 +139,20 @@ public class UserController {
    * @param model The spring model to add the attributes to
    * @return The page to load
    */
-  @PostMapping("/createTemplateEntry")
-  public String createTemplateEntry(Model model,
-                                    KeycloakAuthenticationToken token, RedirectAttributes redirect,
-                                    @RequestParam Long templateId, @RequestParam("title") String title) {
+  @PostMapping("/entry")
+  public String createEntry(Model model, KeycloakAuthenticationToken token,
+                                    @RequestParam Long portfolioId, @RequestParam("title") String title) {
     accountService.authorize(model, token);
 
-    Portfolio portfolio = portfolioService.findPortfolioById(templateId);
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
     Entry entry = new Entry(title);
-    portfolio.getEntries().add(entry);
-    portfolio = portfolioService.save(portfolio);
+    List<Entry> newEntries = portfolio.getEntries();
+    newEntries.add(entry);
+    portfolio.setEntries(newEntries);
 
-    entry = portfolio.getEntries().get(portfolio.getEntries().size() - 1);
+    portfolioService.update(portfolio);
 
-    redirect.addAttribute("templateId", portfolio.getId());
-    redirect.addAttribute("entryId", entry.getId());
-
-    return "redirect:/user/view";
+    return "redirect:/user/";
   }
 
 
@@ -165,22 +162,24 @@ public class UserController {
    * @param model The spring model to add the attributes to
    * @return The page to load
    */
-  @PostMapping("/createTemplateField")
-  public String createTemplateField(Model model,
+  @PostMapping("/createField")
+  public String createField(Model model,
                                     KeycloakAuthenticationToken token, RedirectAttributes redirect,
-                                    @RequestParam Long templateId, @RequestParam Long entryId,
+                                    @RequestParam Long portfolioId, @RequestParam Long entryId,
                                     @RequestParam("question") String question) {
     accountService.authorize(model, token);
 
-    Portfolio portfolio = portfolioService.findPortfolioById(templateId);
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
     Entry entry = portfolioService.findEntryById(portfolio, entryId);
 
+    List<EntryField> fields = entry.getFields();
     EntryField field = new EntryField();
     field.setTitle(question);
     field.setContent(AnswerType.TEXT + ";Some hint");
-    entry.getFields().add(field);
+    fields.add(field);
 
-    portfolio = portfolioService.save(portfolio);
+    entry.setFields(fields);
+    portfolioService.update(portfolio);
 
     redirect.addAttribute("templateId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());

@@ -20,7 +20,6 @@ import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -159,7 +158,7 @@ public class AdminController {
 
     Portfolio portfolio = new Portfolio(title, user);
     portfolio.setTemplate(true);
-    portfolio = portfolioService.save(portfolio);
+    portfolioService.update(portfolio);
 
     redirect.addAttribute("templateId", portfolio.getId());
 
@@ -182,7 +181,7 @@ public class AdminController {
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
     Entry entry = new Entry(title);
     portfolio.getEntries().add(entry);
-    portfolio = portfolioService.save(portfolio);
+    portfolioService.update(portfolio);
 
     entry = portfolio.getEntries().get(portfolio.getEntries().size() - 1);
 
@@ -214,7 +213,7 @@ public class AdminController {
     field.setContent(AnswerType.TEXT + ";Some hint");
     entry.getFields().add(field);
 
-    portfolio = portfolioService.save(portfolio);
+    portfolioService.update(portfolio);
 
     redirect.addAttribute("templateId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());

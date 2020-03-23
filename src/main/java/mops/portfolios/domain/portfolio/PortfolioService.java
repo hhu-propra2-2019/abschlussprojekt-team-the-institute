@@ -91,7 +91,10 @@ public class PortfolioService {
     return templates;
   }
 
-  public Portfolio save(Portfolio portfolio) {
-    return repository.save(portfolio);
+  public void update(Portfolio portfolio) {
+    while (repository.existsById(portfolio.getId())){
+      repository.deleteById(portfolio.getId());
+    }
+    repository.save(portfolio);
   }
 }
