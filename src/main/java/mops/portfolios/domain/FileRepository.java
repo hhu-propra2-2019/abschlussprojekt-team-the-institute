@@ -57,9 +57,9 @@ public class FileRepository {
     }
 
     public void saveFile(MultipartFile file, EntryField entryField) {
-        String objName = UUID.randomUUID().toString();
+        String objName = UUID.randomUUID().toString() + "." + file.getOriginalFilename();
         try {
-            minioClient.putObject(bucketName, objName + "." + file.getName(), file.getName());
+            minioClient.putObject(bucketName, objName, file.getOriginalFilename());
         } catch (MinioException | NoSuchAlgorithmException | IOException | InvalidKeyException | XmlPullParserException e) {
             logger.info(e.toString());
         }
