@@ -196,7 +196,7 @@ public class UserController {
     field.setContent(newContent);
     entryService.update(entry);
 
-    redirect.addAttribute("templateId", portfolio.getId());
+    redirect.addAttribute("portfolioId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());
     return "redirect:/user/view";
   }
