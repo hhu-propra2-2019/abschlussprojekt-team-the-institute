@@ -9,11 +9,12 @@ import java.util.Set;
 public class EntryService {
 
   @Autowired
-  EntryRepository entryRepository;
+  transient EntryRepository entryRepository;
 
   @Autowired
-  EntryFieldRepository entryFieldRepository;
+  transient EntryFieldRepository entryFieldRepository;
 
+  @SuppressWarnings("PMD")
   public EntryField findFieldById(Entry entry, Long entryFieldId) {
     for(EntryField field : entry.getFields()) {
       if(field.getId() == entryFieldId) {

@@ -1,6 +1,5 @@
 package mops.portfolios.controller;
 
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
