@@ -13,8 +13,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class PortfolioService {
 
-  @Autowired
   transient PortfolioRepository repository;
+
+  @Autowired
+  public PortfolioService(PortfolioRepository repository) {
+    this.repository = repository;
+  }
 
   public List<Portfolio> findAllByUserId(String userId) {
     return repository.findAllByUserId(userId);

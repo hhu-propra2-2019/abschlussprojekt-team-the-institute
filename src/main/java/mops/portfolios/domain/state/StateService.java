@@ -8,8 +8,12 @@ import java.util.Optional;
 @Service
 public class StateService {
 
-    @Autowired
     private transient StateRepository repository;
+
+    @Autowired
+    public StateService(StateRepository repository) {
+        this.repository = repository;
+    }
 
     public Long getState(String name) {
         Optional<State> lastState = repository.findById(name);

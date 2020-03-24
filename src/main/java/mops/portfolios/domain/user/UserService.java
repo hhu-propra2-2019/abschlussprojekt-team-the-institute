@@ -11,11 +11,12 @@ import java.util.List;
 @Service
 public class UserService {
 
-    @Autowired
     transient UserRepository repository;
 
     @Autowired
-    transient GroupRepository groupRepository;
+    public UserService(UserRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Group> getGroupsByUserName(String userName) {
         User user = repository.findOneByName(userName);
