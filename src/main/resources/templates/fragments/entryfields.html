@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<div th:fragment="textAdd">
+<div th:fragment="addTextField">
 
     <div class="input-group">
         <div class="input-group-prepend">
             <span class="input-group-text">Tipp / Erste Zeile</span>
         </div>
-        <textarea class="form-control" name="hint" placeholder="zB. Meiner Meinung nach war die Vorlesung..."></textarea>
+        <textarea class="form-control" name="hint" placeholder="zB. Meiner Meinung nach war die Vorlesung..."
+                  required></textarea>
     </div>
 
 </div>
 
-<div th:fragment="singlechoiceAdd">
+<div th:fragment="addSingleChoiceField">
 
     <div class="input-group">
         <div class="input-group-prepend">
@@ -30,7 +31,7 @@
 
 </div>
 
-<div th:fragment="multichoiceAdd">
+<div th:fragment="addMultiChoiceField">
 
     <div class="input-group">
         <div class="input-group-prepend">
@@ -47,6 +48,45 @@
     </button>
 
 </div>
+
+<div th:fragment="addSliderField" class="row">
+
+    <!--<label for="INPUT_SLIDER">Example range</label>-->
+
+    <div class="input-group col-4">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Min.</span>
+        </div>
+        <input id="INPUT_MIN" type="number" class="form-control" placeholder="1" required>
+    </div>
+
+    <div class="col">
+        <input type="range" class="custom-range" id="INPUT_SLIDER">
+    </div>
+
+
+    <div class="input-group col-4">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Max.</span>
+        </div>
+        <input type="number" class="form-control" placeholder="10" required>
+    </div>
+
+</div>
+
+<div th:fragment="addAttachementField">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Erlaubte Dateiendungen</span>
+        </div>
+        <input type="text" class="form-control" name="hint"
+               placeholder="zB. .pdf,.ascii,.adoc,.java,..." required>
+    </div>
+
+</div>
+
+<!--------------------------------------------------------------------->
 
 <div th:fragment="textField(question, hint)">
     <label for="INPUT_TEXT">

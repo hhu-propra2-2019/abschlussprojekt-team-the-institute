@@ -2,6 +2,7 @@ package mops.portfolios.controller;
 
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -106,7 +107,7 @@ public class UserController {
   public String createPortfolio(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    List<Portfolio> templateList = portfolioService.getAllTemplates();
+    List<Portfolio> templateList = portfolioService.findAllTemplates();
 
     model.addAttribute("templateList", templateList);
 
@@ -128,7 +129,7 @@ public class UserController {
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
     Entry entry = new Entry(title);
-    entry.setFields(dataGenerator.generateTemplateEntryFieldSet(entry));
+    entry.setFields(new HashSet<>(dataGenerator.generateTemplateEntryFieldList()));
     Set<Entry> newEntries = portfolio.getEntries();
     newEntries.add(entry);
     portfolio.setEntries(newEntries);
@@ -155,7 +156,7 @@ public class UserController {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
-    Entry entry = portfolioService.findEntryById(portfolio, entryId);
+    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
 
     Set<EntryField> fields = entry.getFields();
     EntryField field = new EntryField();

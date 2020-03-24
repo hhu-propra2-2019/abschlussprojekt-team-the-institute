@@ -34,7 +34,6 @@ public class Entry {
       fetch = FetchType.EAGER, //FIXME
       orphanRemoval = true
   )
-  
   @OrderBy("id ASC")
   private Set<EntryField> fields = new HashSet<>();
 

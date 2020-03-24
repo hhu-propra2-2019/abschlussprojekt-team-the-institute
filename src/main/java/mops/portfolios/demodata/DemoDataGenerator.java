@@ -2,7 +2,13 @@ package mops.portfolios.demodata;
 
 import com.github.javafaker.Faker;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import mops.portfolios.domain.entry.Entry;
@@ -150,8 +156,7 @@ public class DemoDataGenerator {
    * Generates a single template EntryField.
    * @return - the EntryField
    */
-
-  EntryField generateTemplateEntryField(Entry entry) {
+  private EntryField generateTemplateEntryField() {
     EntryField entryField = new EntryField();
     entryField.setAttachment(faker.shakespeare().hamletQuote());
     entryField.setContent(getRandomElement(templateEntryFieldContents));
@@ -163,9 +168,12 @@ public class DemoDataGenerator {
    * Fills the template entry with "content".
    * @return - the EntryFields
    */
-  public Set<EntryField> generateTemplateEntryFieldSet(Entry entry) {
-    return IntStream.range(0, 3).mapToObj(
-        value -> generateTemplateEntryField(entry)).collect(Collectors.toSet());
+  public List<EntryField> generateTemplateEntryFieldList() {
+    List<EntryField> fields = new ArrayList<>();
+    for (int i = 0; i < new Random().nextInt(templateEntryFieldContents.size()); i++) {
+      fields.add(generateTemplateEntryField());
+    }
+    return fields;
   }
 
   /**
@@ -175,7 +183,7 @@ public class DemoDataGenerator {
   private Entry generateTemplateEntry(int i) {
     Entry entry = new Entry();
     entry.setTitle(templateEntryTitles.get(i));
-    entry.setFields(generateTemplateEntryFieldSet(entry));
+    entry.setFields(new LinkedHashSet<>(generateTemplateEntryFieldList()));
 
     return entry;
   }
@@ -184,9 +192,12 @@ public class DemoDataGenerator {
    * Generates a list of Entries for a template.
    * @return - the list
    */
-  private Set<Entry> generateTemplateEntrySet() {
-    return IntStream.range(0, 3).mapToObj(
-        this::generateTemplateEntry).collect(Collectors.toSet());
+  private List<Entry> generateTemplateEntryList() {
+    List<Entry> entries = new ArrayList<>();
+    for (int i = 0; i < new Random().nextInt(templateEntryTitles.size()); i++) {
+      entries.add(generateTemplateEntry(i));
+    }
+    return entries;
 
   }
 
@@ -196,7 +207,7 @@ public class DemoDataGenerator {
    */
   public Portfolio generateTemplate() {
     Portfolio template = new Portfolio(faker.shakespeare().asYouLikeItQuote(), generateUser());
-    template.setEntries(generateTemplateEntrySet());
+    template.setEntries(new LinkedHashSet<>(generateTemplateEntryList()));
     template.setTemplate(true);
     return template;
   }
