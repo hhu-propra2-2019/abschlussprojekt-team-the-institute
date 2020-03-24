@@ -8,6 +8,9 @@ import java.util.Set;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
+import mops.portfolios.PortfoliosApplication;
+import mops.portfolios.controller.services.EntryService;
+import mops.portfolios.controller.services.FileService;
 import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
@@ -17,6 +20,8 @@ import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.User;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +36,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RolesAllowed({"ROLE_orga"})
 @AllArgsConstructor
 public class AdminController {
+  private transient final FileService fileService = new FileService();
+  private transient final EntryService entryService = new EntryService(this.portfolioService);
 
   private transient AccountService accountService;
 
@@ -125,20 +132,18 @@ public class AdminController {
                                   KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    byte[] fileBytes;
-    try {
-      fileBytes = file.getBytes();
-    } catch (IOException e) {
-      e.printStackTrace();
+    if (fileService.nothingUploaded(file)) {
       return "admin/asciidoc/upload";
     }
 
+    byte[] fileBytes = fileService.readFile(file);
     String text = new String(fileBytes, StandardCharsets.UTF_8);
     String html = asciiConverter.convertToHtml(text);
     model.addAttribute("html", html);
-
     return "admin/asciidoc/view";
   }
+
+
 
   /**
    * Create Template mapping for POST requests.
@@ -154,7 +159,8 @@ public class AdminController {
     accountService.authorize(model, token);
 
     User user = new User();
-    user.setName(token.getName());
+    user.setName(token.getName()); // FIXME: Nutzen wir auch an jeder Stelle diese Methode? \
+                                   // Geht es ohne user id auch klar?
 
     Portfolio portfolio = new Portfolio(title, user);
     portfolio.setTemplate(true);
@@ -199,17 +205,6 @@ public class AdminController {
     return "redirect:/admin/view";
   }
 
-  @SuppressWarnings("PMD")
-  private Entry getLast(Set<Entry> entries) {
-    Iterator itr = entries.iterator();
-    Entry last = (Entry)itr.next();
-    while(itr.hasNext()) {
-      last = (Entry)itr.next();
-    }
-    return last;
-  }
-
-
   /**
    * Create Template Entry mapping for POST requests.
    *
@@ -230,17 +225,7 @@ public class AdminController {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    Entry entry = portfolioService.findEntryById(portfolio, entryId);
-    EntryField field = new EntryField();
-    entry.getFields().add(field);
-
-    field.setTitle(question);
-    if(hint == null) {
-      hint = "Some hint";
-    }
-    field.setContent(AnswerType.TEXT + ";" + hint);
-
-
+    entryService.createAndAdField(entryId, question, hint, portfolio);
     portfolioService.update(portfolio);
 
     redirect.addAttribute("templateId", templateId);
@@ -248,4 +233,6 @@ public class AdminController {
 
     return "redirect:/admin/view";
   }
+
+
 }
