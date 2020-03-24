@@ -20,7 +20,6 @@ import mops.portfolios.domain.portfolio.templates.Template;
 import mops.portfolios.domain.portfolio.templates.TemplateService;
 import mops.portfolios.domain.user.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -150,7 +149,7 @@ public class UserController {
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
     Entry entry = new Entry(title);
-    entry.setFields(dataGenerator.generateTemplateEntryFieldList(entry));
+    entry.setFields(dataGenerator.generateTemplateEntryFieldSet(entry));
     Set<Entry> newEntries = portfolio.getEntries();
     newEntries.add(entry);
     portfolio.setEntries(newEntries);
@@ -179,7 +178,7 @@ public class UserController {
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
     Entry entry = portfolioService.findEntryById(portfolio, entryId);
 
-    List<EntryField> fields = entry.getFields();
+    Set<EntryField> fields = entry.getFields();
     EntryField field = new EntryField();
     field.setTitle(question);
     field.setContent(AnswerType.TEXT + ";Some hint");

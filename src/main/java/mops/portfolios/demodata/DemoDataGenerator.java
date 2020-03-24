@@ -34,9 +34,9 @@ public class DemoDataGenerator {
    * @param entry - the entry to fill
    * @return - the EntryFields
    */
-  private List<EntryField> generateEntryFieldList(Entry entry) {
+  private Set<EntryField> generateEntryFieldSet(Entry entry) {
     return IntStream.range(0, 3).mapToObj(
-        value -> generateEntryField(entry)).collect(Collectors.toList());
+        value -> generateEntryField(entry)).collect(Collectors.toSet());
   }
 
   /**
@@ -46,7 +46,7 @@ public class DemoDataGenerator {
   private Entry generateGroupEntry() {
     Entry entry = new Entry();
     entry.setTitle(faker.shakespeare().romeoAndJulietQuote());
-    entry.setFields(generateEntryFieldList(entry));
+    entry.setFields(generateEntryFieldSet(entry));
     return entry;
   }
 
@@ -76,7 +76,7 @@ public class DemoDataGenerator {
   private Entry generateUserEntry() {
     Entry entry = new Entry();
     entry.setTitle(faker.shakespeare().romeoAndJulietQuote());
-    entry.setFields(generateEntryFieldList(entry));
+    entry.setFields(generateEntryFieldSet(entry));
     return entry;
   }
 
@@ -162,9 +162,9 @@ public class DemoDataGenerator {
    * @param entry - the entry to fill
    * @return - the EntryFields
    */
-  public List<EntryField> generateTemplateEntryFieldList(Entry entry) {
+  public Set<EntryField> generateTemplateEntryFieldSet(Entry entry) {
     return IntStream.range(0, 3).mapToObj(
-        value -> generateTemplateEntryField(entry)).collect(Collectors.toList());
+        value -> generateTemplateEntryField(entry)).collect(Collectors.toSet());
   }
 
   /**
@@ -174,7 +174,7 @@ public class DemoDataGenerator {
   private Entry generateTemplateEntry(int value) {
     Entry entry = new Entry();
     entry.setTitle(templateEntryFieldTitles.get(value));
-    entry.setFields(generateTemplateEntryFieldList(entry));
+    entry.setFields(generateTemplateEntryFieldSet(entry));
     return entry;
   }
 

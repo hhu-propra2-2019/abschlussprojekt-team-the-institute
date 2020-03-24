@@ -184,7 +184,7 @@ public class AdminController {
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
     Entry entry = new Entry(title);
-    entry.setFields(dataGenerator.generateTemplateEntryFieldList(entry));
+    entry.setFields(dataGenerator.generateTemplateEntryFieldSet(entry));
     Set<Entry> newEntries = portfolio.getEntries();
     newEntries.add(entry);
     portfolio.setEntries(newEntries);
