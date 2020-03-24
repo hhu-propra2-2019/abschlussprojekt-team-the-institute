@@ -1,5 +1,9 @@
 package mops.portfolios.domain.entry;
 
+import java.util.Objects;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
@@ -7,15 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
+@NoArgsConstructor
 public class EntryService {
 
-  @Autowired
+  @Autowired @NonNull
   transient EntryRepository entryRepository;
 
-  @Autowired
+  @Autowired @NonNull
   transient EntryFieldRepository entryFieldRepository;
 
-  @Autowired
+  @Autowired @NonNull
   private static transient PortfolioService portfolioService;
 
   @SuppressWarnings("PMD")
@@ -41,7 +47,13 @@ public class EntryService {
    * @param portfolio the portfolio the entry belongs to
    */
   public void createAndAdField(Long entryId, String question, String hint, Portfolio portfolio) {
-    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
+    Objects.requireNonNull(entryId);
+    Entry entry;
+    if (portfolioService.findEntryInPortfolioById(portfolio,entryId) != null) {
+      entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
+    } else {
+      entry = new Entry();
+    }
     EntryField field = new EntryField();
     entry.getFields().add(field);
 
