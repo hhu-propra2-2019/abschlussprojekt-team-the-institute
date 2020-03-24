@@ -16,8 +16,6 @@ import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
-import mops.portfolios.domain.portfolio.templates.Template;
-import mops.portfolios.domain.portfolio.templates.TemplateService;
 import mops.portfolios.domain.user.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -111,26 +109,6 @@ public class UserController {
     model.addAttribute("templateList", templateList);
 
     return "user/create";
-  }
-  
-  /**
-   * Submit mapping for GET requests.
-   *
-   * @param model       The spring model to add the attributes to
-   * @param portfolioId The portfolio id
-   * @return The page to load
-   */
-  @GetMapping("/submit")
-  public String submitPortfolio(Model model, @RequestParam Long portfolioId,
-                                KeycloakAuthenticationToken token) {
-    accountService.authorize(model, token);
-
-    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
-    Template template = templateService.convertPortfolioToTemplate(portfolio);
-
-    model.addAttribute("template", template);
-
-    return "user/submit";
   }
 
   /**

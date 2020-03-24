@@ -190,8 +190,6 @@ public class AdminController {
     portfolio.setEntries(newEntries);
     portfolioService.update(portfolio);
 
-    entry = getLast(portfolio.getEntries());
-
     //portfolio.getEntries().get(portfolio.getEntries().size() - 1);
     entry = portfolio.getLastEntry();
 
