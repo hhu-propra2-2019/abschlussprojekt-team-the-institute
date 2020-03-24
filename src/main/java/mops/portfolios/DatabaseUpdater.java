@@ -172,7 +172,7 @@ public class DatabaseUpdater {
         title = group.getString("title");
 
       }
-      
+
       JSONArray members = group.getJSONArray("members");
 
       List<User> userList = new ArrayList<>();

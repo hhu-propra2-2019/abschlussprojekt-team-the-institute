@@ -6,6 +6,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupRepository;
+import mops.portfolios.domain.state.State;
 import mops.portfolios.domain.state.StateService;
 import mops.portfolios.domain.user.User;
 import mops.portfolios.domain.user.UserRepository;
@@ -16,12 +17,15 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ch.qos.logback.classic.Logger;
+import org.mockito.Mock;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class DatabaseUpdaterTest {
@@ -32,18 +36,26 @@ public class DatabaseUpdaterTest {
   private transient String url = "/gruppen2/groupmembers";
   private transient static final Logger logger = (Logger) LoggerFactory.getLogger(PortfoliosApplication.class);
 
-  @Autowired
-  transient GroupRepository groupRepository;
+//  @Autowired
+//  transient GroupRepository groupRepository;
 
-  @Autowired
-  transient UserRepository userRepository;
+//  @Autowired
+//  transient UserRepository userRepository;
 
-  @Autowired
-  transient StateService stateService;
+//  @Autowired
+//  transient StateService stateService;
+
+  GroupRepository groupRepository = mock(GroupRepository.class);
+
+  UserRepository userRepository = mock(UserRepository.class);
+
+  StateService stateService = mock(StateService.class);
 
   @BeforeEach
   public void init() {
+
     databaseUpdater = new DatabaseUpdater(groupRepository, userRepository, stateService);
+
   }
 
   @Test
@@ -179,7 +191,12 @@ public class DatabaseUpdaterTest {
     userList.add(user);
     userRepository.save(user);
 
+    System.out.println(userRepository.findOneByName("studentin"));
+
     groupRepository.save(new Group(2L, "Lorem", userList));
+
+    Group group2 = groupRepository.findById(2L).get();
+    System.out.println(group2.toString());
 
     String response = "{\n" +
             "  \"status\": 4,\n" +
@@ -212,6 +229,111 @@ public class DatabaseUpdaterTest {
     groupIds.add(2L);
 
     Assert.assertEquals(new ArrayList<>(), groupRepository.findAllById(groupIds));
+
+  }
+
+  @Test
+  public void updateGroupTest() {
+
+    List<User> userList = new ArrayList<>();
+    User user = new User();
+    user.setName("studentin");
+    userList.add(user);
+    userRepository.save(user);
+
+    groupRepository.save(new Group(2L, "Lorem", userList));
+    Group group2 = groupRepository.findById(2L).get();
+    System.out.println(group2.toString());
+
+
+    String response = "{\n" +
+            "  \"status\": 4,\n" +
+            "  \"groupList\": [\n" +
+            "    {\n" +
+            "      \"id\": 2,\n" +
+            "      \"title\": null,\n" +
+            "      \"description\": null,\n" +
+            "      \"members\": [\n" +
+            "        {\n" +
+            "          \"user_id\": \"student\",\n" +
+            "          \"givenname\": \"studentin\",\n" +
+            "          \"familyname\": \"studentin\",\n" +
+            "          \"email\": \"studentin@student.in\"\n" +
+            "        }\n" +
+            "      ],\n" +
+            "      \"roles\": {\n" +
+            "\"studentin\": \"ADMIN\"" +
+            "},\n"+
+            "      \"type\": \"LECTURE\",\n" +
+            "      \"visibility\": \"PUBLIC\",\n" +
+            "      \"parent\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    databaseUpdater.updateDatabaseEvents(response);
+
+    List<Long> groupIds = new ArrayList<>();
+    groupIds.add(2L);
+
+    Group updatedGroup = groupRepository.findById(2L).get();
+    System.out.println(updatedGroup);
+    List<User> users = updatedGroup.getUsers();
+
+    for (User userUpdatedGroup: users) {
+      Assert.assertEquals("studentin", userUpdatedGroup.getName());
+
+    }
+
+  }
+
+  @Test
+  public void saveNewGroupTest() {
+
+    List<Long> groupIds = new ArrayList<>();
+    groupIds.add(2L);
+
+    List<User> userList = new ArrayList<>();
+    User user = new User();
+    user.setName("studentin");
+    userList.add(user);
+
+    List<Group> groups = new ArrayList<>();
+    groups.add(new Group(2L, "Lorem", userList));
+
+    String response = "{\n" +
+            "  \"status\": 4,\n" +
+            "  \"groupList\": [\n" +
+            "    {\n" +
+            "      \"id\": 2,\n" +
+            "      \"title\": null,\n" +
+            "      \"description\": null,\n" +
+            "      \"members\": [\n" +
+            "        {\n" +
+            "          \"user_id\": \"studentin\",\n" +
+            "          \"givenname\": \"studentin\",\n" +
+            "          \"familyname\": \"studentin\",\n" +
+            "          \"email\": \"studentin@student.in\"\n" +
+            "        }\n" +
+            "      ],\n" +
+            "      \"roles\": {\n" +
+            "\"studentin\": \"ADMIN\"" +
+            "},\n"+
+            "      \"type\": \"LECTURE\",\n" +
+            "      \"visibility\": \"PUBLIC\",\n" +
+            "      \"parent\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    databaseUpdater.updateDatabaseEvents(response);
+
+    System.out.println("Actual:" + groups);
+    System.out.println("Expected:" + groupRepository.findAllById(groupIds));
+
+    List<Group> groupsFromRepository = (List<Group>) groupRepository.findAllById(groupIds);
+
+    Assert.assertEquals(groups, groupsFromRepository);
 
   }
 
