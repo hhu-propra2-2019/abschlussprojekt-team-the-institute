@@ -148,7 +148,8 @@ public class DemoDataGenerator {
    * @param entry - the Entry that will contain it
    * @return - the EntryField
    */
-  private EntryField generateTemplateEntryField(Entry entry) {
+
+  EntryField generateTemplateEntryField(Entry entry) {
     EntryField entryField = new EntryField();
     entryField.setAttachment(faker.shakespeare().hamletQuote());
     entryField.setContent(getRandomElement(templateEntryFieldContents));
@@ -161,7 +162,7 @@ public class DemoDataGenerator {
    * @param entry - the entry to fill
    * @return - the EntryFields
    */
-  private List<EntryField> generateTemplateEntryFieldList(Entry entry) {
+  public List<EntryField> generateTemplateEntryFieldList(Entry entry) {
     return IntStream.range(0, 3).mapToObj(
         value -> generateTemplateEntryField(entry)).collect(Collectors.toList());
   }

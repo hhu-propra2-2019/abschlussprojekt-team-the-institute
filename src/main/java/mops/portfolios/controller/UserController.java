@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
+import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.group.Group;
@@ -35,9 +36,9 @@ public class UserController {
 
   private transient AccountService accountService;
   private transient UserService userService;
-
   private transient PortfolioService portfolioService;
   private transient TemplateService templateService;
+  private transient DemoDataGenerator dataGenerator;
 
   /**
    * Redirect to main page.
@@ -147,6 +148,7 @@ public class UserController {
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
     Entry entry = new Entry(title);
+    entry.setFields(dataGenerator.generateTemplateEntryFieldList(entry));
     Set<Entry> newEntries = portfolio.getEntries();
     newEntries.add(entry);
     portfolio.setEntries(newEntries);
