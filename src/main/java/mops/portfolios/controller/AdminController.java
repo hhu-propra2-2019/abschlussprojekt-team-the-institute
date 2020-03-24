@@ -1,27 +1,18 @@
 package mops.portfolios.controller;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
-import mops.portfolios.PortfoliosApplication;
-import mops.portfolios.controller.services.EntryService;
 import mops.portfolios.controller.services.FileService;
-import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
-import mops.portfolios.domain.entry.EntryField;
+import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.User;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @AllArgsConstructor
 public class AdminController {
   private final transient FileService fileService = new FileService();
-  private final transient EntryService entryService = new EntryService(this.portfolioService);
+  private final transient EntryService entryService = new EntryService();
 
   private transient AccountService accountService;
 
