@@ -6,7 +6,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupRepository;
-import mops.portfolios.domain.state.State;
 import mops.portfolios.domain.state.StateService;
 import mops.portfolios.domain.user.User;
 import mops.portfolios.domain.user.UserRepository;
@@ -17,15 +16,11 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ch.qos.logback.classic.Logger;
-import org.mockito.Mock;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class DatabaseUpdaterTest {
@@ -35,15 +30,6 @@ public class DatabaseUpdaterTest {
   /** The url to retrieve the data from */
   private transient String url = "/gruppen2/groupmembers";
   private transient static final Logger logger = (Logger) LoggerFactory.getLogger(PortfoliosApplication.class);
-
-//  @Autowired
-//  transient GroupRepository groupRepository;
-
-//  @Autowired
-//  transient UserRepository userRepository;
-
-//  @Autowired
-//  transient StateService stateService;
 
   GroupRepository groupRepository = mock(GroupRepository.class);
 
