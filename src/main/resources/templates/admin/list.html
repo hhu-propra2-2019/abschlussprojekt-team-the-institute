@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en"
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Vorlagen Liste', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:fragment="headcontent">
+        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
+    </th:block>
+
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li>
+                <a href="list">
+                    <p><i class="fa fa-archive fa-lg"></i> Vorlagen Liste</p>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-toggle="modal" data-target="#MODAL_CREATE_TEMPLATE">
+                    <p><i class="fas fa-book-medical fa-lg"></i> Vorlage erstellen</p>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</head>
+
+<body th:fragment="bodycontent"
+      th:replace="fragments/defaults :: defaultBody(title='Vorlagen Liste', description='Hier findest du eine Übersicht aller Vorlagen.', content=~{::content})">
+
+<div th:fragment="content">
+
+    <div class="card border-dark w-50 mb-2" th:each="template : ${templateList}">
+        <h5 class="card-header" th:text="${template.getTitle()}">Title</h5>
+        <div class="card-body text-dark">
+            <p class="card-text" th:text="${template.getEntries().size()} + ' Einträge'">Entries</p>
+            <a class="btn btn-primary"
+               th:href="@{view(templateId=${template.getId()})}">Anzeigen</a>
+        </div>
+        <div class="card-footer text-muted" th:text="'Zuletzt geändert am '">Last changed</div>
+    </div>
+
+    <div th:replace="fragments/modals :: createTemplateModal">Modal</div>
+
+</div>
+
+</body>
+
+</html>
+

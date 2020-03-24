@@ -50,6 +50,7 @@ public class FileRepository {
             boolean isExist = minioClient.bucketExists(bucketName);
             if (!isExist) {
                 minioClient.makeBucket(bucketName);
+                minioClient.setBucketPolicy(bucketName,"public");
             }
         } catch (MinioException e) {
             logger.warn(e.toString());
@@ -57,7 +58,7 @@ public class FileRepository {
     }
 
     public void saveFile(MultipartFile file, EntryField entryField) {
-        String objName = UUID.randomUUID().toString() + "." + file.getOriginalFilename();
+        String objName = UUID.randomUUID().toString() + "." + file.getName();
         try {
             minioClient.putObject(bucketName, objName, file.getOriginalFilename());
         } catch (MinioException | NoSuchAlgorithmException | IOException | InvalidKeyException | XmlPullParserException e) {

@@ -65,7 +65,7 @@ public class PortfoliosApplication {
 
             Path path = Paths.get("/tmp/pic.png");
             String name = "pic.png";
-            String originalFileName = "pic.png";
+            String originalFileName = "/tmp/pic.png";
             String contentType = "image/png";
             byte[] content = null;
             try {
@@ -74,8 +74,6 @@ public class PortfoliosApplication {
             }
             MultipartFile result = new MockMultipartFile(name,
                     originalFileName, contentType, content);
-
-
             EntryField entryField = new EntryField();
             fileRepository.saveFile(result, entryField);
             if (entryField.getAttachment() != null)

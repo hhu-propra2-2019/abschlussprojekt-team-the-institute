@@ -3,6 +3,9 @@ package mops.portfolios;
 import java.util.List;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import mops.portfolios.domain.group.GroupRepository;
+import mops.portfolios.domain.state.StateService;
+import mops.portfolios.domain.user.UserRepository;
 import mops.portfolios.tools.FakeHttpClient;
 import mops.portfolios.tools.IHttpClient;
 import org.json.JSONObject;
@@ -10,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,9 +28,18 @@ public class DatabaseUpdaterTest {
   private transient String url = "/gruppen2/groupmembers";
   private transient static final Logger logger = (Logger) LoggerFactory.getLogger(PortfoliosApplication.class);
 
+  @Autowired
+  transient GroupRepository groupRepository;
+
+  @Autowired
+  transient UserRepository userRepository;
+
+  @Autowired
+  transient StateService stateService;
+
   @BeforeEach
   public void init() {
-    databaseUpdater = new DatabaseUpdater();
+    databaseUpdater = new DatabaseUpdater(groupRepository, userRepository, stateService);
   }
 
   @Test
@@ -37,7 +50,7 @@ public class DatabaseUpdaterTest {
       listAppender.start();
       logger.addAppender(listAppender);
       IHttpClient httpClient = new FakeHttpClient();
-      databaseUpdater.updateDatabaseEvents(httpClient, "400");
+      databaseUpdater.getGroupUpdatesFromUrl(httpClient, "400");
       listAppender.stop();
 
       List<ILoggingEvent> logsList = listAppender.list;
@@ -72,12 +85,12 @@ public class DatabaseUpdaterTest {
   @Test
   public void testUpdateDatabaseEventsIllegalArgument() {
     databaseUpdater.url = "/bla/bla";
-    assertThrows(RuntimeException.class, () -> databaseUpdater.updateDatabaseEvents());
+    assertThrows(RuntimeException.class, () -> databaseUpdater.getUpdatesFromJsonObject());
   }
   @Test
   public void testSuccessfulRequest() {
     IHttpClient httpClient = new FakeHttpClient();
-    databaseUpdater.updateDatabaseEvents(httpClient, this.url); // takes mocked JSON from the FakeHttpClient
+    databaseUpdater.getGroupUpdatesFromUrl(httpClient, this.url); // takes mocked JSON from the FakeHttpClient
   }
 
   @Test

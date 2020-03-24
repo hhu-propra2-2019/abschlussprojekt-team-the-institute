@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div class="modal-dialog modal-dialog-centered" th:fragment="abstractModalForm (title, content)">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title"><u th:text="${title}">Title</u></h5>
+            <button type="button" class="close" data-dismiss="modal">
+                <span>&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div th:replace="${content}">Content</div>
+        </div>
+    </div>
+</div>
+
+<div id="MODAL_CREATE_TEMPLATE" class="modal fade" th:fragment="createTemplateModal"
+     th:insert="~{::abstractModalForm (title='Vorlage erstellen',
+     content=~{fragments/forms::createTemplateForm})}"></div>
+
+<div id="MODAL_CREATE_ENTRY" class="modal fade" th:fragment="createEntryModal(templateId)"
+     th:insert="~{::abstractModalForm (title='Eintrag hinzufügen',
+     content=~{fragments/forms::createEntryForm})}"></div>
+
+<div th:id="${modalId}" class="modal fade"
+     th:fragment="createFieldModal(templateId, entryId, modalId, fieldFragment)"
+     th:insert="~{::abstractModalForm (title='Feld hinzufügen',
+     content=~{fragments/forms::createFieldForm})}"></div>
+
+</html>

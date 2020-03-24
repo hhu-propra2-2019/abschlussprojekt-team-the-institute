@@ -1,8 +1,16 @@
 package mops.portfolios;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupRepository;
+import mops.portfolios.domain.state.StateService;
+import mops.portfolios.domain.user.User;
+import mops.portfolios.domain.user.UserRepository;
 import mops.portfolios.tools.HttpClient;
 import mops.portfolios.tools.IHttpClient;
 import org.json.JSONArray;
@@ -10,21 +18,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 @SuppressWarnings("PMD")
+@RequiredArgsConstructor
 public class DatabaseUpdater {
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
   transient String url;
 
-  @Autowired
-  GroupRepository groupRepository;
+
+  final @NonNull GroupRepository groupRepository;
+
+  final @NonNull UserRepository userRepository;
+
+  final @NonNull StateService stateService;
 
 
   /**
@@ -38,7 +48,7 @@ public class DatabaseUpdater {
     @Override
     public void run() {
       while (true) {
-        updateDatabaseEvents();
+        getUpdatesFromJsonObject();
         Thread.sleep(timeout);
       }
     }
@@ -46,12 +56,13 @@ public class DatabaseUpdater {
 
   /**
    * Runs the database updater.
+   *
    * @param timeout The timeout between each update
    * @throws InterruptedException if another thread has interrupted the current thread. \
-   The interrupted status of the current thread is cleared when this exception is thrown.
+   * The interrupted status of the current thread is cleared when this exception is thrown.
    */
   public void updateDatabase(long timeout) throws InterruptedException {
-    long updateStatus = 0; // TODO: will be retrieved through a database call later. Not yet available
+    long updateStatus = stateService.getState("gruppen2");
     this.url = "/gruppen2/api/updateGroups/" + updateStatus;
     DatabaseUpdaterThread databaseUpdaterThread = new DatabaseUpdaterThread(timeout);
     databaseUpdaterThread.run();
@@ -60,17 +71,19 @@ public class DatabaseUpdater {
   /**
    * Use this method to get the updates from Gruppenbildung regarding groups.
    */
-  public void updateDatabaseEvents() {
+
+  void getUpdatesFromJsonObject() {
     HttpClient httpClient = new HttpClient();
-    updateDatabaseEvents(httpClient, this.url);
+    getGroupUpdatesFromUrl(httpClient, this.url);
   }
 
   /**
    * This method updates the database using an injected HttpClient and url, easing up testing.
+   *
    * @param httpClient The IHttpClient to use
    */
   @SuppressWarnings("PMD")
-  public void updateDatabaseEvents(IHttpClient httpClient, String url) {
+  void getGroupUpdatesFromUrl(IHttpClient httpClient, String url) {
     String responseBody;
 
     // try to receive data from service Gruppenbildung
@@ -90,6 +103,7 @@ public class DatabaseUpdater {
 
   /**
    * This method updates the database using the injected JSON String, easing up testing.
+   *
    * @param jsonUpdate The String containing the JSON data to update the database
    */
   @SuppressWarnings("PMD")
@@ -118,29 +132,23 @@ public class DatabaseUpdater {
       return; // no need to update local database
     }
 
+    processStatusUpdate(jsonObject);
+
+    processGroupUpdates(jsonObject);
+
+  }
+
+  private void processStatusUpdate(JSONObject jsonObject) {
     Long newStatus;
-    JSONArray groupList;
 
-    try {
-      newStatus = jsonObject.getBigInteger("status").longValue();
-      groupList = jsonObject.getJSONArray("groupList");
+    newStatus = jsonObject.getBigInteger("status").longValue();
+    stateService.setState("gruppen2", newStatus);
 
-
-
-    } catch (Exception e) {
-      logger.error("Couldn't parse JSONObject:" + e.getMessage());
-      throw e;
-    }
-
-    List<Long> deletedGroups = getDeletedGroups(jsonObject);
-    for(Long groupId : deletedGroups) {
-      groupRepository.deleteById(groupId);
-    }
-    // TODO: Process the received data
   }
 
   /**
    * Checks if there are any modifications.
+   *
    * @param jsonUpdate The JSONObject to check
    * @return <b>true</b> if not modified, <b>false</b> if modified
    */
@@ -149,28 +157,50 @@ public class DatabaseUpdater {
     return groupList.isEmpty();
   }
 
-  public List<Long> getDeletedGroups(JSONObject jsonUpdate) {
-    List<Long> deletedGroups = new ArrayList<>();
+  void processGroupUpdates(JSONObject jsonUpdate) {
 
-    JSONArray groupList;
-    try {
-      groupList = jsonUpdate.getJSONArray("groupList");
 
-      for(Object groupElement : groupList) {
-        JSONObject group = (JSONObject) groupElement;
-          long id = group.getBigInteger("id").longValue();
-          String title = group.getString("title");
-          if (title == null || title.isEmpty()) {
-            deletedGroups.add(id);
+    JSONArray groupList = jsonUpdate.getJSONArray("groupList");
+
+    for (Object groupElement : groupList) {
+
+      JSONObject group = (JSONObject) groupElement;
+      Long groupId = group.getBigInteger("id").longValue();
+      String title = group.getString("title");
+      JSONArray members = group.getJSONArray("members");
+
+      List<User> userList = new ArrayList<>();
+
+      if (members != null) {
+        for (Object member : members) {
+          User user = new User();
+          JSONObject users = (JSONObject) member;
+          user.setName(users.getString("user_id"));
+          userList.add(user);
+        }
+
+        if (title == null || title.isEmpty()) {
+          groupRepository.deleteById(groupId);
+        } else if (groupExists(groupId)) {
+          groupRepository.deleteById(groupId);
+        }
+        for (User user: userList) {
+          if (userRepository.findOneByName(user.getName()) == null) {
+            userRepository.save(user);
           }
+          groupRepository.save(new Group(groupId, title, userList));
+        }
       }
-
-    } catch (Exception e) {
-      logger.error("Couldn't parse JSONObject:" + e.getMessage());
-      throw e;
     }
 
-    return deletedGroups;
+  }
+
+  private boolean groupExists(Long groupId) {
+    Objects.requireNonNull(groupId);
+    List<Long> groupIds = new ArrayList<>();
+    groupIds.add(groupId);
+
+    return !groupRepository.findAllById(groupIds).equals(new ArrayList<>());
   }
 
 }

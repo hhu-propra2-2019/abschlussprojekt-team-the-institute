@@ -1,5 +1,6 @@
 package mops.portfolios.domain.group;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mops.portfolios.domain.user.User;
@@ -12,7 +13,8 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "group_table")
+@AllArgsConstructor
+@Table(name="group_table")
 public class Group {
 
   @Id
@@ -23,4 +25,6 @@ public class Group {
 
   @ManyToMany
   private List<User> users = new ArrayList<>();
+
+
 }
