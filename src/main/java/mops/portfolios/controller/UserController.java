@@ -20,6 +20,7 @@ import mops.portfolios.domain.portfolio.templates.Template;
 import mops.portfolios.domain.portfolio.templates.TemplateService;
 import mops.portfolios.domain.user.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +39,6 @@ public class UserController {
   private transient UserService userService;
   private transient PortfolioService portfolioService;
   private transient TemplateService templateService;
-  private transient DemoDataGenerator dataGenerator;
 
   /**
    * Redirect to main page.
@@ -143,8 +143,10 @@ public class UserController {
    */
   @PostMapping("/entry")
   public String createEntry(Model model, KeycloakAuthenticationToken token,
+                                    RedirectAttributes redirectAttributes,
                                     @RequestParam Long portfolioId, @RequestParam("title") String title) {
     accountService.authorize(model, token);
+    DemoDataGenerator dataGenerator = new DemoDataGenerator();
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
     Entry entry = new Entry(title);
@@ -152,10 +154,12 @@ public class UserController {
     Set<Entry> newEntries = portfolio.getEntries();
     newEntries.add(entry);
     portfolio.setEntries(newEntries);
-
     portfolioService.update(portfolio);
 
-    return "redirect:/user/";
+    redirectAttributes.addAttribute("portfolioId", portfolio.getId());
+
+    System.out.println("Updated");
+    return "redirect:/user/view";
   }
 
 
