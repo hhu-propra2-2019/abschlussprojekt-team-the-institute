@@ -61,7 +61,7 @@ public class AdminController {
   public String listTemplates(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    List<Portfolio> templateList = portfolioService.getAllTemplates();
+    List<Portfolio> templateList = portfolioService.findAllTemplates();
 
     model.addAttribute("templateList", templateList);
 
@@ -90,7 +90,7 @@ public class AdminController {
     }
 
     if (entryId != null) {
-      Entry entry = portfolioService.findEntryById(template, entryId);
+      Entry entry = portfolioService.findEntryInPortfolioById(template, entryId);
       model.addAttribute("templateEntry", entry);
     }
 
@@ -107,7 +107,7 @@ public class AdminController {
   public String uploadAscii(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    model.addAttribute("templateList", portfolioService.getAllTemplates());
+    model.addAttribute("templateList", portfolioService.findAllTemplates());
 
     return "admin/asciidoc/upload";
   }
@@ -158,7 +158,7 @@ public class AdminController {
 
     Portfolio portfolio = new Portfolio(title, user);
     portfolio.setTemplate(true);
-    portfolioService.update(portfolio);
+    portfolio = portfolioService.update(portfolio);
 
     redirect.addAttribute("templateId", portfolio.getId());
 
@@ -180,35 +180,19 @@ public class AdminController {
                                     @RequestParam Long templateId,
                                     @RequestParam("title") String title) {
     accountService.authorize(model, token);
-    DemoDataGenerator dataGenerator = new DemoDataGenerator();
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
     Entry entry = new Entry(title);
-    entry.setFields(dataGenerator.generateTemplateEntryFieldSet(entry));
-    Set<Entry> newEntries = portfolio.getEntries();
-    newEntries.add(entry);
-    portfolio.setEntries(newEntries);
-    portfolioService.update(portfolio);
+    portfolio.getEntries().add(entry);
 
-    //portfolio.getEntries().get(portfolio.getEntries().size() - 1);
-    entry = portfolio.getLastEntry();
+    portfolio = portfolioService.update(portfolio);
+    entry = portfolioService.findLastEntryInPortfolio(portfolio);
 
     redirect.addAttribute("templateId", templateId);
     redirect.addAttribute("entryId", entry.getId());
 
     return "redirect:/admin/view";
   }
-
-  @SuppressWarnings("PMD")
-  private Entry getLast(Set<Entry> entries) {
-    Iterator itr = entries.iterator();
-    Entry last = (Entry)itr.next();
-    while(itr.hasNext()) {
-      last = (Entry)itr.next();
-    }
-    return last;
-  }
-
 
   /**
    * Create Template Entry mapping for POST requests.
@@ -230,7 +214,7 @@ public class AdminController {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    Entry entry = portfolioService.findEntryById(portfolio, entryId);
+    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
     EntryField field = new EntryField();
     entry.getFields().add(field);
 
@@ -239,7 +223,6 @@ public class AdminController {
       hint = "Some hint";
     }
     field.setContent(AnswerType.TEXT + ";" + hint);
-
 
     portfolioService.update(portfolio);
 

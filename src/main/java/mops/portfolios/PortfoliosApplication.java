@@ -75,13 +75,13 @@ public class PortfoliosApplication {
             log.info("8==================================================================================");
             log.info("Non-templates:");
 
-            for (Portfolio portfolio : portfolioService.getAllPortfolios()) {
+            for (Portfolio portfolio : portfolioService.findAllPortfolios()) {
                 log.info(portfolio.toString());
             }
 
             log.info("9==================================================================================");
             log.info("Templates:");
-            for (Portfolio portfolio : portfolioService.getAllTemplates()) {
+            for (Portfolio portfolio : portfolioService.findAllTemplates()) {
                 log.info(portfolio.toString());
             }
 
