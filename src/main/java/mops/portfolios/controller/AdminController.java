@@ -200,6 +200,7 @@ public class AdminController {
     return "redirect:/admin/view";
   }
 
+  @SuppressWarnings("PMD")
   private Entry getLast(Set<Entry> entries) {
     Iterator itr = entries.iterator();
     Entry last = (Entry)itr.next();
