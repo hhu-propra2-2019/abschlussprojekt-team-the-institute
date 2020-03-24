@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
+import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.portfolio.Portfolio;
@@ -179,10 +180,14 @@ public class AdminController {
                                     KeycloakAuthenticationToken token, RedirectAttributes redirect,
                                     @RequestParam Long templateId, @RequestParam("title") String title) {
     accountService.authorize(model, token);
+    DemoDataGenerator dataGenerator = new DemoDataGenerator();
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
     Entry entry = new Entry(title);
-    portfolio.getEntries().add(entry);
+    entry.setFields(dataGenerator.generateTemplateEntryFieldList(entry));
+    Set<Entry> newEntries = portfolio.getEntries();
+    newEntries.add(entry);
+    portfolio.setEntries(newEntries);
     portfolioService.update(portfolio);
 
     entry = getLast(portfolio.getEntries());
