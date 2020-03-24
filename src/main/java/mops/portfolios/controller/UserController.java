@@ -129,7 +129,7 @@ public class UserController {
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
     Entry entry = new Entry(title);
-    entry.setFields(new HashSet<>(dataGenerator.generateTemplateEntryFieldList()));
+    entry.setFields(dataGenerator.generateTemplateEntryFieldSet());
     Set<Entry> newEntries = portfolio.getEntries();
     newEntries.add(entry);
     portfolio.setEntries(newEntries);
@@ -173,13 +173,25 @@ public class UserController {
     return "redirect:/user/view";
   }
 
+  /**
+   * Post Mapping to update EntryField Content
+   * @param model - Spring MVC model
+   * @param token - KeycloakAuthenticationToken
+   * @param redirect - injects RedirectAttributes
+   * @param portfolioId - Id of current portfolio
+   * @param entryId - Id of current entry
+   * @param entryFieldId - Id of updated EntryField
+   * @param newContent - new content of entryfield
+   * @return - redirects to /view
+   */
+  @PostMapping("/update")
   public String updateFields(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirect,
                              @RequestParam Long portfolioId, @RequestParam Long entryId, @RequestParam Long entryFieldId,
                              @RequestParam("content") String newContent) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
-    Entry entry = portfolioService.findEntryById(portfolio, entryId);
+    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
     EntryField field = entryService.findFieldById(entry, entryFieldId);
 
     field.setContent(newContent);
