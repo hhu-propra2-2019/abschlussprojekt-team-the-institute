@@ -20,7 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class DatabaseUpdaterTest {
@@ -31,11 +32,12 @@ public class DatabaseUpdaterTest {
   private transient String url = "/gruppen2/groupmembers";
   private transient static final Logger logger = (Logger) LoggerFactory.getLogger(PortfoliosApplication.class);
 
-  GroupRepository groupRepository = mock(GroupRepository.class);
 
-  UserRepository userRepository = mock(UserRepository.class);
+  transient GroupRepository groupRepository = mock(GroupRepository.class);
 
-  StateService stateService = mock(StateService.class);
+  transient UserRepository userRepository = mock(UserRepository.class);
+
+  transient StateService stateService = mock(StateService.class);
 
   @BeforeEach
   public void init() {
@@ -105,6 +107,7 @@ public class DatabaseUpdaterTest {
     assertEquals(true, result);
   }
 
+  @SuppressWarnings("PMD")
   @Test
   public void GroupListIsModified() {
     String response = "{\n" +
@@ -138,6 +141,7 @@ public class DatabaseUpdaterTest {
     assertEquals(false, result);
   }
 
+  @SuppressWarnings("PMD")
   @Test
   public void extractJsonObject() {
     String response = "{\n" +
@@ -168,21 +172,17 @@ public class DatabaseUpdaterTest {
     databaseUpdater.updateDatabaseEvents(response);
   }
 
+  @SuppressWarnings("PMD")
   @Test
   public void deletedGroupTest() {
-
     List<User> userList = new ArrayList<>();
     User user = new User();
     user.setName("studentin");
     userList.add(user);
-    userRepository.save(user);
 
-    System.out.println(userRepository.findOneByName("studentin"));
+    when(groupRepository.save(any(Group.class))).thenReturn(new Group(2L, "Lorem", userList));
 
     groupRepository.save(new Group(2L, "Lorem", userList));
-
-    Group group2 = groupRepository.findById(2L).get();
-    System.out.println(group2.toString());
 
     String response = "{\n" +
             "  \"status\": 4,\n" +
@@ -214,10 +214,16 @@ public class DatabaseUpdaterTest {
     List<Long> groupIds = new ArrayList<>();
     groupIds.add(2L);
 
+    when(groupRepository.findAllById(groupIds)).thenReturn(new ArrayList<>());
+    verify(groupRepository, times(1)).save(any(Group.class));
+
     Assert.assertEquals(new ArrayList<>(), groupRepository.findAllById(groupIds));
+
+    verify(groupRepository, times(1)).findAllById(groupIds);
 
   }
 
+  @SuppressWarnings("PMD")
   @Test
   public void updateGroupTest() {
 
@@ -225,11 +231,16 @@ public class DatabaseUpdaterTest {
     User user = new User();
     user.setName("studentin");
     userList.add(user);
+
+    when(userRepository.save(any(User.class))).thenReturn(user);
+
     userRepository.save(user);
 
-    groupRepository.save(new Group(2L, "Lorem", userList));
-    Group group2 = groupRepository.findById(2L).get();
-    System.out.println(group2.toString());
+    Group group = new Group(2L, "Lorem", userList);
+    when(groupRepository.save(any(Group.class))).thenReturn(group);
+
+    groupRepository.save(group);
+
 
 
     String response = "{\n" +
@@ -261,18 +272,25 @@ public class DatabaseUpdaterTest {
 
     List<Long> groupIds = new ArrayList<>();
     groupIds.add(2L);
+    List<User> users = new ArrayList<>();
+    User user1 = new User();
+    user1.setName("student");
+    users.add(user1);
 
-    Group updatedGroup = groupRepository.findById(2L).get();
+    Group updatedGroup = new Group(2L, "Lorem", users);
+    when(groupRepository.findById(2L).get()).thenReturn(updatedGroup);
+
     System.out.println(updatedGroup);
-    List<User> users = updatedGroup.getUsers();
+    List<User> updatedGroupUsers = updatedGroup.getUsers();
 
-    for (User userUpdatedGroup: users) {
+    for (User userUpdatedGroup: updatedGroupUsers) {
       Assert.assertEquals("studentin", userUpdatedGroup.getName());
 
     }
 
   }
 
+  @SuppressWarnings("PMD")
   @Test
   public void saveNewGroupTest() {
 
@@ -314,9 +332,7 @@ public class DatabaseUpdaterTest {
 
     databaseUpdater.updateDatabaseEvents(response);
 
-    System.out.println("Actual:" + groups);
-    System.out.println("Expected:" + groupRepository.findAllById(groupIds));
-
+    when(groupRepository.findAllById(groupIds)).thenReturn(groups);
     List<Group> groupsFromRepository = (List<Group>) groupRepository.findAllById(groupIds);
 
     Assert.assertEquals(groups, groupsFromRepository);
