@@ -14,11 +14,6 @@
                     <p><i class="fa fa-archive fa-lg"></i> Zurück</p>
                 </a>
             </li>
-            <li>
-                <a href="#">
-                    <p><i class="fa fa-plus fa-lg"></i> Neuer Eintrag?</p>
-                </a>
-            </li>
         </ul>
     </nav>
 </head>
@@ -60,8 +55,22 @@
             </div>
 
         </div>
-
     </div>
+
+    <div class="card">
+    <h5 class="card-header">Neuen Eintrag erstellen</h5>
+        <div class="card-body text-dark">
+            <h5 class="card-title">Eintrag erstellen</h5>
+            <p class="card-text">Hier kannst du einen neuen Eintrag erstellen:</p>
+            <form th:action="@{/user/entry(portfolioId=${portfolio.getId()})}" method="post">
+                <input type="text" name="title" value="titel">
+                <br>
+                <br>
+                <input type="submit" name="action">
+            </form>
+        </div>
+    </div>
+
 
 </div>
 

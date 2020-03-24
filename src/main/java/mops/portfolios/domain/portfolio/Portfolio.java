@@ -1,6 +1,8 @@
 package mops.portfolios.domain.portfolio;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Iterator;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -36,8 +38,8 @@ public class Portfolio {
       orphanRemoval = true,
       fetch = FetchType.EAGER
   )
-  @OrderBy("id ASC")
-  private @Getter Set<Entry> entries = new HashSet<>();
+
+  @OrderBy("id ASC") private @Getter Set<Entry> entries = new HashSet<>();
 
   public Portfolio() {}
 

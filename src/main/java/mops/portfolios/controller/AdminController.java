@@ -2,10 +2,13 @@ package mops.portfolios.controller;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
+import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.portfolio.Portfolio;
@@ -155,8 +158,7 @@ public class AdminController {
 
     Portfolio portfolio = new Portfolio(title, user);
     portfolio.setTemplate(true);
-
-    portfolio = portfolioService.save(portfolio);
+    portfolioService.update(portfolio);
 
     redirect.addAttribute("templateId", portfolio.getId());
 
@@ -178,18 +180,33 @@ public class AdminController {
                                     @RequestParam Long templateId,
                                     @RequestParam("title") String title) {
     accountService.authorize(model, token);
+    DemoDataGenerator dataGenerator = new DemoDataGenerator();
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
     Entry entry = new Entry(title);
-    portfolio.getEntries().add(entry);
+    entry.setFields(dataGenerator.generateTemplateEntryFieldSet(entry));
+    Set<Entry> newEntries = portfolio.getEntries();
+    newEntries.add(entry);
+    portfolio.setEntries(newEntries);
+    portfolioService.update(portfolio);
 
-    portfolio = portfolioService.save(portfolio);
+    //portfolio.getEntries().get(portfolio.getEntries().size() - 1);
     entry = portfolio.getLastEntry();
 
     redirect.addAttribute("templateId", templateId);
     redirect.addAttribute("entryId", entry.getId());
 
     return "redirect:/admin/view";
+  }
+
+  @SuppressWarnings("PMD")
+  private Entry getLast(Set<Entry> entries) {
+    Iterator itr = entries.iterator();
+    Entry last = (Entry)itr.next();
+    while(itr.hasNext()) {
+      last = (Entry)itr.next();
+    }
+    return last;
   }
 
 
@@ -223,7 +240,8 @@ public class AdminController {
     }
     field.setContent(AnswerType.TEXT + ";" + hint);
 
-    portfolioService.save(portfolio);
+
+    portfolioService.update(portfolio);
 
     redirect.addAttribute("templateId", templateId);
     redirect.addAttribute("entryId", entryId);

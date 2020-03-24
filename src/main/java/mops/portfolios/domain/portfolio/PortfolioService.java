@@ -91,7 +91,7 @@ public class PortfolioService {
     return templates;
   }
 
-  public Portfolio save(Portfolio portfolio) {
-    return repository.save(portfolio);
+  public void update(Portfolio portfolio) {
+    repository.save(portfolio);
   }
 }

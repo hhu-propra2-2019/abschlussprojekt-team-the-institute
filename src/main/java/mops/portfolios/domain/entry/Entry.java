@@ -1,9 +1,6 @@
 package mops.portfolios.domain.entry;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,8 +34,9 @@ public class Entry {
       fetch = FetchType.EAGER, //FIXME
       orphanRemoval = true
   )
+  
   @OrderBy("id ASC")
-  private List<EntryField> fields = new ArrayList<>();
+  private Set<EntryField> fields = new HashSet<>();
 
   public Entry(String title) {
     this.title = title;

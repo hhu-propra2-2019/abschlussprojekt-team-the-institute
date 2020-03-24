@@ -34,9 +34,9 @@ public class DemoDataGenerator {
    * @param entry - the entry to fill
    * @return - the EntryFields
    */
-  private List<EntryField> generateEntryFieldList(Entry entry) {
+  private Set<EntryField> generateEntryFieldSet(Entry entry) {
     return IntStream.range(0, 3).mapToObj(
-        value -> generateEntryField(entry)).collect(Collectors.toList());
+        value -> generateEntryField(entry)).collect(Collectors.toSet());
   }
 
   /**
@@ -46,7 +46,7 @@ public class DemoDataGenerator {
   private Entry generateGroupEntry() {
     Entry entry = new Entry();
     entry.setTitle(faker.shakespeare().romeoAndJulietQuote());
-    entry.getFields().addAll(generateEntryFieldList(entry));
+    entry.setFields(generateEntryFieldSet(entry));
     return entry;
   }
 
@@ -54,9 +54,9 @@ public class DemoDataGenerator {
    * Generates a list of Entries for a group portfolios.
    * @return - the list
    */
-  private List<Entry> generateGroupEntryList() {
+  private Set<Entry> generateGroupEntrySet() {
     return IntStream.range(0, 3).mapToObj(
-        value -> generateGroupEntry()).collect(Collectors.toList());
+        value -> generateGroupEntry()).collect(Collectors.toSet());
   }
 
   /**
@@ -65,7 +65,7 @@ public class DemoDataGenerator {
    */
   public Portfolio generateGroupPortfolio() {
     Portfolio portfolio = new Portfolio(faker.shakespeare().romeoAndJulietQuote(),generateGroup());
-    portfolio.getEntries().addAll(generateGroupEntryList());
+    portfolio.setEntries(generateGroupEntrySet());
     return portfolio;
   }
 
@@ -76,7 +76,7 @@ public class DemoDataGenerator {
   private Entry generateUserEntry() {
     Entry entry = new Entry();
     entry.setTitle(faker.shakespeare().romeoAndJulietQuote());
-    entry.setFields(generateEntryFieldList(entry));
+    entry.setFields(generateEntryFieldSet(entry));
     return entry;
   }
 
@@ -84,9 +84,9 @@ public class DemoDataGenerator {
    * Generates a list of entries.
    * @return - returns the entries
    */
-  private List<Entry> generateUserEntryList() {
+  private Set<Entry> generateUserEntrySet() {
     return IntStream.range(0, 3).mapToObj(
-        value -> generateUserEntry()).collect(Collectors.toList());
+        value -> generateUserEntry()).collect(Collectors.toSet());
   }
 
   /**
@@ -95,7 +95,7 @@ public class DemoDataGenerator {
    */
   public Portfolio generateUserPortfolio() {
     Portfolio portfolio = new Portfolio(faker.shakespeare().romeoAndJulietQuote(), generateUser());
-    portfolio.getEntries().addAll(generateUserEntryList());
+    portfolio.setEntries(generateUserEntrySet());
     return portfolio;
   }
 
@@ -150,7 +150,8 @@ public class DemoDataGenerator {
    * Generates a single template EntryField.
    * @return - the EntryField
    */
-  private EntryField generateTemplateEntryField() {
+
+  EntryField generateTemplateEntryField(Entry entry) {
     EntryField entryField = new EntryField();
     entryField.setAttachment(faker.shakespeare().hamletQuote());
     entryField.setContent(getRandomElement(templateEntryFieldContents));
@@ -162,12 +163,9 @@ public class DemoDataGenerator {
    * Fills the template entry with "content".
    * @return - the EntryFields
    */
-  private List<EntryField> generateTemplateEntryFieldList() {
-    List<EntryField> fields = new ArrayList<>();
-    for(int i = 0; i < new Random().nextInt(templateEntryFieldContents.size()); i++) {
-      fields.add(generateTemplateEntryField());
-    }
-    return fields;
+  public Set<EntryField> generateTemplateEntryFieldSet(Entry entry) {
+    return IntStream.range(0, 3).mapToObj(
+        value -> generateTemplateEntryField(entry)).collect(Collectors.toSet());
   }
 
   /**
@@ -177,7 +175,8 @@ public class DemoDataGenerator {
   private Entry generateTemplateEntry(int i) {
     Entry entry = new Entry();
     entry.setTitle(templateEntryTitles.get(i));
-    entry.setFields(generateTemplateEntryFieldList());
+    entry.setFields(generateTemplateEntryFieldSet(entry));
+
     return entry;
   }
 
@@ -185,12 +184,10 @@ public class DemoDataGenerator {
    * Generates a list of Entries for a template.
    * @return - the list
    */
-  private List<Entry> generateTemplateEntryList() {
-    List<Entry> entries = new ArrayList<>();
-    for(int i = 0; i < new Random().nextInt(templateEntryTitles.size()); i++) {
-      entries.add(generateTemplateEntry(i));
-    }
-    return entries;
+  private Set<Entry> generateTemplateEntrySet() {
+    return IntStream.range(0, 3).mapToObj(
+        this::generateTemplateEntry).collect(Collectors.toSet());
+
   }
 
   /**
@@ -199,9 +196,8 @@ public class DemoDataGenerator {
    */
   public Portfolio generateTemplate() {
     Portfolio template = new Portfolio(faker.shakespeare().asYouLikeItQuote(), generateUser());
-    template.setEntries(new LinkedHashSet<>(generateTemplateEntryList()));
+    template.setEntries(generateTemplateEntrySet());
     template.setTemplate(true);
     return template;
   }
-
 }
