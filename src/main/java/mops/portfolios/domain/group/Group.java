@@ -5,11 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mops.portfolios.domain.user.User;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="group_table")
 public class Group {
 
   @Id
