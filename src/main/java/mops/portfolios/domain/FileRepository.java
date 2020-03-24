@@ -1,5 +1,6 @@
 package mops.portfolios.domain;
 
+import com.jlefebure.spring.boot.minio.MinioService;
 import io.minio.MinioClient;
 import io.minio.errors.MinioException;
 
@@ -12,6 +13,8 @@ import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryFieldRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -20,51 +23,38 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.util.UUID;
 
+@Component
 public class FileRepository {
 
-    @Value("${minio.url}")
-    private transient String url;
-    @Value("${minio.accessKey}")
-    private transient String accessKey;
-    @Value("${minio.secretKey}")
-    private transient String secretKey;
-
-    private static final String bucketName = "portfolios.attachments";
+    @Value("${spring.minio.bucket}")
+    private transient String bucketName;
     private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
 
     @Autowired
-    private MinioClient minioClient;
+    private transient MinioClient minioClient;
 
     @Autowired
-    private EntryFieldRepository entryFieldRepository;
+    private transient EntryFieldRepository entryFieldRepository;
 
-    public FileRepository() throws NoSuchAlgorithmException, IOException, InvalidKeyException, XmlPullParserException {
-        try {
-            minioClient = new MinioClient(url, accessKey, secretKey);
-            boolean isExist = minioClient.bucketExists(bucketName);
-            if (!isExist) {
-                minioClient.makeBucket(bucketName);
-            }
-        } catch (MinioException e) {
-            logger.warn(e.toString());
-        }
-    }
+    public FileRepository(){}
 
     public void saveFile(MultipartFile file, EntryField entryField) {
+        String objName = UUID.randomUUID().toString();
         try {
-            minioClient.putObject(bucketName, UUID.randomUUID().toString(), file.getName());
+            minioClient.putObject(bucketName, objName, file.getName());
         } catch (MinioException | NoSuchAlgorithmException | IOException | InvalidKeyException | XmlPullParserException e) {
             logger.info(e.toString());
         }
+        entryField.setAttachment(objName);
+        entryFieldRepository.save(entryField);
     }
 
     public String getFileUrl(String objName) {
-        String url = "";
         try {
-            url = minioClient.getObjectUrl(bucketName, objName);
+            return minioClient.getObjectUrl(bucketName, objName);
         } catch (MinioException | NoSuchAlgorithmException | IOException | InvalidKeyException | XmlPullParserException e) {
             logger.info(e.toString());
         }
-        return url;
+        return null;
     }
 }

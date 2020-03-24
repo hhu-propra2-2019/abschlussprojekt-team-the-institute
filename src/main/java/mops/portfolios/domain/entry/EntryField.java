@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import mops.portfolios.domain.FileRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Entity
 @Data
@@ -19,5 +21,15 @@ public class EntryField {
   private @Setter String content;
 
   private @Setter String attachment;
+
+  @Autowired
+  private transient FileRepository fileRepository;
+
+  public String getAttachment() {
+    if (null == this.attachment) {
+      return null;
+    }
+    return fileRepository.getFileUrl(this.attachment);
+  }
 
 }

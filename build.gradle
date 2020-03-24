@@ -39,7 +39,6 @@ dependencies {
 	compile	"org.asciidoctor:asciidoctorj:2.2.0"
 	compile group: 'org.json', name: 'json', version: '20190722'
 	compile group: 'com.github.javafaker', name: 'javafaker', version: '1.0.1'
-	compile 'io.minio:minio:6.0.13'
 
 	compileOnly 'org.projectlombok:lombok'
 
@@ -50,6 +49,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'com.jlefebure:spring-boot-starter-minio:1.1'
 	implementation 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
 	
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
