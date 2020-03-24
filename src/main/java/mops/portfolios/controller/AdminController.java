@@ -36,8 +36,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RolesAllowed({"ROLE_orga"})
 @AllArgsConstructor
 public class AdminController {
-  private transient final FileService fileService = new FileService();
-  private transient final EntryService entryService = new EntryService(this.portfolioService);
+  private final transient FileService fileService = new FileService();
+  private final transient EntryService entryService = new EntryService(this.portfolioService);
 
   private transient AccountService accountService;
 
@@ -68,7 +68,7 @@ public class AdminController {
   public String listTemplates(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    List<Portfolio> templateList = portfolioService.getAllTemplates();
+    List<Portfolio> templateList = portfolioService.findAllTemplates();
 
     model.addAttribute("templateList", templateList);
 
@@ -97,7 +97,7 @@ public class AdminController {
     }
 
     if (entryId != null) {
-      Entry entry = portfolioService.findEntryById(template, entryId);
+      Entry entry = portfolioService.findEntryInPortfolioById(template, entryId);
       model.addAttribute("templateEntry", entry);
     }
 
@@ -114,7 +114,7 @@ public class AdminController {
   public String uploadAscii(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    model.addAttribute("templateList", portfolioService.getAllTemplates());
+    model.addAttribute("templateList", portfolioService.findAllTemplates());
 
     return "admin/asciidoc/upload";
   }
@@ -160,11 +160,11 @@ public class AdminController {
 
     User user = new User();
     user.setName(token.getName()); // FIXME: Nutzen wir auch an jeder Stelle diese Methode? \
-                                   // Geht es ohne user id auch klar?
+    // Geht es ohne user id auch klar?
 
     Portfolio portfolio = new Portfolio(title, user);
     portfolio.setTemplate(true);
-    portfolioService.update(portfolio);
+    portfolio = portfolioService.update(portfolio);
 
     redirect.addAttribute("templateId", portfolio.getId());
 
@@ -186,18 +186,13 @@ public class AdminController {
                                     @RequestParam Long templateId,
                                     @RequestParam("title") String title) {
     accountService.authorize(model, token);
-    DemoDataGenerator dataGenerator = new DemoDataGenerator();
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
     Entry entry = new Entry(title);
-    entry.setFields(dataGenerator.generateTemplateEntryFieldSet(entry));
-    Set<Entry> newEntries = portfolio.getEntries();
-    newEntries.add(entry);
-    portfolio.setEntries(newEntries);
-    portfolioService.update(portfolio);
+    portfolio.getEntries().add(entry);
 
-    //portfolio.getEntries().get(portfolio.getEntries().size() - 1);
-    entry = portfolio.getLastEntry();
+    portfolio = portfolioService.update(portfolio);
+    entry = portfolioService.findLastEntryInPortfolio(portfolio);
 
     redirect.addAttribute("templateId", templateId);
     redirect.addAttribute("entryId", entry.getId());

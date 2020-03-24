@@ -40,7 +40,7 @@ public class EntryService {
    * @param portfolio the portfolio the entry belongs to
    */
   public void createAndAdField(Long entryId, String question, String hint, Portfolio portfolio) {
-    Entry entry = portfolioService.findEntryById(portfolio, entryId);
+    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
     EntryField field = new EntryField();
     entry.getFields().add(field);
 
