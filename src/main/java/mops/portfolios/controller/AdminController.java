@@ -210,19 +210,18 @@ public class AdminController {
                                     @RequestParam Long templateId,
                                     @RequestParam Long entryId,
                                     @RequestParam("question") String question,
+                                    @RequestParam("fieldType") String fieldType,
                                     @RequestParam(value = "hint", required = false) String hint) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
     Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
-    EntryField field = new EntryField();
-    entry.getFields().add(field);
 
+    EntryField field = new EntryField();
     field.setTitle(question);
-    if(hint == null) {
-      hint = "Some hint";
-    }
-    field.setContent(AnswerType.TEXT + ";" + hint);
+    field.setContent(AnswerType.valueOf(fieldType) + ";" + hint);
+
+    entry.getFields().add(field);
 
     portfolioService.update(portfolio);
 
