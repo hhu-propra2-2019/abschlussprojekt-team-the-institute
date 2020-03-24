@@ -3,10 +3,8 @@ package mops.portfolios.domain.entry;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 import mops.portfolios.domain.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,12 +22,5 @@ public class EntryField {
 
   @Autowired
   private transient FileRepository fileRepository;
-
-  public String getAttachment() {
-    if (null == this.attachment) {
-      return null;
-    }
-    return fileRepository.getFileUrl(this.attachment);
-  }
 
 }

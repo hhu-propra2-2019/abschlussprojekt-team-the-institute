@@ -44,6 +44,7 @@ public class PortfoliosApplication {
   final @NonNull EntityManager entityManager;
   final @NonNull PortfolioRepository repository;
   final @NonNull FileRepository fileRepository;
+  final @NonNull EntryFieldRepository entryFieldRepository;
 
   /** Starts the application.
    * @param args - command-line arguments
@@ -69,7 +70,7 @@ public class PortfoliosApplication {
             byte[] content = null;
             try {
                 content = Files.readAllBytes(path);
-            } catch (final IOException ignored) {
+            } catch (final IOException e) {
             }
             MultipartFile result = new MockMultipartFile(name,
                     originalFileName, contentType, content);
@@ -77,7 +78,10 @@ public class PortfoliosApplication {
 
             EntryField entryField = new EntryField();
             fileRepository.saveFile(result, entryField);
-            System.out.println(entryField.getAttachment());
+            if (entryField.getAttachment() != null)
+              System.out.println(
+                      fileRepository.getFileUrl(entryField.getAttachment())
+              );
 
         };
     }
