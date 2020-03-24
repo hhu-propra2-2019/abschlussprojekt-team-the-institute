@@ -12,6 +12,7 @@ import mops.portfolios.AccountService;
 import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
+import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
@@ -35,6 +36,7 @@ public class UserController {
   private transient AccountService accountService;
   private transient UserService userService;
   private transient PortfolioService portfolioService;
+  private transient EntryService entryService;
 
   /**
    * Redirect to main page.
@@ -167,6 +169,23 @@ public class UserController {
     redirect.addAttribute("templateId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());
 
+    return "redirect:/user/view";
+  }
+
+  public String updateFields(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirect,
+                             @RequestParam Long portfolioId, @RequestParam Long entryId, @RequestParam Long entryFieldId,
+                             @RequestParam("content") String newContent) {
+    accountService.authorize(model, token);
+
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+    Entry entry = portfolioService.findEntryById(portfolio, entryId);
+    EntryField field = entryService.findFieldById(entry, entryFieldId);
+
+    field.setContent(newContent);
+    entryService.update(entry);
+
+    redirect.addAttribute("templateId", portfolio.getId());
+    redirect.addAttribute("entryId", entry.getId());
     return "redirect:/user/view";
   }
 }
