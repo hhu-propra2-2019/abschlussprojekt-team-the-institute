@@ -1,6 +1,5 @@
 package mops.portfolios.domain.entry;
 
-import lombok.NonNull;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
@@ -17,7 +16,7 @@ import static org.mockito.Mockito.when;
 
 public class EntryServiceTest {
 
-  private transient @NonNull EntryService entryService;
+  private transient EntryService entryService;
 
   private transient PortfolioService portfolioService = mock(PortfolioService.class);
 
@@ -31,6 +30,7 @@ public class EntryServiceTest {
     entryService = new EntryService(entryRepository, entryFieldRepository, portfolioService);
   }
 
+  @SuppressWarnings("PMD")
   @Test
   void createAndAddEntryTest() {
 
