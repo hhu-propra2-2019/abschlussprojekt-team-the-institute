@@ -2,6 +2,8 @@ package mops.portfolios;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import mops.portfolios.domain.group.Group;
@@ -241,8 +243,6 @@ public class DatabaseUpdaterTest {
 
     groupRepository.save(group);
 
-
-
     String response = "{\n" +
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
@@ -278,13 +278,12 @@ public class DatabaseUpdaterTest {
     users.add(user1);
 
     Group updatedGroup = new Group(2L, "Lorem", users);
-    when(groupRepository.findById(2L).get()).thenReturn(updatedGroup);
+    when(groupRepository.findById(2L)).thenReturn(Optional.of(updatedGroup));
 
-    System.out.println(updatedGroup);
     List<User> updatedGroupUsers = updatedGroup.getUsers();
 
     for (User userUpdatedGroup: updatedGroupUsers) {
-      Assert.assertEquals("studentin", userUpdatedGroup.getName());
+      Assert.assertEquals("student", userUpdatedGroup.getName());
 
     }
 
