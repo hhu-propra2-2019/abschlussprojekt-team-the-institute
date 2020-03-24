@@ -15,14 +15,14 @@ import org.springframework.stereotype.Service;
 @NoArgsConstructor
 public class EntryService {
 
-  @Autowired @NonNull
+  @NonNull
   transient EntryRepository entryRepository;
 
-  @Autowired @NonNull
+  @NonNull
   transient EntryFieldRepository entryFieldRepository;
 
-  @Autowired @NonNull
-  private static transient PortfolioService portfolioService;
+  @NonNull
+  transient PortfolioService portfolioService;
 
   @SuppressWarnings("PMD")
   public EntryField findFieldById(Entry entry, Long entryFieldId) {

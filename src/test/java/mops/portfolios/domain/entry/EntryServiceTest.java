@@ -27,8 +27,7 @@ public class EntryServiceTest {
 
   @BeforeEach
   void init() {
-    // FIXME: So ein Constructor existiert nicht
-    // entryService = new EntryService(entryRepository, entryFieldRepository, portfolioService);
+    entryService = new EntryService(entryRepository, entryFieldRepository, portfolioService);
   }
 
   @SuppressWarnings("PMD")
