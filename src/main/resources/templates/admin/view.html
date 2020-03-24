@@ -110,15 +110,15 @@
 
     <div th:if="${templateEntry != null}">
         <div th:replace="fragments/modals :: createFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
-         fieldType = ${'TEXT'}, fieldFragment=~{fragments/entryfields :: textAdd})"></div>
+         modalId = ${'MODAL_CREATE_TEXT_FIELD'}, fieldFragment=~{fragments/entryfields :: addTextField})"></div>
         <div th:replace="fragments/modals :: createFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
-         fieldType = ${'SINGLECHOICE'}, fieldFragment=~{fragments/entryfields :: singlechoiceAdd})"></div>
+         modalId = ${'MODAL_CREATE_SINGLECHOICE_FIELD'}, fieldFragment=~{fragments/entryfields :: addSingleChoiceField})"></div>
         <div th:replace="fragments/modals :: createFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
-         fieldType = ${'MULTICHOICE'}, fieldFragment=~{fragments/entryfields :: multichoiceAdd})"></div>
+         modalId = ${'MODAL_CREATE_MULTICHOICE_FIELD'}, fieldFragment=~{fragments/entryfields :: addMultiChoiceField})"></div>
         <div th:replace="fragments/modals :: createFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
-         fieldType = ${'SLIDER'}, fieldFragment=~{fragments/entryfields :: textAdd})"></div>
+         modalId = ${'MODAL_CREATE_SLIDER_FIELD'}, fieldFragment=~{fragments/entryfields :: addSliderField})"></div>
         <div th:replace="fragments/modals :: createFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
-         fieldType = ${'ATTACHEMENT'}, fieldFragment=~{fragments/entryfields :: textAdd})"></div>
+         modalId = ${'MODAL_CREATE_ATTACHEMENT_FIELD'}, fieldFragment=~{fragments/entryfields :: addAttachementField})"></div>
     </div>
 
 </div>

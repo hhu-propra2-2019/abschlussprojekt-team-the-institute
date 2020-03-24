@@ -23,8 +23,8 @@
      th:insert="~{::abstractModalForm (title='Eintrag hinzufügen',
      content=~{fragments/forms::createEntryForm})}"></div>
 
-<div th:id="'MODAL_CREATE_'+${fieldType}+'_FIELD'" class="modal fade"
-     th:fragment="createFieldModal(templateId, entryId, fieldType, fieldFragment)"
+<div th:id="${modalId}" class="modal fade"
+     th:fragment="createFieldModal(templateId, entryId, modalId, fieldFragment)"
      th:insert="~{::abstractModalForm (title='Feld hinzufügen',
      content=~{fragments/forms::createFieldForm})}"></div>
 
