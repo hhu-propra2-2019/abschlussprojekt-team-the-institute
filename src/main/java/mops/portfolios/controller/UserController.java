@@ -37,7 +37,6 @@ public class UserController {
   private transient AccountService accountService;
   private transient UserService userService;
   private transient PortfolioService portfolioService;
-  private transient TemplateService templateService;
 
   /**
    * Redirect to main page.
@@ -107,13 +106,13 @@ public class UserController {
   public String createPortfolio(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    List<Template> templateList = templateService.getAll();
+    List<Portfolio> templateList = portfolioService.getAllTemplates();
 
     model.addAttribute("templateList", templateList);
 
     return "user/create";
   }
-
+  
   /**
    * Submit mapping for GET requests.
    *

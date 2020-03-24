@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,8 @@ public class Entry {
       fetch = FetchType.EAGER, //FIXME
       orphanRemoval = true
   )
+  
+  @OrderBy("id ASC")
   private Set<EntryField> fields = new HashSet<>();
 
   public Entry(String title) {

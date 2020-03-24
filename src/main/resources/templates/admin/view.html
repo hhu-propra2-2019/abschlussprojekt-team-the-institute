@@ -26,13 +26,13 @@
                         <p><i class="far fa-plus-square fa-lg"></i> Feld hinzufügen</p>
                     </a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_TEXT_FIELD">
                             <p><i class="fas fa-align-left"></i> Text Feld</p>
                         </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_SINGLECHOICE_FIELD">
                             <p><i class="fas fa-list-ul"></i> Single Choice Feld</p>
                         </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_MULTICHOICE_FIELD">
                             <p><i class="fas fa-tasks"></i> Multiple Choice Feld</p>
                         </a>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD">
@@ -70,23 +70,28 @@
 
         <form th:if="${templateEntry != null}">
 
-            <div th:each="field : ${templateEntry.getFields()}" th:switch="${field.getType()}"
-                 th:with="AnswerType = ${T(mops.portfolios.domain.portfolio.templates.AnswerType)}">
+            <div th:each="field : ${templateEntry.getFields()}" th:switch="${fieldType}"
+                 th:with="
+                  AnswerType = ${T(mops.portfolios.domain.portfolio.templates.AnswerType)},
+                  fieldQuestion = ${field.getTitle()},
+                  fieldData = ${field.getContent().split(';')},
+                  fieldType = ${AnswerType.valueOf(fieldData[0])},
+                  fieldHint = ${fieldData[1]}">
 
                 <div th:case="${AnswerType.TEXT}"
-                     th:insert="fragments/entryfields :: textField(field=${field})"></div>
+                     th:insert="fragments/entryfields :: textField(${fieldQuestion}, ${fieldHint})"></div>
 
                 <div th:case="${AnswerType.SINGLE_CHOICE}"
-                     th:insert="fragments/entryfields :: singlechoiceField(field=${field})"></div>
+                     th:insert="fragments/entryfields :: singlechoiceField(${fieldQuestion}, ${fieldHint})"></div>
 
                 <div th:case="${AnswerType.MULTIPLE_CHOICE}"
-                     th:insert="fragments/entryfields :: multichoiceField(field=${field})"></div>
+                     th:insert="fragments/entryfields :: multichoiceField(${fieldQuestion}, ${fieldHint})"></div>
 
                 <div th:case="${AnswerType.NUMBER_SLIDER}"
-                     th:insert="fragments/entryfields :: sliderField(field=${field})"></div>
+                     th:insert="fragments/entryfields :: sliderField(${fieldQuestion}, ${fieldHint})"></div>
 
                 <div th:case="${AnswerType.ATTACHEMENT}"
-                     th:insert="fragments/entryfields :: attachementField(field=${field})"></div>
+                     th:insert="fragments/entryfields :: attachementField(${fieldQuestion}, ${fieldHint})"></div>
 
                 <div th:case="*">Type not found</div>
 
@@ -106,9 +111,13 @@
     <div th:replace="fragments/modals :: addEntryModal(templateId=${template.getId()})"></div>
 
     <div th:if="${templateEntry != null}">
-        <div th:replace="fragments/modals :: addFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()})"></div>
+        <div th:replace="fragments/modals :: addFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
+         modalId = ${'MODAL_ADD_TEXT_FIELD'}, fieldFragment=~{fragments/entryfields :: textAdd})"></div>
+        <div th:replace="fragments/modals :: addFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
+         modalId = ${'MODAL_ADD_SINGLECHOICE_FIELD'}, fieldFragment=~{fragments/entryfields :: singlechoiceAdd})"></div>
+        <div th:replace="fragments/modals :: addFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
+         modalId = ${'MODAL_ADD_MULTICHOICE_FIELD'}, fieldFragment=~{fragments/entryfields :: multichoiceAdd})"></div>
     </div>
-
 
 </div>
 

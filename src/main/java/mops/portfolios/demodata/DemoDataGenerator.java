@@ -133,10 +133,13 @@ public class DemoDataGenerator {
       AnswerType.NUMBER_SLIDER.name() + ";1,10",
       AnswerType.ATTACHEMENT.name() + ";.ascii,.pdf,.java"
   );
-  private transient List<String> templateEntryFieldTitles = Arrays.asList(
+  private transient List<String> templateEntryTitles = Arrays.asList(
       "Woche 1",
       "Woche 2",
-      "Woche 3"
+      "Woche 3",
+      "Woche 4",
+      "Woche 5",
+      "Woche 6"
   );
 
   private String getRandomElement(List<String> list) {
@@ -145,7 +148,6 @@ public class DemoDataGenerator {
 
   /**
    * Generates a single template EntryField.
-   * @param entry - the Entry that will contain it
    * @return - the EntryField
    */
 
@@ -159,7 +161,6 @@ public class DemoDataGenerator {
 
   /**
    * Fills the template entry with "content".
-   * @param entry - the entry to fill
    * @return - the EntryFields
    */
   public Set<EntryField> generateTemplateEntryFieldSet(Entry entry) {
@@ -171,10 +172,11 @@ public class DemoDataGenerator {
    * Generates an entry for a template.
    * @return - the entry
    */
-  private Entry generateTemplateEntry(int value) {
+  private Entry generateTemplateEntry(int i) {
     Entry entry = new Entry();
-    entry.setTitle(templateEntryFieldTitles.get(value));
+    entry.setTitle(templateEntryTitles.get(i));
     entry.setFields(generateTemplateEntryFieldSet(entry));
+
     return entry;
   }
 
@@ -185,8 +187,13 @@ public class DemoDataGenerator {
   private Set<Entry> generateTemplateEntrySet() {
     return IntStream.range(0, 3).mapToObj(
         this::generateTemplateEntry).collect(Collectors.toSet());
+
   }
 
+  /**
+   * Generates a template.
+   * @return - the template
+   */
   public Portfolio generateTemplate() {
     Portfolio template = new Portfolio(faker.shakespeare().asYouLikeItQuote(), generateUser());
     template.setEntries(generateTemplateEntrySet());
