@@ -1,12 +1,12 @@
 package mops.portfolios.tools;
 
-import lombok.NonNull;
+
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 public class AsciiDocConverterTest {
 
-  private transient @NonNull AsciiDocConverter asciiDocConverter = new AsciiDocConverter();
+  private transient AsciiDocConverter asciiDocConverter = new AsciiDocConverter();
 
   @Test
   void convertTest() {
