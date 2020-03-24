@@ -1,25 +1,31 @@
 package mops.portfolios.controller;
 
-
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
+import mops.portfolios.demodata.DemoDataGenerator;
+import mops.portfolios.domain.entry.Entry;
+import mops.portfolios.domain.entry.EntryField;
+import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.portfolio.templates.Template;
-import mops.portfolios.domain.portfolio.templates.TemplateService;
+import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/user")
@@ -29,9 +35,8 @@ public class UserController {
 
   private transient AccountService accountService;
   private transient UserService userService;
-
   private transient PortfolioService portfolioService;
-  private transient TemplateService templateService;
+  private transient EntryService entryService;
 
   /**
    * Redirect to main page.
@@ -101,7 +106,7 @@ public class UserController {
   public String createPortfolio(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    List<Template> templateList = templateService.getAll();
+    List<Portfolio> templateList = portfolioService.findAllTemplates();
 
     model.addAttribute("templateList", templateList);
 
@@ -109,22 +114,90 @@ public class UserController {
   }
 
   /**
-   * Submit mapping for GET requests.
+   * Create Template Entry mapping for POST requests.
    *
-   * @param model       The spring model to add the attributes to
-   * @param portfolioId The portfolio id
+   * @param model The spring model to add the attributes to
    * @return The page to load
    */
-  @GetMapping("/submit")
-  public String submitPortfolio(Model model, @RequestParam Long portfolioId,
-                                KeycloakAuthenticationToken token) {
+  @PostMapping("/entry")
+  public String createEntry(Model model, KeycloakAuthenticationToken token,
+                                    RedirectAttributes redirectAttributes,
+                                    @RequestParam Long portfolioId, @RequestParam("title") String title) {
+    accountService.authorize(model, token);
+    DemoDataGenerator dataGenerator = new DemoDataGenerator();
+
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+    Entry entry = new Entry(title);
+    entry.setFields(dataGenerator.generateTemplateEntryFieldSet());
+    Set<Entry> newEntries = portfolio.getEntries();
+    newEntries.add(entry);
+    portfolio.setEntries(newEntries);
+    portfolioService.update(portfolio);
+
+    redirectAttributes.addAttribute("portfolioId", portfolio.getId());
+
+    System.out.println("Updated");
+    return "redirect:/user/view";
+  }
+
+
+  /**
+   * Create Template Entry mapping for POST requests.
+   *
+   * @param model The spring model to add the attributes to
+   * @return The page to load
+   */
+  @PostMapping("/createField")
+  public String createField(Model model,
+                                    KeycloakAuthenticationToken token, RedirectAttributes redirect,
+                                    @RequestParam Long portfolioId, @RequestParam Long entryId,
+                                    @RequestParam("question") String question) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
-    Template template = templateService.convertPortfolioToTemplate(portfolio);
+    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
 
-    model.addAttribute("template", template);
+    Set<EntryField> fields = entry.getFields();
+    EntryField field = new EntryField();
+    field.setTitle(question);
+    field.setContent(AnswerType.TEXT + ";Some hint");
+    fields.add(field);
 
-    return "user/submit";
+    entry.setFields(fields);
+    portfolioService.update(portfolio);
+
+    redirect.addAttribute("templateId", portfolio.getId());
+    redirect.addAttribute("entryId", entry.getId());
+
+    return "redirect:/user/view";
+  }
+
+  /**
+   * Post Mapping to update EntryField Content
+   * @param model - Spring MVC model
+   * @param token - KeycloakAuthenticationToken
+   * @param redirect - injects RedirectAttributes
+   * @param portfolioId - Id of current portfolio
+   * @param entryId - Id of current entry
+   * @param entryFieldId - Id of updated EntryField
+   * @param newContent - new content of entryfield
+   * @return - redirects to /view
+   */
+  @PostMapping("/update")
+  public String updateFields(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirect,
+                             @RequestParam Long portfolioId, @RequestParam Long entryId, @RequestParam Long entryFieldId,
+                             @RequestParam("content") String newContent) {
+    accountService.authorize(model, token);
+
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
+    EntryField field = entryService.findFieldById(entry, entryFieldId);
+
+    field.setContent(newContent);
+    entryService.update(entry);
+
+    redirect.addAttribute("portfolioId", portfolio.getId());
+    redirect.addAttribute("entryId", entry.getId());
+    return "redirect:/user/view";
   }
 }

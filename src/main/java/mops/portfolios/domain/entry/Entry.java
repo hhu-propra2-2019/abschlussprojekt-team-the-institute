@@ -1,9 +1,6 @@
 package mops.portfolios.domain.entry;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +34,8 @@ public class Entry {
       fetch = FetchType.EAGER, //FIXME
       orphanRemoval = true
   )
-  private List<EntryField> fields = new ArrayList<>();
+  @OrderBy("id ASC")
+  private Set<EntryField> fields = new HashSet<>();
 
   public Entry(String title) {
     this.title = title;
