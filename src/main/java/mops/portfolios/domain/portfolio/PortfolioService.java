@@ -92,9 +92,6 @@ public class PortfolioService {
   }
 
   public void update(Portfolio portfolio) {
-    while (repository.existsById(portfolio.getId())){
-      repository.deleteById(portfolio.getId());
-    }
     repository.save(portfolio);
   }
 }

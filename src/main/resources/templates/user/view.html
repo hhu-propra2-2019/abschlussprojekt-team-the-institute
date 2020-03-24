@@ -67,7 +67,7 @@
         <div class="card-body text-dark">
             <h5 class="card-title">Eintrag erstellen</h5>
             <p class="card-text">Hier kannst du einen neuen Eintrag erstellen:</p>
-            <form th:action="@{user/entry(portfolioId=${portfolio.getId()})}" method="post">
+            <form th:action="@{/user/entry(portfolioId=${portfolio.getId()})}" method="post">
                 <input type="text" name="title" value="titel">
                 <br>
                 <br>

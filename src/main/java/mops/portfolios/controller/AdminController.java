@@ -2,7 +2,9 @@ package mops.portfolios.controller;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
@@ -87,7 +89,7 @@ public class AdminController {
     model.addAttribute("template", template);
 
     if (entryId == null && !portfolio.getEntries().isEmpty()) {
-      entryId = portfolio.getEntries().get(0).getId();
+      entryId = portfolio.getEntries().iterator().next().getId();
     }
 
     if (entryId != null) {
@@ -183,12 +185,23 @@ public class AdminController {
     portfolio.getEntries().add(entry);
     portfolioService.update(portfolio);
 
-    entry = portfolio.getEntries().get(portfolio.getEntries().size() - 1);
+    entry = getLast(portfolio.getEntries());
+
+    //portfolio.getEntries().get(portfolio.getEntries().size() - 1);
 
     redirect.addAttribute("templateId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());
 
     return "redirect:/admin/view";
+  }
+
+  private Entry getLast(Set<Entry> entries) {
+    Iterator itr = entries.iterator();
+    Entry last = (Entry)itr.next();
+    while(itr.hasNext()) {
+      last = (Entry)itr.next();
+    }
+    return last;
   }
 
 

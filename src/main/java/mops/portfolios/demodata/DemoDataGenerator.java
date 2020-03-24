@@ -54,9 +54,9 @@ public class DemoDataGenerator {
    * Generates a list of Entries for a group portfolios.
    * @return - the list
    */
-  private List<Entry> generateGroupEntryList() {
+  private Set<Entry> generateGroupEntrySet() {
     return IntStream.range(0, 3).mapToObj(
-        value -> generateGroupEntry()).collect(Collectors.toList());
+        value -> generateGroupEntry()).collect(Collectors.toSet());
   }
 
   /**
@@ -65,7 +65,7 @@ public class DemoDataGenerator {
    */
   public Portfolio generateGroupPortfolio() {
     Portfolio portfolio = new Portfolio(faker.shakespeare().romeoAndJulietQuote(),generateGroup());
-    portfolio.setEntries(generateGroupEntryList());
+    portfolio.setEntries(generateGroupEntrySet());
     return portfolio;
   }
 
@@ -84,9 +84,9 @@ public class DemoDataGenerator {
    * Generates a list of entries.
    * @return - returns the entries
    */
-  private List<Entry> generateUserEntryList() {
+  private Set<Entry> generateUserEntrySet() {
     return IntStream.range(0, 3).mapToObj(
-        value -> generateUserEntry()).collect(Collectors.toList());
+        value -> generateUserEntry()).collect(Collectors.toSet());
   }
 
   /**
@@ -95,7 +95,7 @@ public class DemoDataGenerator {
    */
   public Portfolio generateUserPortfolio() {
     Portfolio portfolio = new Portfolio(faker.shakespeare().romeoAndJulietQuote(), generateUser());
-    portfolio.setEntries(generateUserEntryList());
+    portfolio.setEntries(generateUserEntrySet());
     return portfolio;
   }
 
@@ -181,14 +181,14 @@ public class DemoDataGenerator {
    * Generates a list of Entries for a template.
    * @return - the list
    */
-  private List<Entry> generateTemplateEntryList() {
+  private Set<Entry> generateTemplateEntrySet() {
     return IntStream.range(0, 3).mapToObj(
-        this::generateTemplateEntry).collect(Collectors.toList());
+        this::generateTemplateEntry).collect(Collectors.toSet());
   }
 
   public Portfolio generateTemplate() {
     Portfolio template = new Portfolio(faker.shakespeare().asYouLikeItQuote(), generateUser());
-    template.setEntries(generateTemplateEntryList());
+    template.setEntries(generateTemplateEntrySet());
     template.setTemplate(true);
     return template;
   }
