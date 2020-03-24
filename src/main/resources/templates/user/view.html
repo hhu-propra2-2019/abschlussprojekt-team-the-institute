@@ -49,6 +49,11 @@
                 <div class="card-body text-dark" th:each="field : ${entry.getFields()}">
                     <h5 class="card-title" th:text="${field.getTitle()}">Field title</h5>
                     <p class="card-text" th:text="${field.getContent()}">Field content</p>
+                    <form th:action="@{/user/update(portfolioId=${portfolio.getId()},entryId=${entry.getId()},entryFieldId=${field.getId()})}" method="post">
+                        <input type="text" name="content" value="content">
+                        <br>
+                        <input type="submit" name="action">
+                    </form>
                     <a class="btn btn-primary" th:text="${field.getAttachment()}">Attachement</a>
                 </div>
                 <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()}">Date created</div>
