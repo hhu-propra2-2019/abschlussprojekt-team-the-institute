@@ -10,13 +10,28 @@ import org.springframework.stereotype.Service;
 public class EntryService {
 
   @Autowired
-  EntryRepository entryRepository;
+  transient EntryRepository entryRepository;
 
   @Autowired
-  EntryFieldRepository entryFieldRepository;
+  transient EntryFieldRepository entryFieldRepository;
 
   @Autowired
   private static transient PortfolioService portfolioService;
+
+  @SuppressWarnings("PMD")
+  public EntryField findFieldById(Entry entry, Long entryFieldId) {
+    for (EntryField field : entry.getFields()) {
+      if (field.getId() == entryFieldId) {
+        return field;
+      }
+    }
+    return null;
+  }
+
+  public void update(Entry entry) {
+    entryRepository.save(entry);
+  }
+  
 
   /**
    * Creates and adds an EntryField to an Entry.
