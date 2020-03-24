@@ -35,33 +35,23 @@ public class EntryServiceTest {
   void createAndAddEntryTest() {
 
     User user = new User();
-    user.setName("stduentin");
-
+    user.setName("studentin");
     Portfolio portfolio = new Portfolio("Lorem", user);
-
     Entry entry = new Entry();
-
-    entryService.createAndAdField(1L, "Question?","", portfolio);
-
     when(portfolioService.findEntryInPortfolioById(portfolio,1L)).thenReturn(entry);
-
-    System.out.println(portfolioService.findEntryInPortfolioById(portfolio,1L));
-
     EntryField field = new EntryField();
     field.setTitle("Question?");
     field.setContent(AnswerType.TEXT + ";" + "");
-    System.out.println(field);
     Set<EntryField> entryFields = new HashSet<>();
     entryFields.add(field);
 
-    when(entry.getFields()).thenReturn(entryFields);
+    entryService.createAndAdField(1L, "Question?","", portfolio);
+
 
     Set<EntryField> newEntryFields = entry.getFields();
 
-    System.out.println(entryFields.toString());
-
     for (EntryField newField: newEntryFields) {
-      Assert.assertEquals("EntryField(id=null, title=Question?, content=TEXT;, attachment=null)", newField);
+      Assert.assertEquals("EntryField(id=null, title=Question?, content=TEXT;, attachment=null)", newField.toString());
     }
 
 

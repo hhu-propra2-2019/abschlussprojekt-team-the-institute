@@ -34,7 +34,12 @@ public class EntryService {
    */
   public void createAndAdField(Long entryId, String question, String hint, Portfolio portfolio) {
     Objects.requireNonNull(entryId);
-    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
+    Entry entry;
+    if (portfolioService.findEntryInPortfolioById(portfolio,entryId) != null) {
+      entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
+    } else {
+      entry = new Entry();
+    }
     EntryField field = new EntryField();
     entry.getFields().add(field);
 
