@@ -4,17 +4,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mops.portfolios.domain.user.User;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
+@Table(name = "group_table")
 public class Group {
 
   @Id

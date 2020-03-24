@@ -13,7 +13,9 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 public class User {
-  @Id String name;
+  @Id Long id;
+  @Column(nullable = false)
+  String name;
   @OneToMany
   List<Portfolio> portfolios;
   @ManyToMany
