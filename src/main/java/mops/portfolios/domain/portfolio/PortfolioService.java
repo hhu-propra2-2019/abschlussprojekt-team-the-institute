@@ -96,4 +96,8 @@ public class PortfolioService {
   public Portfolio update(Portfolio portfolio) {
     return repository.save(portfolio);
   }
+
+  public void deletePortfolioById(Long id) {
+    repository.deleteById(id);
+  }
 }

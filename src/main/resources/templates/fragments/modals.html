@@ -28,4 +28,8 @@
      th:insert="~{::abstractModalForm (title='Feld hinzufügen',
      content=~{fragments/forms::createFieldForm})}"></div>
 
+<div id="MODAL_DELETE_TEMPLATE" class="modal fade" th:fragment="deleteTemplateModal(templateId)"
+     th:insert="~{::abstractModalForm (title='Vorlage löschen',
+     content=~{fragments/forms::deleteTemplateForm})}"></div>
+
 </html>

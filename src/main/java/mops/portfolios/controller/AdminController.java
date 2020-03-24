@@ -2,13 +2,10 @@ package mops.portfolios.controller;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
-import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.portfolio.Portfolio;
@@ -28,7 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin")
-@RolesAllowed({"ROLE_orga"})
+@RolesAllowed( {"ROLE_orga"})
 @AllArgsConstructor
 public class AdminController {
 
@@ -73,7 +70,7 @@ public class AdminController {
    *
    * @param model      The spring model to add the attributes to
    * @param templateId The ID of the template
-   * @param entryId The ID of the entry
+   * @param entryId    The ID of the entry
    * @return The page to load
    */
   @GetMapping("/view")
@@ -143,7 +140,7 @@ public class AdminController {
   /**
    * Create Template mapping for POST requests.
    *
-   * @param model         The spring model to add the attributes to
+   * @param model The spring model to add the attributes to
    * @param title The title of the new template
    * @return The page to load
    */
@@ -229,5 +226,23 @@ public class AdminController {
     redirect.addAttribute("entryId", entryId);
 
     return "redirect:/admin/view";
+  }
+
+  /**
+   * Delete Template mapping for POST requests.
+   *
+   * @param model      The spring model to add the attributes to
+   * @param templateId The id of the template
+   * @return The page to load
+   */
+  @PostMapping("/deleteTemplate")
+  public String deleteTemplate(Model model,
+                               KeycloakAuthenticationToken token,
+                               @RequestParam Long templateId) {
+    accountService.authorize(model, token);
+
+    portfolioService.deletePortfolioById(templateId);
+
+    return "redirect:/admin/list";
   }
 }

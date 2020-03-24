@@ -52,4 +52,13 @@
     <button type="submit" class="btn btn-primary">Feld hinzufügen</button>
 </form>
 
+<form method="post" th:fragment="deleteTemplateForm"
+      th:action="@{deleteTemplate(templateId=${templateId})}">
+
+    <p>Möchtest du die Vorlage wirklich löschen?</p>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Löschen</button>
+</form>
+
 </html>
