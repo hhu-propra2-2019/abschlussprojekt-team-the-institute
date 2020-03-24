@@ -2,7 +2,6 @@ package mops.portfolios.demodata;
 
 import com.github.javafaker.Faker;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -168,8 +167,8 @@ public class DemoDataGenerator {
    * Fills the template entry with "content".
    * @return - the EntryFields
    */
-  public List<EntryField> generateTemplateEntryFieldList() {
-    List<EntryField> fields = new ArrayList<>();
+  public Set<EntryField> generateTemplateEntryFieldSet() {
+    Set<EntryField> fields = new LinkedHashSet<>();
     for (int i = 0; i < new Random().nextInt(templateEntryFieldContents.size()); i++) {
       fields.add(generateTemplateEntryField());
     }
@@ -183,17 +182,17 @@ public class DemoDataGenerator {
   private Entry generateTemplateEntry(int i) {
     Entry entry = new Entry();
     entry.setTitle(templateEntryTitles.get(i));
-    entry.setFields(new LinkedHashSet<>(generateTemplateEntryFieldList()));
+    entry.setFields(generateTemplateEntryFieldSet());
 
     return entry;
   }
 
   /**
-   * Generates a list of Entries for a template.
+   * Generates a set of Entries for a template.
    * @return - the list
    */
-  private List<Entry> generateTemplateEntryList() {
-    List<Entry> entries = new ArrayList<>();
+  private Set<Entry> generateTemplateEntrySet() {
+    Set<Entry> entries = new LinkedHashSet<>();
     for (int i = 0; i < new Random().nextInt(templateEntryTitles.size()); i++) {
       entries.add(generateTemplateEntry(i));
     }
@@ -207,7 +206,7 @@ public class DemoDataGenerator {
    */
   public Portfolio generateTemplate() {
     Portfolio template = new Portfolio(faker.shakespeare().asYouLikeItQuote(), generateUser());
-    template.setEntries(new LinkedHashSet<>(generateTemplateEntryList()));
+    template.setEntries(generateTemplateEntrySet());
     template.setTemplate(true);
     return template;
   }
