@@ -11,16 +11,60 @@
         <ul>
             <li>
                 <a href="list">
-                    <p><i class="fa fa-archive fa-lg"></i> Zurück</p>
+                    <p><i class="fa fa-chevron-circle-left fa-lg"></i> Zurück</p>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-toggle="modal" data-target="#MODAL_CREATE_ENTRY">
+                    <p><i class="far fa-calendar-plus fa-lg"></i> Eintrag hinzufügen</p>
+                </a>
+            </li>
+            <li th:if="${Entry != null}">
+                <div class="dropdown">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                        <p><i class="far fa-plus-square fa-lg"></i> Feld hinzufügen</p>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_TEXT_FIELD">
+                            <p><i class="fas fa-align-left"></i> Text Feld</p>
+                        </a>
+                        <a class="dropdown-item" href="#" data-toggle="modal"
+                           data-target="#MODAL_CREATE_SINGLECHOICE_FIELD">
+                            <p><i class="fas fa-list-ul"></i> Single Choice Feld</p>
+                        </a>
+                        <a class="dropdown-item" href="#" data-toggle="modal"
+                           data-target="#MODAL_CREATE_MULTICHOICE_FIELD">
+                            <p><i class="fas fa-tasks"></i> Multiple Choice Feld</p>
+                        </a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_SLIDER_FIELD">
+                            <p><i class="fas fa-sliders-h"></i> Range Slider Feld</p>
+                        </a>
+                        <a class="dropdown-item" href="#" data-toggle="modal"
+                           data-target="#MODAL_CREATE_ATTACHEMENT_FIELD">
+                            <p><i class="fas fa-paperclip"></i> Anhang Feld</p>
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <a href="#" data-toggle="modal" data-target="#MODAL_UPLOAD_TEMPLATE">
+                    <p><i class="fas fa-file-upload fa-lg"></i> Portfolio hochladen</p>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-toggle="modal" data-target="#MODAL_DELETE_TEMPLATE">
+                    <p><i class="far fa-calendar-minus fa-lg"></i> Portfolio löschen</p>
                 </a>
             </li>
         </ul>
     </nav>
 </head>
 
-<body th:fragment="bodycontent">
+<body th:fragment="bodycontent"
+      th:replace="fragments/defaults :: defaultBody(title='Vorlage ansehen', description='Hier kannst du eine Vorlage ansehen und editieren.', content=~{::content})">
 
-<div class="jumbotron pt-1 font-italic">
+<div th:fragment="content">
+    <div class="jumbotron pt-1 font-italic">
 
     <h1 class="display-5">Portfolio ansehen</h1>
     <p class="lead">Du siehst das Portfolio <u th:text="${portfolio.getTitle()}">Title</u></p>
@@ -31,8 +75,9 @@
 
     <ul class="nav nav-tabs">
         <li class="nav-item" th:each="entry : ${portfolio.getEntries()}">
-            <a class="nav-link" data-toggle="tab" th:href="'#tab' + ${entry.getId()}"
-               th:text="${entry.getTitle().subSequence(0, 4)} +'..'">Entry title</a>
+            <a class="nav-link" th:href="@{view(portfolioId=${portfolio.getId()},entryId=${entry.getId()})}"
+               th:text="${entry.getTitle()}" th:classappend="${entry.getId() == Entry.getId()} ? 'active'">Entry
+                title</a>
         </li>
     </ul>
 
@@ -41,33 +86,51 @@
 
     <div class="tab-content">
 
-        <div class="tab-pane fade" th:each="entry : ${portfolio.getEntries()}"
-             th:id="'tab'+${entry.getId()}">
+        <form th:if="${portfolio.getEntries() != null}">
 
-            <div class="card border-dark w-50 mb-2" th:each="field : ${entry.getFields()}">
-                <h5 class="card-header" th:text="${entry.getTitle()}">Entry title</h5>
-                <div class="card-body text-dark" th:each="field : ${entry.getFields()}">
-                    <h5 class="card-title" th:text="${field.getTitle()}">Field title</h5>
-                    <p class="card-text" th:text="${field.getContent()}">Field content</p>
-                    <form th:action="@{/user/update(portfolioId=${portfolio.getId()},entryId=${entry.getId()},entryFieldId=${field.getId()})}" method="post">
-                        <input type="text" name="content" value="content">
-                        <br>
-                        <input type="submit" name="action">
-                    </form>
-                    <a class="btn btn-primary" th:text="${field.getAttachment()}">Attachement</a>
-                </div>
-                <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()}">Date created</div>
+            <div th:each="field : ${Entry.getFields()}" th:switch="${fieldType}"
+                 th:with="
+                  AnswerType = ${T(mops.portfolios.domain.portfolio.templates.AnswerType)},
+                  fieldQuestion = ${field.getTitle()},
+                  fieldData = ${field.getContent().split(';')},
+                  fieldType = ${AnswerType.valueOf(fieldData[0])},
+                  fieldHint = ${fieldData[1]}">
+
+                <div th:case="${AnswerType.TEXT}"
+                     th:insert="fragments/entryfields :: textField(${fieldQuestion}, ${fieldHint})"></div>
+
+                <div th:case="${AnswerType.SINGLE_CHOICE}"
+                     th:insert="fragments/entryfields :: singlechoiceField(${fieldQuestion}, ${fieldHint})"></div>
+
+                <div th:case="${AnswerType.MULTIPLE_CHOICE}"
+                     th:insert="fragments/entryfields :: multichoiceField(${fieldQuestion}, ${fieldHint})"></div>
+
+                <div th:case="${AnswerType.NUMBER_SLIDER}"
+                     th:insert="fragments/entryfields :: sliderField(${fieldQuestion}, ${fieldHint})"></div>
+
+                <div th:case="${AnswerType.ATTACHEMENT}"
+                     th:insert="fragments/entryfields :: attachementField(${fieldQuestion}, ${fieldHint})"></div>
+
+                <div th:case="*">Type not found</div>
+
+                <hr>
+                <br>
+
             </div>
 
-        </div>
+            <button class="btn btn-primary" disabled type="submit">Absenden</button>
+
+        </form>
+
     </div>
 
+    <!--
     <div class="card">
     <h5 class="card-header">Neuen Eintrag erstellen</h5>
         <div class="card-body text-dark">
             <h5 class="card-title">Eintrag erstellen</h5>
             <p class="card-text">Hier kannst du einen neuen Eintrag erstellen:</p>
-            <form th:action="@{/user/entry(portfolioId=${portfolio.getId()})}" method="post">
+            <form th:action="@{/portfolio/user/entry(portfolioId=${portfolio.getId()})}" method="post">
                 <input type="text" name="title" value="titel">
                 <br>
                 <br>
@@ -76,7 +139,27 @@
         </div>
     </div>
 
+    <div class="tab-pane fade" th:each="entry : ${portfolio.getEntries()}"
+         th:id="'tab'+${entry.getId()}">
 
+        <div class="card border-dark w-50 mb-2" th:each="field : ${entry.getFields()}">
+            <h5 class="card-header" th:text="${entry.getTitle()}">Entry title</h5>
+            <div class="card-body text-dark" th:each="field : ${entry.getFields()}">
+                <h5 class="card-title" th:text="${field.getTitle()}">Field title</h5>
+                <p class="card-text" th:text="${field.getContent()}">Field content</p>
+                <form th:action="@{/portfolio/user/update(portfolioId=${portfolio.getId()},entryId=${entry.getId()},entryFieldId=${field.getId()})}" method="post">
+                    <input type="text" name="content" value="content">
+                    <br>
+                    <input type="submit" name="action">
+                </form>
+                <a class="btn btn-primary" th:text="${field.getAttachment()}">Attachement</a>
+            </div>
+            <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()}">Date created</div>
+        </div>
+
+   </div>
+    -->
+</div>
 </div>
 
 <script>

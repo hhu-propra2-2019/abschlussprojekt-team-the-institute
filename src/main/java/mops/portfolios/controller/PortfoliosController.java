@@ -27,10 +27,10 @@ public class PortfoliosController {
     accountService.authorize(model, token);
 
     if (accountService.isOrga(token)) {
-      return "redirect:admin/";
+      return "redirect:portfolio/admin/";
     }
 
-    return "redirect:user/";
+    return "redirect:portfolio/user/";
   }
 
   @GetMapping("/logout")

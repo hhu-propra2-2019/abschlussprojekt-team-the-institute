@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/portfolio/user")
 @RolesAllowed({"ROLE_studentin"})
 @AllArgsConstructor
 public class UserController {
@@ -48,7 +48,7 @@ public class UserController {
   public String redirect(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    return "redirect:/user/list";
+    return "redirect:/portfolio/user/list";
   }
 
   /**
@@ -89,13 +89,23 @@ public class UserController {
    * @return The page to load
    */
   @GetMapping("/view")
-  public String viewPortfolio(Model model, @RequestParam Long portfolioId,
-                              KeycloakAuthenticationToken token) {
+  public String viewPortfolio(Model model, KeycloakAuthenticationToken token,
+                              @RequestParam Long portfolioId,
+                              @RequestParam(required = false) Long entryId) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
 
     model.addAttribute("portfolio", portfolio);
+
+    if (entryId == null && !portfolio.getEntries().isEmpty()) {
+      entryId = portfolio.getEntries().stream().findFirst().get().getId();
+    }
+
+    if (entryId != null) {
+      Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
+      model.addAttribute("Entry", entry);
+    }
 
     return "user/view";
   }
@@ -126,7 +136,7 @@ public class UserController {
     redirectAttributes.addAttribute("portfolioId", portfolio.getId());
 
     System.out.println("Updated");
-    return "redirect:/user/view";
+    return "redirect:/portfolio/user/view";
   }
 
 
@@ -159,7 +169,7 @@ public class UserController {
     redirect.addAttribute("templateId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());
 
-    return "redirect:/user/view";
+    return "redirect:/portfolio/user/view";
   }
 
   /**
@@ -191,7 +201,7 @@ public class UserController {
     // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute("portfolioId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());
-    return "redirect:/user/view";
+    return "redirect:/portfolio/user/view";
   }
 
   /**
