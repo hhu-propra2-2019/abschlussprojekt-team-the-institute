@@ -211,7 +211,7 @@ public class AdminController {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    entryService.createAndAdField(entryId, question, hint, portfolio);
+    entryService.createAndAddField(entryId, question, hint, portfolio);
     portfolioService.update(portfolio);
 
     redirect.addAttribute("templateId", templateId);

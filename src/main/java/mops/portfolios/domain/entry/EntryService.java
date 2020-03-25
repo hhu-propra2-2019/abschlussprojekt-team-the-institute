@@ -45,7 +45,7 @@ public class EntryService {
    * @param hint a hint
    * @param portfolio the portfolio the entry belongs to
    */
-  public void createAndAdField(Long entryId, String question, String hint, Portfolio portfolio) {
+  public void createAndAddField(Long entryId, String question, String hint, Portfolio portfolio) {
     Objects.requireNonNull(entryId);
     Entry entry;
     if (portfolioService.findEntryInPortfolioById(portfolio,entryId) != null) {

@@ -45,7 +45,7 @@ public class EntryServiceTest {
     Set<EntryField> entryFields = new HashSet<>();
     entryFields.add(field);
 
-    entryService.createAndAdField(1L, "Question?","", portfolio);
+    entryService.createAndAddField(1L, "Question?","", portfolio);
 
 
     Set<EntryField> newEntryFields = entry.getFields();

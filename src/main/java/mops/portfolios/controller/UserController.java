@@ -135,6 +135,7 @@ public class UserController {
     portfolio.setEntries(newEntries);
     portfolioService.update(portfolio);
 
+    // Ist portofolioId und portfolio.getId() unterschiedlich?
     redirectAttributes.addAttribute("portfolioId", portfolio.getId());
 
     System.out.println("Updated");
@@ -167,6 +168,7 @@ public class UserController {
     entry.setFields(fields);
     portfolioService.update(portfolio);
 
+    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute("templateId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());
 
@@ -198,6 +200,7 @@ public class UserController {
     field.setContent(newContent);
     entryService.update(entry);
 
+    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute("portfolioId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());
     return "redirect:/user/view";
