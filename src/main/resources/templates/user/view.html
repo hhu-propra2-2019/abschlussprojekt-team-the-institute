@@ -3,9 +3,7 @@
       th:replace="~{mopslayout :: html(name='Lernportfolio', title='Portfolio ansehen', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 
 <head>
-    <th:block th:fragment="headcontent">
-        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
-    </th:block>
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment"/>
 
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
@@ -21,7 +19,7 @@
             </li>
             <li>
                 <a href="#" data-toggle="modal" data-target="#MODAL_DELETE_PORTFOLIO">
-                    <p><i class="far fa-calendar-minus fa-lg"></i> Portfolio löschen</p>
+                    <p><i class="fas fa-trash-alt fa-lg"></i> Portfolio löschen</p>
                 </a>
             </li>
         </ul>
@@ -43,7 +41,6 @@
         </li>
     </ul>
 
-    <hr>
     <br>
 
     <div class="tab-content">

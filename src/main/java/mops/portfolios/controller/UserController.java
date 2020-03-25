@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+@SuppressWarnings("PMD") //FIXME: avoidduplicateliterals: The String literal 'portfolioId' appears 4 times in this file;
 @Controller
 @RequestMapping("/portfolio/user")
 @RolesAllowed({"ROLE_studentin"})
@@ -198,9 +199,8 @@ public class UserController {
     field.setContent(newContent);
     entryService.update(entry);
 
-    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
-    redirect.addAttribute("portfolioId", portfolio.getId());
-    redirect.addAttribute("entryId", entry.getId());
+    redirect.addAttribute("portfolioId", portfolioId);
+    redirect.addAttribute("entryId", entryId);
     return "redirect:/portfolio/user/view";
   }
 
