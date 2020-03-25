@@ -1,35 +1,31 @@
-package mops.portfolios;
+package mops.portfolios.tools;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import mops.portfolios.PortfoliosApplication;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupRepository;
 import mops.portfolios.domain.state.StateService;
 import mops.portfolios.domain.user.User;
 import mops.portfolios.domain.user.UserRepository;
-import mops.portfolios.tools.HttpClient;
-import mops.portfolios.tools.IHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import javax.annotation.PostConstruct;
-
-@Component
-@EnableScheduling
+@Service
+@RequiredArgsConstructor
 @SuppressWarnings("PMD")
 public class DatabaseUpdater {
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
+  final String serviceName = "gruppen2";
+
   transient String url;
 
   final @NonNull GroupRepository groupRepository;
@@ -38,41 +34,16 @@ public class DatabaseUpdater {
 
   final @NonNull StateService stateService;
 
-  @Autowired
-  public DatabaseUpdater(GroupRepository groupRepository, UserRepository userRepository, StateService stateService) {
-    this.groupRepository= groupRepository;
-    this.userRepository = userRepository;
-    this.stateService = stateService;
-  }
-
-  /**
-   * Runs the database updater with a fixed timeout.
-   */
-  @PostConstruct
-  @Scheduled(fixedDelay = 10_000)
-  public void updateDatabase() {
-    this.url = "http://google.com"; // FIXME: Only call updateDatabase(long timeout) later here
-    getUpdatesFromJsonObject();
-  }
-
-  /**
-   * Runs the database updater.
-   *
-   * @param timeout The timeout between each update
-   */
-  public void updateDatabase(long timeout) {
-    long updateStatus = stateService.getState("gruppen2");
-    this.url = "/gruppen2/api/updateGroups/" + updateStatus;
-    getUpdatesFromJsonObject();
-  }
 
   /**
    * Use this method to get the updates from Gruppenbildung regarding groups.
    */
 
-  void getUpdatesFromJsonObject() {
+  public void getUpdatesFromJsonObject() {
     IHttpClient httpClient = new HttpClient();
-    getGroupUpdatesFromUrl(httpClient, this.url);
+    long updateStatus = stateService.getState(this.serviceName);
+    String requestUrl = this.url; // + updateStatus;
+    getGroupUpdatesFromUrl(httpClient, requestUrl);
   }
 
   /**
@@ -140,7 +111,7 @@ public class DatabaseUpdater {
     Long newStatus;
 
     newStatus = jsonObject.getBigInteger("status").longValue();
-    stateService.setState("gruppen2", newStatus);
+    stateService.setState(this.serviceName, newStatus);
 
   }
 
@@ -179,14 +150,18 @@ public class DatabaseUpdater {
 
         if (title == null || title.isEmpty()) {
           groupRepository.deleteById(groupId);
+          logger.info("Group deleted: " + groupId);
         } else if (groupExists(groupId)) {
           groupRepository.deleteById(groupId);
+          logger.info("Group deleted: " + groupId);
         }
         for (User user: userList) {
           if (userRepository.findOneByName(user.getName()) == null) {
             userRepository.save(user);
+            logger.info("Couldn't find user. Added " + user.getName());
           }
           groupRepository.save(new Group(groupId, title, userList));
+          logger.info("Saved group '" + title + "' with id " + groupId + " containing " + userList.size() + " members");
         }
       }
     }

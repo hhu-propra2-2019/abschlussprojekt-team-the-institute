@@ -1,13 +1,12 @@
-package mops.portfolios;
+package mops.portfolios.tools;
 
 import java.util.List;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import mops.portfolios.PortfoliosApplication;
 import mops.portfolios.domain.group.GroupRepository;
 import mops.portfolios.domain.state.StateService;
 import mops.portfolios.domain.user.UserRepository;
-import mops.portfolios.tools.FakeHttpClient;
-import mops.portfolios.tools.IHttpClient;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
