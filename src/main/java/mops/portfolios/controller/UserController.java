@@ -104,7 +104,7 @@ public class UserController {
 
     if (entryId != null) {
       Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
-      model.addAttribute("Entry", entry);
+      model.addAttribute("portfolioEntry", entry);
     }
 
     return "user/view";
@@ -239,6 +239,52 @@ public class UserController {
 
     redirect.addAttribute("portfolioId", portfolio.getId());
 
-    return "redirect:/user/view";
+    return "redirect:/portfolio/user/view";
+  }
+
+  /**
+   * Create Portfolio Entry mapping for POST requests.
+   *
+   * @param model      The spring model to add the attributes to
+   * @param portfolioId The id of the portfolio
+   * @param title      The title of the new entry
+   * @return The page to load
+   */
+  @PostMapping("/createPortfolioEntry")
+  public String createPortfolioEntry(Model model,
+                                    KeycloakAuthenticationToken token, RedirectAttributes redirect,
+                                    @RequestParam Long portfolioId,
+                                    @RequestParam("title") String title) {
+    accountService.authorize(model, token);
+
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+    Entry entry = new Entry(title);
+    portfolio.getEntries().add(entry);
+
+    portfolio = portfolioService.update(portfolio);
+    entry = portfolioService.findLastEntryInPortfolio(portfolio);
+
+    redirect.addAttribute("portfolioId", portfolioId);
+    redirect.addAttribute("entryId", entry.getId());
+
+    return "redirect:/portfolio/user/view";
+  }
+
+  /**
+   * Delete Portfolio mapping for POST requests.
+   *
+   * @param model      The spring model to add the attributes to
+   * @param portfolioId The id of the portfolio
+   * @return The page to load
+   */
+  @PostMapping("/deletePortfolio")
+  public String deletePortfolio(Model model,
+                               KeycloakAuthenticationToken token,
+                               @RequestParam Long portfolioId) {
+    accountService.authorize(model, token);
+
+    portfolioService.deletePortfolioById(portfolioId);
+
+    return "redirect:/portfolio/user/list";
   }
 }

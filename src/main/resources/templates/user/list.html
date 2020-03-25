@@ -49,7 +49,6 @@
             <div class="card border-dark w-50 mb-2">
                 <h5 class="card-header">Alle Portfolios:</h5>
                 <div class="card-body text-dark">
-                    <p>TODO: Nach Datum (zuletzt geändert) sortieren falls noch nicht der Fall</p>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item" th:each="portfolio : ${allPortfolios}">
                             <a th:text="${portfolio.getTitle()}" th:href="@{view(portfolioId=${portfolio.getId()})}">Title</a>

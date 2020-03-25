@@ -166,4 +166,28 @@
 
 </form>
 
+<form method="post" th:fragment="createPortfolioEntryForm"
+      th:action="@{createPortfolioEntry(portfolioId=${portfolioId})}">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Titel</span>
+        </div>
+        <input type="text" class="form-control" name="title"
+               placeholder="zB. Woche 1, Woche 2, ..." required>
+    </div>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Eintrag hinzufügen</button>
+</form>
+
+<form method="post" th:fragment="deletePortfolioForm"
+      th:action="@{deletePortfolio(portfolioId=${portfolioId})}">
+
+    <p>Möchtest du das Portfolio wirklich löschen?</p>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Löschen</button>
+</form>
+
 </html>
