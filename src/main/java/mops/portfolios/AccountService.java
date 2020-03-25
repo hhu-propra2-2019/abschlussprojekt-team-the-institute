@@ -1,10 +1,7 @@
 package mops.portfolios;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import lombok.AllArgsConstructor;
-import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.security.Account;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -31,6 +28,12 @@ public class AccountService {
             token.getAccount().getRoles(),
             ((KeycloakPrincipal) token.getPrincipal()).getName());
   }
+
+  /**
+   * Authenticate user to access page.
+   * @param model The Spring Model to add the attributes to
+   * @param token Authentication token
+   */
 
   public void authorize(Model model, KeycloakAuthenticationToken token) {
     Account account = createAccountFromPrincipal(token);

@@ -1,6 +1,5 @@
 package mops.portfolios.controller;
 
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +12,7 @@ import mops.portfolios.AccountService;
 import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
+import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
@@ -29,13 +29,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/user")
-@RolesAllowed( {"ROLE_studentin"})
+@RolesAllowed({"ROLE_studentin"})
 @AllArgsConstructor
 public class UserController {
 
   private transient AccountService accountService;
   private transient UserService userService;
   private transient PortfolioService portfolioService;
+  private transient EntryService entryService;
 
   /**
    * Redirect to main page.
@@ -121,18 +122,20 @@ public class UserController {
   @PostMapping("/entry")
   public String createEntry(Model model, KeycloakAuthenticationToken token,
                                     RedirectAttributes redirectAttributes,
-                                    @RequestParam Long portfolioId, @RequestParam("title") String title) {
+                                    @RequestParam Long portfolioId,
+                                    @RequestParam("title") String title) {
     accountService.authorize(model, token);
     DemoDataGenerator dataGenerator = new DemoDataGenerator();
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
     Entry entry = new Entry(title);
-    entry.setFields(new HashSet<>(dataGenerator.generateTemplateEntryFieldList()));
+    entry.setFields(dataGenerator.generateTemplateEntryFieldSet());
     Set<Entry> newEntries = portfolio.getEntries();
     newEntries.add(entry);
     portfolio.setEntries(newEntries);
     portfolioService.update(portfolio);
 
+    // Ist portofolioId und portfolio.getId() unterschiedlich?
     redirectAttributes.addAttribute("portfolioId", portfolio.getId());
 
     System.out.println("Updated");
@@ -165,9 +168,41 @@ public class UserController {
     entry.setFields(fields);
     portfolioService.update(portfolio);
 
+    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute("templateId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());
 
+    return "redirect:/user/view";
+  }
+
+  /**
+   * Post Mapping to update EntryField Content.
+   * @param model - Spring MVC model
+   * @param token - KeycloakAuthenticationToken
+   * @param redirect - injects RedirectAttributes
+   * @param portfolioId - Id of current portfolio
+   * @param entryId - Id of current entry
+   * @param entryFieldId - Id of updated EntryField
+   * @param newContent - new content of entryfield
+   * @return - redirects to /view
+   */
+  @PostMapping("/update")
+  public String updateFields(Model model, KeycloakAuthenticationToken token,
+                             RedirectAttributes redirect, @RequestParam Long portfolioId,
+                             @RequestParam Long entryId, @RequestParam Long entryFieldId,
+                             @RequestParam("content") String newContent) {
+    accountService.authorize(model, token);
+
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
+    EntryField field = entryService.findFieldById(entry, entryFieldId);
+
+    field.setContent(newContent);
+    entryService.update(entry);
+
+    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
+    redirect.addAttribute("portfolioId", portfolio.getId());
+    redirect.addAttribute("entryId", entry.getId());
     return "redirect:/user/view";
   }
 }

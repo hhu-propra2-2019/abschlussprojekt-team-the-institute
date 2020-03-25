@@ -40,7 +40,7 @@ dependencies {
 	compile group: 'org.json', name: 'json', version: '20190722'
 	compile group: 'com.github.javafaker', name: 'javafaker', version: '1.0.1'
 
-	compileOnly 'org.projectlombok:lombok'
+	compile 'org.projectlombok:lombok'
 
 	implementation 'io.minio:minio:6.0.13'
 	implementation "mops:styleguide:2.2.0"
