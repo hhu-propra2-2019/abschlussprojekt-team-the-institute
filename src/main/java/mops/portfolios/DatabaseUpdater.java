@@ -173,8 +173,6 @@ public class DatabaseUpdater {
 
       }
 
-      System.out.println(title);
-
       JSONArray members = group.getJSONArray("members");
 
       List<User> userList = new ArrayList<>();
