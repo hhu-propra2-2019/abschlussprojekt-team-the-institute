@@ -56,6 +56,19 @@ public class PortfolioServiceTest {
       Assert.assertEquals("EntryField(id=null, title=Question?, content=TEXT;Some hint, attachment=null)", newField.toString());
     }
 
+  }
+
+  @Test
+  void getPortfolioWithNewEntryTest() {
+    User user = new User();
+    user.setName("studentin");
+    Portfolio portfolio = new Portfolio("Lorem", user);
+    when(portfolioService.findPortfolioById(1L)).thenReturn(portfolio);
+
+    Portfolio newPortfolio = portfolioService.getPortfolioWithNewEntry(1L, "Lorem");
+
+    Assert.assertEquals(portfolio, newPortfolio);
 
   }
+
 }
