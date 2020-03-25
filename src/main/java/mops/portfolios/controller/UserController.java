@@ -125,26 +125,13 @@ public class UserController {
                                     @RequestParam Long portfolioId,
                                     @RequestParam("title") String title) {
     accountService.authorize(model, token);
-    Portfolio portfolio = getPortfolioWithNewEntry(portfolioId, title);
+    Portfolio portfolio = portfolioService.getPortfolioWithNewEntry(portfolioId, title);
 
     // Ist portofolioId und portfolio.getId() unterschiedlich?
     redirectAttributes.addAttribute("portfolioId", portfolio.getId());
 
     System.out.println("Updated");
     return "redirect:/user/view";
-  }
-
-  public Portfolio getPortfolioWithNewEntry(@RequestParam Long portfolioId, @RequestParam("title") String title) {
-    DemoDataGenerator dataGenerator = new DemoDataGenerator();
-
-    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
-    Entry entry = new Entry(title);
-    entry.setFields(dataGenerator.generateTemplateEntryFieldSet());
-    Set<Entry> newEntries = portfolio.getEntries();
-    newEntries.add(entry);
-    portfolio.setEntries(newEntries);
-    portfolioService.update(portfolio);
-    return portfolio;
   }
 
 
@@ -162,16 +149,8 @@ public class UserController {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
-    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
 
-    Set<EntryField> fields = entry.getFields();
-    EntryField field = new EntryField();
-    field.setTitle(question);
-    field.setContent(AnswerType.TEXT + ";Some hint");
-    fields.add(field);
-
-    entry.setFields(fields);
-    portfolioService.update(portfolio);
+    Entry entry = portfolioService.getNewPortfolio(entryId, question, portfolio);
 
     // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute("templateId", portfolio.getId());
@@ -179,6 +158,7 @@ public class UserController {
 
     return "redirect:/user/view";
   }
+
 
   /**
    * Post Mapping to update EntryField Content.

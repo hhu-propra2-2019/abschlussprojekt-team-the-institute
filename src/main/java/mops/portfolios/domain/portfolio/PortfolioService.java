@@ -2,12 +2,17 @@ package mops.portfolios.domain.portfolio;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.group.Group;
+import mops.portfolios.domain.portfolio.templates.AnswerType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 public class PortfolioService {
@@ -118,4 +123,32 @@ public class PortfolioService {
 
     entry.getFields().add(field);
   }
+
+  public Entry getNewPortfolio(@RequestParam Long entryId, @RequestParam("question") String question, Portfolio portfolio) {
+    Entry entry = findEntryInPortfolioById(portfolio, entryId);
+
+    Set<EntryField> fields = entry.getFields();
+    EntryField field = new EntryField();
+    field.setTitle(question);
+    field.setContent(AnswerType.TEXT + ";Some hint");
+    fields.add(field);
+
+    entry.setFields(fields);
+    update(portfolio);
+    return entry;
+  }
+
+  public Portfolio getPortfolioWithNewEntry(@RequestParam Long portfolioId, @RequestParam("title") String title) {
+    DemoDataGenerator dataGenerator = new DemoDataGenerator();
+
+    Portfolio portfolio = findPortfolioById(portfolioId);
+    Entry entry = new Entry(title);
+    entry.setFields(dataGenerator.generateTemplateEntryFieldSet());
+    Set<Entry> newEntries = portfolio.getEntries();
+    newEntries.add(entry);
+    portfolio.setEntries(newEntries);
+    update(portfolio);
+    return portfolio;
+  }
+
 }
