@@ -65,9 +65,13 @@ public class PortfolioServiceTest {
     Portfolio portfolio = new Portfolio("Lorem", user);
     when(portfolioService.findPortfolioById(1L)).thenReturn(portfolio);
 
-    Portfolio newPortfolio = portfolioService.getPortfolioWithNewEntry(1L, "Lorem");
+    Portfolio newPortfolio = portfolioService.findPortfolioById(1L);
 
-    Assert.assertEquals(portfolio, newPortfolio);
+    when(portfolioService.getPortfolioWithNewEntry(1L, "Lorem")).thenReturn(new Portfolio("Lorem", user));
+
+    Portfolio portfolioWithEntry = portfolioService.getPortfolioWithNewEntry(1L, "Lorem");
+
+    Assert.assertEquals(newPortfolio, portfolioWithEntry);
 
   }
 
