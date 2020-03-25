@@ -1,13 +1,13 @@
 package mops.portfolios.controller;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
+import mops.portfolios.controller.services.FileService;
 import mops.portfolios.domain.entry.Entry;
-import mops.portfolios.domain.entry.EntryField;
+import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
@@ -28,6 +28,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RolesAllowed({"ROLE_orga"})
 @AllArgsConstructor
 public class AdminController {
+  private final transient FileService fileService = new FileService();
+  private final transient EntryService entryService = new EntryService();
 
   private transient AccountService accountService;
 
@@ -108,7 +110,8 @@ public class AdminController {
     accountService.authorize(model, token);
 
     User user = new User();
-    user.setName(token.getName());
+    user.setName(token.getName()); // FIXME: Nutzen wir auch an jeder Stelle diese Methode? \
+    // Geht es ohne user id auch klar?
 
     Portfolio portfolio = new Portfolio(title, user);
     portfolio.setTemplate(true);
@@ -169,14 +172,7 @@ public class AdminController {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
-
-    EntryField field = new EntryField();
-    field.setTitle(question);
-    field.setContent(AnswerType.valueOf(fieldType) + ";" + hint);
-
-    entry.getFields().add(field);
-
+    entryService.createAndAddField(entryId, question, AnswerType.valueOf(fieldType) + ";" + hint, portfolio);
     portfolioService.update(portfolio);
 
     redirect.addAttribute("templateId", templateId);
@@ -218,13 +214,11 @@ public class AdminController {
                                @RequestParam("file") MultipartFile file) {
     accountService.authorize(model, token);
 
-    byte[] fileBytes;
-    try {
-      fileBytes = file.getBytes();
-    } catch (IOException e) {
-      e.printStackTrace();
+    if (fileService.nothingUploaded(file)) {
       return "admin/asciidoc/upload";
     }
+
+    byte[] fileBytes = fileService.readFile(file);
 
     String text = new String(fileBytes, StandardCharsets.UTF_8);
     String html = asciiConverter.convertToHtml(text);

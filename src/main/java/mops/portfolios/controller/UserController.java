@@ -29,7 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/user")
-@RolesAllowed( {"ROLE_studentin"})
+@RolesAllowed({"ROLE_studentin"})
 @AllArgsConstructor
 public class UserController {
 
@@ -122,7 +122,8 @@ public class UserController {
   @PostMapping("/entry")
   public String createEntry(Model model, KeycloakAuthenticationToken token,
                                     RedirectAttributes redirectAttributes,
-                                    @RequestParam Long portfolioId, @RequestParam("title") String title) {
+                                    @RequestParam Long portfolioId,
+                                    @RequestParam("title") String title) {
     accountService.authorize(model, token);
     DemoDataGenerator dataGenerator = new DemoDataGenerator();
 
@@ -134,6 +135,7 @@ public class UserController {
     portfolio.setEntries(newEntries);
     portfolioService.update(portfolio);
 
+    // Ist portofolioId und portfolio.getId() unterschiedlich?
     redirectAttributes.addAttribute("portfolioId", portfolio.getId());
 
     System.out.println("Updated");
@@ -166,6 +168,7 @@ public class UserController {
     entry.setFields(fields);
     portfolioService.update(portfolio);
 
+    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute("templateId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());
 
@@ -173,7 +176,7 @@ public class UserController {
   }
 
   /**
-   * Post Mapping to update EntryField Content
+   * Post Mapping to update EntryField Content.
    * @param model - Spring MVC model
    * @param token - KeycloakAuthenticationToken
    * @param redirect - injects RedirectAttributes
@@ -184,8 +187,9 @@ public class UserController {
    * @return - redirects to /view
    */
   @PostMapping("/update")
-  public String updateFields(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirect,
-                             @RequestParam Long portfolioId, @RequestParam Long entryId, @RequestParam Long entryFieldId,
+  public String updateFields(Model model, KeycloakAuthenticationToken token,
+                             RedirectAttributes redirect, @RequestParam Long portfolioId,
+                             @RequestParam Long entryId, @RequestParam Long entryFieldId,
                              @RequestParam("content") String newContent) {
     accountService.authorize(model, token);
 
@@ -196,6 +200,7 @@ public class UserController {
     field.setContent(newContent);
     entryService.update(entry);
 
+    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute("portfolioId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());
     return "redirect:/user/view";
