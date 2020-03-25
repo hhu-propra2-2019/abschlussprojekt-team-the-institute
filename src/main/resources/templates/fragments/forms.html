@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<form method="post" th:fragment="createTemplateForm"
+      th:action="@{createTemplate}">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Titel der Vorlage</span>
+        </div>
+        <input type="text" class="form-control" name="title"
+               placeholder="zB. Propra2 Praktikum" required>
+    </div>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Vorlage erstellen</button>
+</form>
+
+
+<form method="post" th:fragment="createEntryForm"
+      th:action="@{createTemplateEntry(templateId=${templateId})}">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Titel</span>
+        </div>
+        <input type="text" class="form-control" name="title"
+               placeholder="zB. Woche 1, Woche 2, ..." required>
+    </div>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Eintrag hinzufügen</button>
+</form>
+
+
+<form method="post" th:fragment="createFieldForm"
+      th:action="@{createTemplateField(templateId=${templateId}, entryId=${entryId})}">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Frage / Aufgabe</span>
+        </div>
+        <input type="text" class="form-control" name="question"
+               placeholder="zB. Was hat dir an der Vorlesung gefallen?" required>
+    </div>
+
+    <br>
+
+    <div th:replace="${fieldFragment}"></div>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Feld hinzufügen</button>
+</form>
+
+</html>
