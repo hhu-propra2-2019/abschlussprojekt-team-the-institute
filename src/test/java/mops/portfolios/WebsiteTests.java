@@ -21,30 +21,30 @@ public class WebsiteTests {
   @Test
   @WithMockKeycloackAuth(name = nameSt, roles = {nameSt})
   void testErrorWhenCorrectRoleStudentList () throws Exception {
-    mockMvc.perform(get("/user/list")).andExpect(MockMvcResultMatchers.status().isOk());
+    mockMvc.perform(get("/portfolio/user/list")).andExpect(MockMvcResultMatchers.status().isOk());
   }
 
   @Test
   @WithMockKeycloackAuth(name = nameSt, roles = {nameSt})
   void testErrorWhenCorrectRoleStudentCreate () throws Exception {
-    mockMvc.perform(get("/user/create")).andExpect(MockMvcResultMatchers.status().isOk());
+    mockMvc.perform(get("/portfolio/user/create")).andExpect(MockMvcResultMatchers.status().isOk());
   }
 
   @Test
   @WithMockKeycloackAuth(name = nameSt, roles = {nameSt})
   void testErrorWhenCorrectRoleStudentView () throws Exception {
-    mockMvc.perform(get("/user/view?portfolioId=1")).andExpect(MockMvcResultMatchers.status().isOk());
+    mockMvc.perform(get("/portfolio/user/view?portfolioId=1")).andExpect(MockMvcResultMatchers.status().isOk());
   }
 
   @Test
   @WithMockKeycloackAuth(name = nameOr, roles = {nameOr})
   void testErrorWhenCorrectRoleOrgaList () throws Exception {
-    mockMvc.perform(get("/admin/list")).andExpect(MockMvcResultMatchers.status().isOk());
+    mockMvc.perform(get("/portfolio/admin/list")).andExpect(MockMvcResultMatchers.status().isOk());
   }
 
   @Test
   @WithMockKeycloackAuth(name = nameOr, roles = {nameOr})
   void testErrorWhenCorrectRoleOrgaView () throws Exception {
-    mockMvc.perform(get("/admin/view?templateId=27")).andExpect(MockMvcResultMatchers.status().isOk());
+    mockMvc.perform(get("/portfolio/admin/view?templateId=27")).andExpect(MockMvcResultMatchers.status().isOk());
   }
 }
