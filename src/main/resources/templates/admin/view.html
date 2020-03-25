@@ -57,8 +57,8 @@
 
     <ul class="nav nav-tabs">
         <li class="nav-item" th:each="entry : ${template.getEntries()}">
-            <a class="nav-link" th:href="@{view(templateId=${template.getId()}, entryId=${entry.getId()})}"
-               th:text="${entry.getTitle()}" th:classappend="${templateEntry.getId() == entry.getId()} ? 'active'">Entry
+            <a class="nav-link" th:href="@{view(templateId=${template.getId()},entryId=${entry.getId()})}"
+              th:text="${entry.getTitle()}" th:classappend="${templateEntry.getId() == entry.getId()} ? 'active'">Entry
                 title</a>
         </li>
     </ul>

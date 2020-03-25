@@ -29,7 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/user")
-@RolesAllowed( {"ROLE_studentin"})
+@RolesAllowed({"ROLE_studentin"})
 @AllArgsConstructor
 public class UserController {
 
