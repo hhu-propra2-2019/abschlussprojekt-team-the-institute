@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -38,46 +39,24 @@ public class DatabaseUpdater {
   final @NonNull StateService stateService;
 
   /**
-   * The thread to run the updates.
+   * Runs the database updater with a fixed timeout.
    */
-  @AllArgsConstructor
-  private class DatabaseUpdaterThread implements Runnable {
-    private long timeout;
-
-    @SneakyThrows
-    @Override
-    public void run() {
-      while (true) {
-        getUpdatesFromJsonObject();
-        Thread.sleep(timeout);
-      }
-    }
-  }
-
   @PostConstruct
-  public void updateDatabase() throws InterruptedException {
-    try {
-      this.url = "http://google.com"; // FIXME: Only call updateDatabase(long timeout) later here
-      DatabaseUpdaterThread databaseUpdaterThread = new DatabaseUpdaterThread(10_000);
-      databaseUpdaterThread.run();
-    } catch (Exception e) {
-      logger.error("Possibly another thread has interrupted the current thread", e);
-      throw new InterruptedException(e.getMessage());
-    }
+  @Scheduled(fixedDelay = 10_000)
+  public void updateDatabase() {
+    this.url = "http://google.com"; // FIXME: Only call updateDatabase(long timeout) later here
+    getUpdatesFromJsonObject();
   }
 
   /**
    * Runs the database updater.
    *
    * @param timeout The timeout between each update
-   * @throws InterruptedException if another thread has interrupted the current thread. \
-   * The interrupted status of the current thread is cleared when this exception is thrown.
    */
-  public void updateDatabase(long timeout) throws InterruptedException {
+  public void updateDatabase(long timeout) {
     long updateStatus = stateService.getState("gruppen2");
     this.url = "/gruppen2/api/updateGroups/" + updateStatus;
-    DatabaseUpdaterThread databaseUpdaterThread = new DatabaseUpdaterThread(timeout);
-    databaseUpdaterThread.run();
+    getUpdatesFromJsonObject();
   }
 
   /**
