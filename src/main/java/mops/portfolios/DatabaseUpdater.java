@@ -22,6 +22,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.annotation.PostConstruct;
+
 @Service
 @SuppressWarnings("PMD")
 @RequiredArgsConstructor
@@ -29,13 +31,11 @@ public class DatabaseUpdater {
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
   transient String url;
 
-
   final @NonNull GroupRepository groupRepository;
 
   final @NonNull UserRepository userRepository;
 
   final @NonNull StateService stateService;
-
 
   /**
    * The thread to run the updates.
@@ -51,6 +51,18 @@ public class DatabaseUpdater {
         getUpdatesFromJsonObject();
         Thread.sleep(timeout);
       }
+    }
+  }
+
+  @PostConstruct
+  public void updateDatabase() throws InterruptedException {
+    try {
+      this.url = "http://google.com"; // FIXME: Only call updateDatabase(long timeout) later here
+      DatabaseUpdaterThread databaseUpdaterThread = new DatabaseUpdaterThread(10_000);
+      databaseUpdaterThread.run();
+    } catch (Exception e) {
+      logger.error("Possibly another thread has interrupted the current thread", e);
+      throw new InterruptedException(e.getMessage());
     }
   }
 
@@ -73,7 +85,7 @@ public class DatabaseUpdater {
    */
 
   void getUpdatesFromJsonObject() {
-    HttpClient httpClient = new HttpClient();
+    IHttpClient httpClient = new HttpClient();
     getGroupUpdatesFromUrl(httpClient, this.url);
   }
 
@@ -84,7 +96,7 @@ public class DatabaseUpdater {
    */
   @SuppressWarnings("PMD")
   void getGroupUpdatesFromUrl(IHttpClient httpClient, String url) {
-    String responseBody;
+    String responseBody = "";
 
     // try to receive data from service Gruppenbildung
     try {
@@ -95,7 +107,7 @@ public class DatabaseUpdater {
       responseBody = null;
     } catch (IllegalArgumentException argException) {
       logger.error(argException.getMessage()); // Most likely URL formatted wrong
-      throw new RuntimeException(argException);
+     // throw new RuntimeException(argException);
     }
 
     updateDatabaseEvents(responseBody);
@@ -117,14 +129,14 @@ public class DatabaseUpdater {
       logger.error("An error occured while parsing the JSON data "
               + "received by the service Gruppenbildung ", jsonErr);
       // FIXME: keep this only while in development
-      throw new RuntimeException("Error while trying to parse HTTP response to JSON object: "
-              + jsonErr.getMessage());
+      // throw new RuntimeException("Error while trying to parse HTTP response to JSON object: "
+          //    + jsonErr.getMessage());
     }
     if (jsonObject == null) {
       logger.error("An error occured while parsing the JSON data "
               + "received by the service Gruppenbildung");
       // FIXME: Keep this only while in development
-      throw new RuntimeException("JSON Object is null");
+     // throw new RuntimeException("JSON Object is null");
     }
 
     if (isNotModified(jsonObject)) {
