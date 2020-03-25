@@ -22,12 +22,12 @@ public class AccessRestrictionTest {
   @Test
   @WithMockKeycloackAuth(name = "studentin", roles = {"studentin"})
   void testErrorWhenWrongRole () throws Exception {
-    mockMvc.perform(get("/admin/list")).andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    mockMvc.perform(get("/portfolio/admin/list")).andExpect(MockMvcResultMatchers.status().is4xxClientError());
   }
 
   @Test
   @WithMockKeycloackAuth(name = "orga", roles = {"orga"})
   void testRightAccess () throws Exception {
-    mockMvc.perform(get("/admin/list")).andExpect(MockMvcResultMatchers.status().isOk());
+    mockMvc.perform(get("/portfolio/admin/list")).andExpect(MockMvcResultMatchers.status().isOk());
   }
 }
