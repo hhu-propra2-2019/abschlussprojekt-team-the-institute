@@ -85,13 +85,23 @@ public class UserController {
    * @return The page to load
    */
   @GetMapping("/view")
-  public String viewPortfolio(Model model, @RequestParam Long portfolioId,
-                              KeycloakAuthenticationToken token) {
+  public String viewPortfolio(Model model, KeycloakAuthenticationToken token,
+                              @RequestParam Long portfolioId,
+                              @RequestParam(required = false) Long entryId) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
 
     model.addAttribute("portfolio", portfolio);
+
+    if (entryId == null && !portfolio.getEntries().isEmpty()) {
+      entryId = portfolio.getEntries().stream().findFirst().get().getId();
+    }
+
+    if (entryId != null) {
+      Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
+      model.addAttribute("Entry", entry);
+    }
 
     return "user/view";
   }
