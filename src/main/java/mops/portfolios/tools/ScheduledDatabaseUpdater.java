@@ -1,12 +1,9 @@
 package mops.portfolios.tools;
 
 import javax.annotation.PostConstruct;
-import ch.qos.logback.classic.Logger;
-import mops.portfolios.PortfoliosApplication;
 import mops.portfolios.domain.group.GroupRepository;
 import mops.portfolios.domain.state.StateService;
 import mops.portfolios.domain.user.UserRepository;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
