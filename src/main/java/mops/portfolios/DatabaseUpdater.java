@@ -3,9 +3,7 @@ package mops.portfolios;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupRepository;
 import mops.portfolios.domain.state.StateService;
@@ -18,16 +16,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.annotation.PostConstruct;
 
-@Service
+@Component
+@EnableScheduling
 @SuppressWarnings("PMD")
-@RequiredArgsConstructor
 public class DatabaseUpdater {
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
   transient String url;
@@ -37,6 +37,13 @@ public class DatabaseUpdater {
   final @NonNull UserRepository userRepository;
 
   final @NonNull StateService stateService;
+
+  @Autowired
+  public DatabaseUpdater(GroupRepository groupRepository, UserRepository userRepository, StateService stateService) {
+    this.groupRepository= groupRepository;
+    this.userRepository = userRepository;
+    this.stateService = stateService;
+  }
 
   /**
    * Runs the database updater with a fixed timeout.
