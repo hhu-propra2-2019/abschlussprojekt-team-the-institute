@@ -109,10 +109,10 @@
 
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#template">Mit Vorlage</a>
+            <a class="nav-link active" data-toggle="tab" href="#personal">Persönlich</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#personal">Persönlich</a>
+            <a class="nav-link" data-toggle="tab" href="#template">Mit Vorlage</a>
         </li>
     </ul>
 
@@ -120,7 +120,18 @@
 
     <div class="tab-content">
 
-        <div class="tab-pane fade show active" id="template">
+        <div class="tab-pane fade show active" id="personal">
+
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Titel des Portfolios</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Portfolio Name" name="title">
+            </div>
+
+        </div>
+
+        <div class="tab-pane fade" id="template">
 
             <div class="input-group">
                 <div class="input-group-prepend">
@@ -129,17 +140,6 @@
                 <select class="custom-select" id="SELECT_TEMPLATE" name="templateId">
                     <option th:each="template : ${templateList}" th:text="${template.getTitle()}" th:value="${template.getId()}">Template</option>
                 </select>
-            </div>
-
-        </div>
-
-        <div class="tab-pane fade" id="personal">
-
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Titel des Portfolios</span>
-                </div>
-                <input type="text" class="form-control" placeholder="Portfolio Name" name="title">
             </div>
 
         </div>
