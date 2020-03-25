@@ -2,6 +2,7 @@ package mops.portfolios.domain.user;
 
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupRepository;
+import mops.portfolios.domain.group.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,6 @@ import java.util.List;
 
 @Service
 public class UserService {
-
     transient UserRepository repository;
 
     @Autowired
@@ -26,6 +26,11 @@ public class UserService {
 
     public boolean isUserNameInGroup(String userName, Group group) {
         List<Group> groups = repository.findById(userName).get().getGroups();
+
         return groups.contains(group);
     }
+
+
+
+
 }
