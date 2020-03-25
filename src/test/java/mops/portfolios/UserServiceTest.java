@@ -5,7 +5,6 @@ import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.user.User;
 import mops.portfolios.domain.user.UserRepository;
 import mops.portfolios.domain.user.UserService;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
@@ -13,20 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class UserServiceTest {
 
     @Mock
-    UserRepository userRepositoryMock;
+    UserRepository userRepositoryMock = mock(UserRepository.class);
     UserService userService = new UserService(userRepositoryMock);
 
-    @Before
-    public void setup() {
-        this.userRepositoryMock = mock(UserRepository.class);
-    }
 
     @Test
     public void userIsInGroupTest() {
@@ -37,7 +31,6 @@ public class UserServiceTest {
         List<User> userInList = new ArrayList<>();
         userInList.add(testUser);
         when(userRepositoryMock.findById("testUser")).thenReturn(Optional.of(testUser));
-
 
         assert(userService.isUserNameInGroup("testUser", groupOfTestUser));
     }
