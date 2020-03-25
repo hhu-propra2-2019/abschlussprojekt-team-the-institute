@@ -2,24 +2,37 @@ package mops.portfolios;
 
 
 import javax.persistence.EntityManager;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import mops.portfolios.demodata.DemoDataGenerator;
+import mops.portfolios.domain.FileRepository;
+import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryFieldRepository;
 import mops.portfolios.domain.entry.EntryRepository;
+import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioRepository;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.state.State;
 import mops.portfolios.domain.state.StateService;
+import mops.portfolios.domain.user.User;
+import org.jruby.RubyProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Random;
 
 
@@ -27,70 +40,65 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class PortfoliosApplication {
 
-  private static final Logger log = LoggerFactory.getLogger(PortfoliosApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(PortfoliosApplication.class);
 
-  final @NonNull EntityManager entityManager;
-  final @NonNull PortfolioRepository repository;
+    final @NonNull EntityManager entityManager;
+    final @NonNull PortfolioRepository repository;
+    final @NonNull FileRepository fileRepository;
+    final @NonNull EntryFieldRepository entryFieldRepository;
 
-  /** Starts the application.
-   * @param args - command-line arguments
-   */
-  public static void main(String[] args) {
-    SpringApplication.run(PortfoliosApplication.class, args);
-  }
+    /**
+     * Starts the application.
+     *
+     * @param args - command-line arguments
+     */
+    public static void main(String[] args) {
+        SpringApplication.run(PortfoliosApplication.class, args);
+    }
 
-    // PLS DO NOT document this - we remove this before release, this runner is just a playground.
     @Bean
     public CommandLineRunner demo(StateService stateService, PortfolioService portfolioService) {
         return (args) -> {
-      /*      Set<String> roles = new HashSet<>(Arrays.asList("student"));
 
-            User user1 = new User("User1", "mail1@example.com", null, roles, "UUID-1234-5678");
-            User user2 = new User("User2", "mail2@example.com", null, roles, "UUID-4321-9876");
-
-            Group group1 = new Group(123L, "Group1");
-
-            UserGroup userGroup1 = new UserGroup(user1.getId(), group1.getId(), "title11111111111");
-            UserGroup userGroup2 = new UserGroup(user2.getId(), group1.getId(), "title22222222222");
-
-            repository.save(userGroup1);
-            repository.save(userGroup2); */
-
-            log.info("1==================================================================================");
-            log.info("2==================================================================================");
-            log.info("3==================================================================================");
-            log.info("4==================================================================================");
-            log.info("5==================================================================================");
-            log.info("6==================================================================================");
-            log.info("7==================================================================================");
-
-     DemoDataGenerator demo = new DemoDataGenerator();
-
-            for (int i = 0; i < 10; i++) {
+            DemoDataGenerator demo = new DemoDataGenerator();
+            for (int i = 0; i < 4; i++) {
                 repository.save(demo.generateUserPortfolio());
                 repository.save(demo.generateGroupPortfolio());
                 repository.save(demo.generateTemplate());
             }
 
-            log.info("8==================================================================================");
-            log.info("Non-templates:");
+            /*
+             * This is an example of using FileRepository
+             * If you want to test it this way, provide a valid
+             * path to any file in the right format for your OS.
+             * This example uses a file placed in /tmp/pic.png
+             * (Linux)
+             */
 
-            for (Portfolio portfolio : portfolioService.findAllPortfolios()) {
-                log.info(portfolio.toString());
-            }
-
-            log.info("9==================================================================================");
-            log.info("Templates:");
-            for (Portfolio portfolio : portfolioService.findAllTemplates()) {
-                log.info(portfolio.toString());
-            }
-
-            log.info(stateService.getState("gruppenbildung2").toString());
-
-            stateService.setState("gruppenbildung2", Math.abs(new Random().nextLong()));
-
-            log.info(stateService.getState("gruppenbildung2").toString());
-
+//            Path path = Paths.get("/tmp/pic.png");
+//            String name = "pic.png";
+//            String originalFileName = "/tmp/pic.png";
+//            String contentType = "image/png";
+//
+//            byte[] content = null;
+//
+//            try {
+//                content = Files.readAllBytes(path);
+//            } catch (final IOException e) {
+//                System.out.println(e.toString());
+//            }
+//
+//            MultipartFile result = new MockMultipartFile(name,
+//                    originalFileName, contentType, content);
+//
+//            EntryField entryField = new EntryField();
+//
+//            fileRepository.saveFile(result, entryField);
+//
+//            if (entryField.getAttachment() != null)
+//                System.out.println(
+//                        fileRepository.getFileUrl(entryField.getAttachment())
+//                );
 
         };
     }
