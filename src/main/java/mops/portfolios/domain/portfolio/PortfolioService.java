@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import mops.portfolios.domain.entry.Entry;
+import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.group.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -95,5 +96,26 @@ public class PortfolioService {
 
   public Portfolio update(Portfolio portfolio) {
     return repository.save(portfolio);
+  }
+
+  public void deletePortfolioById(Long id) {
+    repository.deleteById(id);
+  }
+
+  /**
+   * Creates and adds an EntryField to an Entry.
+   * @param portfolio the portfolio the entry belongs to
+   * @param entryId the id of the entry the field is to be added
+   * @param title title of the field to be added
+   * @param content content of the field to be added
+   */
+  public void createAndAddField(Portfolio portfolio, Long entryId, String title, String content) {
+    Entry entry = findEntryInPortfolioById(portfolio, entryId);
+
+    EntryField field = new EntryField();
+    field.setTitle(title);
+    field.setContent(content);
+
+    entry.getFields().add(field);
   }
 }
