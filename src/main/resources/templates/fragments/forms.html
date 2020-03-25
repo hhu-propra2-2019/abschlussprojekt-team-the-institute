@@ -61,4 +61,43 @@
     <button type="submit" class="btn btn-primary">Löschen</button>
 </form>
 
+<form enctype="multipart/form-data" method="post" th:fragment="uploadTemplateForm"
+      th:action="@{uploadTemplate(templateId=${templateId})}">
+
+    <div class="input-group">
+        <div class="custom-file">
+            <input id="INPUT_FILE" type="file" class="custom-file-input" accept=".adoc,.asciidoc,.asc,.txt" name="file"
+                   oninput="handleUpload()">
+            <label class="custom-file-label" for="INPUT_FILE" id="LABEL_FILE">AsciiDoc Datei auswählen</label>
+        </div>
+        <div class="input-group-append">
+            <button id="BUTTON_UPLOAD" class="input-group-text btn" type="submit"
+                    onclick="document.getElementById('SPINNER_UPLOAD').hidden = false;" disabled>
+                <span id="SPINNER_UPLOAD" class="spinner-border spinner-border-sm" hidden></span>
+                Hochladen
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function handleUpload() {
+
+            let INPUT_FILE = document.getElementById("INPUT_FILE");
+            if (INPUT_FILE.files.length == 0) {
+                return;
+            }
+
+            let file = INPUT_FILE.files[0];
+
+            let LABEL_FILE = document.getElementById("LABEL_FILE");
+            LABEL_FILE.innerHTML = "Datei " + file.name.bold() + " ausgewählt";
+
+            let BUTTON_UPLOAD = document.getElementById("BUTTON_UPLOAD");
+            BUTTON_UPLOAD.disabled = false;
+            BUTTON_UPLOAD.classList.add("btn-primary")
+        }
+    </script>
+
+</form>
+
 </html>

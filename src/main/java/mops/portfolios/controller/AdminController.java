@@ -25,7 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin")
-@RolesAllowed( {"ROLE_orga"})
+@RolesAllowed({"ROLE_orga"})
 @AllArgsConstructor
 public class AdminController {
 
@@ -92,49 +92,6 @@ public class AdminController {
     }
 
     return "admin/view";
-  }
-
-  /**
-   * Upload mapping for GET requests.
-   *
-   * @param model The spring model to add the attributes to
-   * @return The page to load
-   */
-  @GetMapping("/upload")
-  public String uploadAscii(Model model, KeycloakAuthenticationToken token) {
-    accountService.authorize(model, token);
-
-    model.addAttribute("templateList", portfolioService.findAllTemplates());
-
-    return "admin/asciidoc/upload";
-  }
-
-  /**
-   * View mapping for POST requests.
-   *
-   * @param model The spring model to add the attributes to
-   * @param file  The uploaded (AsciiDoc) template file
-   * @return The page to load
-   */
-  @SuppressWarnings("PMD")
-  @PostMapping("/viewAscii")
-  public String viewUploadedAscii(Model model, @RequestParam("file") MultipartFile file,
-                                  KeycloakAuthenticationToken token) {
-    accountService.authorize(model, token);
-
-    byte[] fileBytes;
-    try {
-      fileBytes = file.getBytes();
-    } catch (IOException e) {
-      e.printStackTrace();
-      return "admin/asciidoc/upload";
-    }
-
-    String text = new String(fileBytes, StandardCharsets.UTF_8);
-    String html = asciiConverter.convertToHtml(text);
-    model.addAttribute("html", html);
-
-    return "admin/asciidoc/view";
   }
 
   /**
@@ -244,5 +201,35 @@ public class AdminController {
     portfolioService.deletePortfolioById(templateId);
 
     return "redirect:/admin/list";
+  }
+
+  /**
+   * Upload Template mapping for POST requests.
+   *
+   * @param model      The spring model to add the attributes to
+   * @param templateId The id of the template
+   * @return The page to load
+   */
+  @SuppressWarnings("PMD")
+  @PostMapping("/uploadTemplate")
+  public String uploadTemplate(Model model,
+                               KeycloakAuthenticationToken token,
+                               @RequestParam Long templateId,
+                               @RequestParam("file") MultipartFile file) {
+    accountService.authorize(model, token);
+
+    byte[] fileBytes;
+    try {
+      fileBytes = file.getBytes();
+    } catch (IOException e) {
+      e.printStackTrace();
+      return "admin/asciidoc/upload";
+    }
+
+    String text = new String(fileBytes, StandardCharsets.UTF_8);
+    String html = asciiConverter.convertToHtml(text);
+    model.addAttribute("html", html);
+
+    return "admin/asciidoc/view";
   }
 }

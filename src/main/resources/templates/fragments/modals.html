@@ -32,4 +32,8 @@
      th:insert="~{::abstractModalForm (title='Vorlage löschen',
      content=~{fragments/forms::deleteTemplateForm})}"></div>
 
+<div id="MODAL_UPLOAD_TEMPLATE" class="modal fade" th:fragment="uploadTemplateModal(templateId)"
+     th:insert="~{::abstractModalForm (title='Vorlage hochladen',
+     content=~{fragments/forms::uploadTemplateForm})}"></div>
+
 </html>
