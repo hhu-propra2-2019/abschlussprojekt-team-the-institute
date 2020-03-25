@@ -15,6 +15,8 @@
     </div>
 </div>
 
+<!----------------------------[Admin]---------------------------------------------->
+
 <div id="MODAL_CREATE_TEMPLATE" class="modal fade" th:fragment="createTemplateModal"
      th:insert="~{::abstractModalForm (title='Vorlage erstellen',
      content=~{fragments/forms::createTemplateForm})}"></div>
@@ -35,5 +37,11 @@
 <div id="MODAL_UPLOAD_TEMPLATE" class="modal fade" th:fragment="uploadTemplateModal(templateId)"
      th:insert="~{::abstractModalForm (title='Vorlage hochladen',
      content=~{fragments/forms::uploadTemplateForm})}"></div>
+
+<!----------------------------[User]---------------------------------------------->
+
+<div id="MODAL_CREATE_PORTFOLIO" class="modal fade" th:fragment="createPortfolioModal(templateList)"
+     th:insert="~{::abstractModalForm (title='Portfolio erstellen',
+     content=~{fragments/forms::createPortfolioForm})}"></div>
 
 </html>
