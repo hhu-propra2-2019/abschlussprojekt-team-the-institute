@@ -7,9 +7,11 @@ import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
 import mops.portfolios.controller.services.FileService;
 import mops.portfolios.domain.entry.Entry;
+import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
+import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.User;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -71,7 +73,7 @@ public class AdminController {
    *
    * @param model      The spring model to add the attributes to
    * @param templateId The ID of the template
-   * @param entryId The ID of the entry
+   * @param entryId    The ID of the entry
    * @return The page to load
    */
   @GetMapping("/view")
@@ -96,50 +98,9 @@ public class AdminController {
   }
 
   /**
-   * Upload mapping for GET requests.
-   *
-   * @param model The spring model to add the attributes to
-   * @return The page to load
-   */
-  @GetMapping("/upload")
-  public String uploadAscii(Model model, KeycloakAuthenticationToken token) {
-    accountService.authorize(model, token);
-
-    model.addAttribute("templateList", portfolioService.findAllTemplates());
-
-    return "admin/asciidoc/upload";
-  }
-
-  /**
-   * View mapping for POST requests.
-   *
-   * @param model The spring model to add the attributes to
-   * @param file  The uploaded (AsciiDoc) template file
-   * @return The page to load
-   */
-  @SuppressWarnings("PMD")
-  @PostMapping("/viewAscii")
-  public String viewUploadedAscii(Model model, @RequestParam("file") MultipartFile file,
-                                  KeycloakAuthenticationToken token) {
-    accountService.authorize(model, token);
-
-    if (fileService.nothingUploaded(file)) {
-      return "admin/asciidoc/upload";
-    }
-
-    byte[] fileBytes = fileService.readFile(file);
-    String text = new String(fileBytes, StandardCharsets.UTF_8);
-    String html = asciiConverter.convertToHtml(text);
-    model.addAttribute("html", html);
-    return "admin/asciidoc/view";
-  }
-
-
-
-  /**
    * Create Template mapping for POST requests.
    *
-   * @param model         The spring model to add the attributes to
+   * @param model The spring model to add the attributes to
    * @param title The title of the new template
    * @return The page to load
    */
@@ -207,11 +168,14 @@ public class AdminController {
                                     @RequestParam Long templateId,
                                     @RequestParam Long entryId,
                                     @RequestParam("question") String question,
+                                    @RequestParam("fieldType") String fieldType,
                                     @RequestParam(value = "hint", required = false) String hint) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    entryService.createAndAddField(entryId, question, hint, portfolio);
+
+    portfolioService.createAndAddField(portfolio, entryId,
+        question, AnswerType.valueOf(fieldType) + ";" + hint);
     portfolioService.update(portfolio);
 
     redirect.addAttribute("templateId", templateId);
@@ -220,5 +184,49 @@ public class AdminController {
     return "redirect:/admin/view";
   }
 
+  /**
+   * Delete Template mapping for POST requests.
+   *
+   * @param model      The spring model to add the attributes to
+   * @param templateId The id of the template
+   * @return The page to load
+   */
+  @PostMapping("/deleteTemplate")
+  public String deleteTemplate(Model model,
+                               KeycloakAuthenticationToken token,
+                               @RequestParam Long templateId) {
+    accountService.authorize(model, token);
 
+    portfolioService.deletePortfolioById(templateId);
+
+    return "redirect:/admin/list";
+  }
+
+  /**
+   * Upload Template mapping for POST requests.
+   *
+   * @param model      The spring model to add the attributes to
+   * @param templateId The id of the template
+   * @return The page to load
+   */
+  @SuppressWarnings("PMD")
+  @PostMapping("/uploadTemplate")
+  public String uploadTemplate(Model model,
+                               KeycloakAuthenticationToken token,
+                               @RequestParam Long templateId,
+                               @RequestParam("file") MultipartFile file) {
+    accountService.authorize(model, token);
+
+    if (fileService.nothingUploaded(file)) {
+      return "admin/asciidoc/upload";
+    }
+
+    byte[] fileBytes = fileService.readFile(file);
+
+    String text = new String(fileBytes, StandardCharsets.UTF_8);
+    String html = asciiConverter.convertToHtml(text);
+    model.addAttribute("html", html);
+
+    return "admin/asciidoc/view";
+  }
 }

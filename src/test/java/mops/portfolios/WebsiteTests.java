@@ -44,12 +44,6 @@ public class WebsiteTests {
 
   @Test
   @WithMockKeycloackAuth(name = nameOr, roles = {nameOr})
-  void testErrorWhenCorrectRoleOrgaUpload () throws Exception {
-    mockMvc.perform(get("/admin/upload")).andExpect(MockMvcResultMatchers.status().isOk());
-  }
-
-  @Test
-  @WithMockKeycloackAuth(name = nameOr, roles = {nameOr})
   void testErrorWhenCorrectRoleOrgaView () throws Exception {
     mockMvc.perform(get("/admin/view?templateId=27")).andExpect(MockMvcResultMatchers.status().isOk());
   }

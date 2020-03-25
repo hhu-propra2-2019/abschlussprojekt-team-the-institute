@@ -1,7 +1,6 @@
 package mops.portfolios.controller;
 
 import mops.portfolios.AccountService;
-import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
@@ -10,10 +9,6 @@ import mops.portfolios.domain.user.UserService;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

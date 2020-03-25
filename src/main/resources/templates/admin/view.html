@@ -29,20 +29,33 @@
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_TEXT_FIELD">
                             <p><i class="fas fa-align-left"></i> Text Feld</p>
                         </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_SINGLECHOICE_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal"
+                           data-target="#MODAL_CREATE_SINGLECHOICE_FIELD">
                             <p><i class="fas fa-list-ul"></i> Single Choice Feld</p>
                         </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_MULTICHOICE_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal"
+                           data-target="#MODAL_CREATE_MULTICHOICE_FIELD">
                             <p><i class="fas fa-tasks"></i> Multiple Choice Feld</p>
                         </a>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_SLIDER_FIELD">
                             <p><i class="fas fa-sliders-h"></i> Range Slider Feld</p>
                         </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_ATTACHEMENT_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal"
+                           data-target="#MODAL_CREATE_ATTACHEMENT_FIELD">
                             <p><i class="fas fa-paperclip"></i> Anhang Feld</p>
                         </a>
                     </div>
                 </div>
+            </li>
+            <li>
+                <a href="#" data-toggle="modal" data-target="#MODAL_UPLOAD_TEMPLATE">
+                    <p><i class="fas fa-file-upload fa-lg"></i> Vorlage hochladen</p>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-toggle="modal" data-target="#MODAL_DELETE_TEMPLATE">
+                    <p><i class="far fa-calendar-minus fa-lg"></i> Vorlage löschen</p>
+                </a>
             </li>
         </ul>
     </nav>
@@ -107,6 +120,8 @@
     </div>
 
     <div th:replace="fragments/modals :: createEntryModal(templateId=${template.getId()})"></div>
+    <div th:replace="fragments/modals :: deleteTemplateModal(templateId=${template.getId()})"></div>
+    <div th:replace="fragments/modals :: uploadTemplateModal(templateId=${template.getId()})"></div>
 
     <div th:if="${templateEntry != null}">
         <div th:replace="fragments/modals :: createFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
