@@ -1,9 +1,7 @@
 package mops.portfolios;
 
-
 import mops.portfolios.domain.group.Group;
-import mops.portfolios.domain.group.GroupRepository;
-import mops.portfolios.domain.portfolio.Portfolio;
+
 import mops.portfolios.domain.user.User;
 import mops.portfolios.domain.user.UserRepository;
 import mops.portfolios.domain.user.UserService;
@@ -13,7 +11,9 @@ import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,26 +25,27 @@ public class UserServiceTest {
 
     @Before
     public void setup() {
+        this.userRepositoryMock = mock(UserRepository.class);
     }
-
 
     @Test
     public void userIsInGroupTest() {
-        List<Group> groupsOfTestUser = new ArrayList<>();
         Group groupOfTestUser = new Group();
+        List<Group> groupsOfTestUser = new ArrayList<>();
         groupsOfTestUser.add(groupOfTestUser);
-        User testUser = new User("testUser", new ArrayList<Portfolio>(), groupsOfTestUser);
+        User testUser = new User("testUser", new ArrayList<>(), groupsOfTestUser);
         List<User> userInList = new ArrayList<>();
         userInList.add(testUser);
-        when(userRepositoryMock.findAll()).thenReturn(userInList);
+        when(userRepositoryMock.findById("testUser")).thenReturn(Optional.of(testUser));
+
 
         assert(userService.isUserNameInGroup("testUser", groupOfTestUser));
     }
-    @Test
+
+
     public void userIsNotInGroupTest() {
 
     }
-    @Test
     public void userIsNotInEmptyGroupTest() {
 
     }
