@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
 import mops.portfolios.controller.services.FileService;
 import mops.portfolios.domain.entry.Entry;
+import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
@@ -172,7 +173,9 @@ public class AdminController {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    entryService.createAndAddField(entryId, question, AnswerType.valueOf(fieldType) + ";" + hint, portfolio);
+
+    portfolioService.createAndAddField(portfolio, entryId,
+        question, AnswerType.valueOf(fieldType) + ";" + hint);
     portfolioService.update(portfolio);
 
     redirect.addAttribute("templateId", templateId);
