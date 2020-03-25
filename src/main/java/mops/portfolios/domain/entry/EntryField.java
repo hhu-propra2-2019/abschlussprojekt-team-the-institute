@@ -20,7 +20,4 @@ public class EntryField {
 
   private @Setter String attachment;
 
-  @Autowired
-  private transient FileRepository fileRepository;
-
 }

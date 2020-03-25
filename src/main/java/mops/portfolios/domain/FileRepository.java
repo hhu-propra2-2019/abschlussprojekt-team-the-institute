@@ -39,10 +39,10 @@ public class FileRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
 
-    private MinioClient minioClient;
+    private transient MinioClient minioClient;
 
     @Autowired
-    private EntryFieldRepository entryFieldRepository;
+    private transient EntryFieldRepository entryFieldRepository;
 
     public FileRepository() throws NoSuchAlgorithmException, IOException, InvalidKeyException, XmlPullParserException, InvalidPortException, InvalidEndpointException {
         this.minioClient = new MinioClient("http://127.0.0.1:9000", "minio", "minio123");
@@ -50,7 +50,6 @@ public class FileRepository {
             boolean isExist = minioClient.bucketExists(bucketName);
             if (!isExist) {
                 minioClient.makeBucket(bucketName);
-                minioClient.setBucketPolicy(bucketName,"public");
             }
         } catch (MinioException e) {
             logger.warn(e.toString());
@@ -74,6 +73,7 @@ public class FileRepository {
         } catch (MinioException | NoSuchAlgorithmException | IOException | InvalidKeyException | XmlPullParserException e) {
             logger.info(e.toString());
         }
-        return null;
+        return "";
     }
+
 }
