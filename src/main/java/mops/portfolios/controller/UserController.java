@@ -125,6 +125,16 @@ public class UserController {
                                     @RequestParam Long portfolioId,
                                     @RequestParam("title") String title) {
     accountService.authorize(model, token);
+    Portfolio portfolio = getPortfolioWithNewEntry(portfolioId, title);
+
+    // Ist portofolioId und portfolio.getId() unterschiedlich?
+    redirectAttributes.addAttribute("portfolioId", portfolio.getId());
+
+    System.out.println("Updated");
+    return "redirect:/user/view";
+  }
+
+  public Portfolio getPortfolioWithNewEntry(@RequestParam Long portfolioId, @RequestParam("title") String title) {
     DemoDataGenerator dataGenerator = new DemoDataGenerator();
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
@@ -134,12 +144,7 @@ public class UserController {
     newEntries.add(entry);
     portfolio.setEntries(newEntries);
     portfolioService.update(portfolio);
-
-    // Ist portofolioId und portfolio.getId() unterschiedlich?
-    redirectAttributes.addAttribute("portfolioId", portfolio.getId());
-
-    System.out.println("Updated");
-    return "redirect:/user/view";
+    return portfolio;
   }
 
 

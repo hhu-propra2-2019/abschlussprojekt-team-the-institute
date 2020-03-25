@@ -1,13 +1,17 @@
 package mops.portfolios.domain.entry;
 
 import java.util.Objects;
+import java.util.Set;
+
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 @RequiredArgsConstructor
