@@ -5,16 +5,12 @@ import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryFieldRepository;
 import mops.portfolios.domain.entry.EntryRepository;
-import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.User;
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,9 +20,10 @@ import static org.mockito.Mockito.when;
 
 public class PortfolioServiceTest {
 
-  @NonNull
-  private transient PortfolioService portfolioService = new PortfolioService();
+
   private transient PortfolioRepository repository = mock(PortfolioRepository.class);
+  @NonNull
+  private transient PortfolioService portfolioService = new PortfolioService(repository);
   private transient EntryRepository entryRepository = mock(EntryRepository.class);
   private transient EntryFieldRepository entryFieldRepository = mock(EntryFieldRepository.class);
 
@@ -74,7 +71,7 @@ public class PortfolioServiceTest {
     when(repository.save(any(Portfolio.class))).thenReturn(portfolio);
     repository.save(portfolio);
 
-    when(portfolioService.findPortfolioById(1L)).thenReturn(portfolio);
+    when(repository.findById(1L)).thenReturn(Optional.of(portfolio));
 
     Portfolio newPortfolio = portfolioService.findPortfolioById(1L);
 

@@ -6,22 +6,24 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 public class PortfolioService {
 
-
+  @NonNull final
   transient PortfolioRepository repository;
+
+  public PortfolioService(PortfolioRepository repository) {
+    this.repository = repository;
+  }
 
   /**
    * Returns all portfolios and templates in the repository.
