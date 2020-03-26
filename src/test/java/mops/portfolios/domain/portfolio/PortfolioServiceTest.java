@@ -1,25 +1,21 @@
 package mops.portfolios.domain.portfolio;
 
 import lombok.NonNull;
-import mops.portfolios.AccountService;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryFieldRepository;
 import mops.portfolios.domain.entry.EntryRepository;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.User;
-import mops.portfolios.domain.user.UserService;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.keycloak.representations.AccessToken;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class PortfolioServiceTest {
 
@@ -29,6 +25,7 @@ public class PortfolioServiceTest {
   private transient PortfolioService portfolioService = new PortfolioService(repository);
   private transient EntryRepository entryRepository = mock(EntryRepository.class);
   private transient EntryFieldRepository entryFieldRepository = mock(EntryFieldRepository.class);
+  private transient KeycloakAuthenticationToken token = mock(KeycloakAuthenticationToken.class);
 
 
   @SuppressWarnings("PMD")
@@ -111,6 +108,92 @@ public class PortfolioServiceTest {
     for (EntryField newField: fields) {
       Assert.assertEquals("EntryField(id=null, title=Question?, content=TEXT;Some hint, attachment=null)", newField.toString());
     }
+
+  }
+
+  @Test
+  void getTemplateTest() {
+    User user = new User();
+    user.setName("studentin");
+    Portfolio portfolio = new Portfolio("Lorem", user);
+    portfolio.setId(1L);
+    when(repository.save(any(Portfolio.class))).thenReturn(portfolio);
+    repository.save(portfolio);
+
+    when(token.getName()).thenReturn("studentin");
+
+    Portfolio updatedPortfolio = portfolioService.getTemplate(token, "Lorem");
+
+    Assert.assertEquals(portfolio, updatedPortfolio);
+
+  }
+
+  @Test
+  void getPortfolioTest() {
+    User user = new User();
+    user.setName("studentin");
+    Portfolio portfolio = new Portfolio("Lorem", user);
+    portfolio.setId(1L);
+    when(repository.save(any(Portfolio.class))).thenReturn(portfolio);
+    repository.save(portfolio);
+
+    when(token.getName()).thenReturn("studentin");
+
+    when(repository.findById(1L)).thenReturn(Optional.of(portfolio));
+
+    Portfolio updatedPortfolio = portfolioService.getPortfolio(token, "1" , "Lorem", "true");
+
+    Assert.assertEquals(portfolio, updatedPortfolio);
+
+
+  }
+
+  @Test
+  void portfolioEntryCreationTest() {
+    User user = new User();
+    user.setName("studentin");
+    Entry entry = new Entry();
+    entry.setTitle("Title");
+    Portfolio portfolio = new Portfolio("Lorem", user);
+    portfolio.setId(1L);
+    portfolio.getEntries().add(entry);
+
+    when(repository.save(any(Portfolio.class))).thenReturn(portfolio);
+    repository.save(portfolio);
+
+    when(repository.findById(1L)).thenReturn(Optional.of(portfolio));
+
+    Entry updatedEntry = portfolioService.portfolioEntryCreation(1L, "Title");
+
+    Assert.assertEquals(entry.getId(), updatedEntry.getId());
+    Assert.assertEquals(entry.getTitle(), updatedEntry.getTitle());
+    Assert.assertEquals(entry.getFields(), updatedEntry.getFields());
+
+
+  }
+
+  @Test
+  void getEntryTest() {
+    User user = new User();
+    user.setName("studentin");
+    Entry entry = new Entry();
+    entry.setId(1L);
+    Portfolio portfolio = new Portfolio("Lorem", user);
+    portfolio.setId(1L);
+    portfolio.getEntries().add(entry);
+
+    when(repository.save(any(Portfolio.class))).thenReturn(portfolio);
+    repository.save(portfolio);
+
+    when(entryRepository.save(any(Entry.class))).thenReturn(entry);
+    entryRepository.save(entry);
+
+    when(repository.findById(1L)).thenReturn(Optional.of(portfolio));
+
+    Entry updatedEntry = portfolioService.getEntry(1L, 1L);
+
+    Assert.assertEquals(entry, updatedEntry);
+
 
   }
 
