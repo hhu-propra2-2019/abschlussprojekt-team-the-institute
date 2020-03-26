@@ -1,18 +1,15 @@
-package mops.portfolios;
+package mops.portfolios.tools;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import mops.portfolios.PortfoliosApplication;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.group.GroupRepository;
 import mops.portfolios.domain.state.StateService;
 import mops.portfolios.domain.user.User;
 import mops.portfolios.domain.user.UserRepository;
-import mops.portfolios.tools.HttpClient;
-import mops.portfolios.tools.IHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,12 +20,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 @Service
-@SuppressWarnings("PMD")
 @RequiredArgsConstructor
+@SuppressWarnings("PMD")
 public class DatabaseUpdater {
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
-  transient String url;
+  final String serviceName = "gruppen2";
 
+  /**
+   * The url to request the updates from. The formatting is highly important.
+   */ // Don't make this part of the Constructor as it's not feeded by Spring, but entered manually
+  transient Url url;
 
   final @NonNull GroupRepository groupRepository;
 
@@ -38,43 +39,13 @@ public class DatabaseUpdater {
 
 
   /**
-   * The thread to run the updates.
-   */
-  @AllArgsConstructor
-  private class DatabaseUpdaterThread implements Runnable {
-    private long timeout;
-
-    @SneakyThrows
-    @Override
-    public void run() {
-      while (true) {
-        getUpdatesFromJsonObject();
-        Thread.sleep(timeout);
-      }
-    }
-  }
-
-  /**
-   * Runs the database updater.
-   *
-   * @param timeout The timeout between each update
-   * @throws InterruptedException if another thread has interrupted the current thread. \
-   * The interrupted status of the current thread is cleared when this exception is thrown.
-   */
-  public void updateDatabase(long timeout) throws InterruptedException {
-    long updateStatus = stateService.getState("gruppen2");
-    this.url = "/gruppen2/api/updateGroups/" + updateStatus;
-    DatabaseUpdaterThread databaseUpdaterThread = new DatabaseUpdaterThread(timeout);
-    databaseUpdaterThread.run();
-  }
-
-  /**
    * Use this method to get the updates from Gruppenbildung regarding groups.
    */
-
-  void getUpdatesFromJsonObject() {
-    HttpClient httpClient = new HttpClient();
-    getGroupUpdatesFromUrl(httpClient, this.url);
+  public void getUpdatesFromJsonObject() { // TODO: use a better method name. Do this later to avoid merge conflicts
+    IHttpClient httpClient = new HttpClient();
+    long updateStatus = stateService.getState(this.serviceName);
+    String requestUrl = this.url.toString(); // + updateStatus; FIXME: add status
+    getGroupUpdatesFromUrl(httpClient, requestUrl);
   }
 
   /**
@@ -84,18 +55,17 @@ public class DatabaseUpdater {
    */
   @SuppressWarnings("PMD")
   void getGroupUpdatesFromUrl(IHttpClient httpClient, String url) {
-    String responseBody;
+    String responseBody = "";
 
     // try to receive data from service Gruppenbildung
     try {
       responseBody = httpClient.get(url);
     } catch (HttpClientErrorException clientErr) { // if status 4xx or 5xx returned
-      logger.warn("The service Gruppenbildung is not reachable: " + clientErr.getRawStatusCode()
+      logger.warn("The service " + this.serviceName + " is not reachable: " + clientErr.getRawStatusCode()
               + " " + clientErr.getStatusText());
       responseBody = null;
     } catch (IllegalArgumentException argException) {
-      logger.error(argException.getMessage()); // Most likely URL formatted wrong
-      throw new RuntimeException(argException);
+      logger.error(argException.getMessage()); // Most likely URL formatted wrong, read logs from Url generation
     }
 
     updateDatabaseEvents(responseBody);
@@ -109,22 +79,24 @@ public class DatabaseUpdater {
   @SuppressWarnings("PMD")
   public void updateDatabaseEvents(String jsonUpdate) {
 
+    if(jsonUpdate == null) {
+      logger.error("Nothing received. The received String is null");
+      return;
+    }
+
     // check for possible errors
     JSONObject jsonObject = null;
     try {
       jsonObject = new JSONObject(jsonUpdate);
     } catch (JSONException jsonErr) {
-      logger.error("An error occured while parsing the JSON data "
-              + "received by the service Gruppenbildung ", jsonErr);
-      // FIXME: keep this only while in development
-      throw new RuntimeException("Error while trying to parse HTTP response to JSON object: "
-              + jsonErr.getMessage());
+      logger.warn("An error occured while parsing the JSON data "
+              + "received by the service " + this.serviceName, jsonErr);
+      return; // cannot update anyways
     }
     if (jsonObject == null) {
-      logger.error("An error occured while parsing the JSON data "
-              + "received by the service Gruppenbildung");
-      // FIXME: Keep this only while in development
-      throw new RuntimeException("JSON Object is null");
+      logger.warn("An error occured while parsing the JSON data "
+              + "received by the service " + this.serviceName + ": jsonObject is null");
+      return; // cannot update anyways
     }
 
     if (isNotModified(jsonObject)) {
@@ -142,7 +114,7 @@ public class DatabaseUpdater {
     Long newStatus;
 
     newStatus = jsonObject.getBigInteger("status").longValue();
-    stateService.setState("gruppen2", newStatus);
+    stateService.setState(this.serviceName, newStatus);
 
   }
 
@@ -166,7 +138,14 @@ public class DatabaseUpdater {
 
       JSONObject group = (JSONObject) groupElement;
       Long groupId = group.getBigInteger("id").longValue();
-      String title = group.getString("title");
+
+      String title = null;
+
+      if (!group.isNull("title")) {
+        title = group.getString("title");
+
+      }
+
       JSONArray members = group.getJSONArray("members");
 
       List<User> userList = new ArrayList<>();
@@ -181,14 +160,18 @@ public class DatabaseUpdater {
 
         if (title == null || title.isEmpty()) {
           groupRepository.deleteById(groupId);
+          logger.info("Group deleted: " + groupId);
         } else if (groupExists(groupId)) {
           groupRepository.deleteById(groupId);
+          logger.info("Group deleted: " + groupId);
         }
-        for (User user: userList) {
+        for (User user : userList) {
           if (userRepository.findOneByName(user.getName()) == null) {
             userRepository.save(user);
+            logger.info("Couldn't find user. Added " + user.getName());
           }
           groupRepository.save(new Group(groupId, title, userList));
+          logger.info("Saved group '" + title + "' with id " + groupId + " containing " + userList.size() + " members");
         }
       }
     }

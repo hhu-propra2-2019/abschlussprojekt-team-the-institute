@@ -4,9 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <th:block th:fragment="headcontent">
-        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
-    </th:block>
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment"/>
 
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
@@ -36,10 +34,10 @@
             <a class="btn btn-primary"
                th:href="@{view(templateId=${template.getId()})}">Anzeigen</a>
         </div>
-        <div class="card-footer text-muted" th:text="'Zuletzt geändert am ' + ${template.getLastChanged()}">Last changed</div>
+        <div class="card-footer text-muted" th:text="'Zuletzt geändert am '">Last changed</div>
     </div>
 
-    <div th:replace="fragments/modals :: createTemplateModal"></div>
+    <div th:replace="fragments/modals :: createTemplateModal">Modal</div>
 
 </div>
 
