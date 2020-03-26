@@ -179,14 +179,6 @@ public class PortfolioService {
     return portfolio;
   }
 
-  public void templateFieldCreation(@RequestParam Long templateId, @RequestParam Long entryId, @RequestParam("question") String question, @RequestParam("fieldType") String fieldType, @RequestParam(value = "hint", required = false) String hint) {
-    Portfolio portfolio = findPortfolioById(templateId);
-
-    createAndAddField(portfolio, entryId,
-            question, AnswerType.valueOf(fieldType) + ";" + hint);
-    update(portfolio);
-  }
-
   public Portfolio getTemplate(KeycloakAuthenticationToken token, @RequestParam("title") String title) {
     User user = new User();
     user.setName(token.getName()); // FIXME: Nutzen wir auch an jeder Stelle diese Methode? \

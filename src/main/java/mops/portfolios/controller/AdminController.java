@@ -155,8 +155,9 @@ public class AdminController {
                                     @RequestParam("fieldType") String fieldType,
                                     @RequestParam(value = "hint", required = false) String hint) {
     accountService.authorize(model, token);
-
-    portfolioService.templateFieldCreation(templateId, entryId, question, fieldType, hint);
+    Portfolio portfolio = portfolioService.findPortfolioById(templateId);
+    portfolioService.createAndAddField(portfolio, entryId, question, hint);
+    portfolioService.update(portfolio);
 
     redirect.addAttribute("entryId", entryId);
     redirect.addAttribute("templateId", templateId);
