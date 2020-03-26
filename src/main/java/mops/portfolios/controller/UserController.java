@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
 import mops.portfolios.controller.services.FileService;
 import mops.portfolios.domain.entry.Entry;
+import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
