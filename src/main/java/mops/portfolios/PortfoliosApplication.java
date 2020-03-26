@@ -1,29 +1,25 @@
 package mops.portfolios;
 
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Random;
 import javax.persistence.EntityManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.FileRepository;
-import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryFieldRepository;
+import mops.portfolios.domain.group.GroupRepository;
+import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioRepository;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.state.StateService;
+import mops.portfolios.domain.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
-
 
 @SpringBootApplication
 @RequiredArgsConstructor
@@ -41,7 +37,7 @@ public class PortfoliosApplication {
    *
    * @param args - command-line arguments
    */
-  public static void main(String[] args) {
+  public static void main(String[] args){
     SpringApplication.run(PortfoliosApplication.class, args);
   }
 

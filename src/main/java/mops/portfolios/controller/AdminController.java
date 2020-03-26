@@ -98,6 +98,8 @@ public class AdminController {
                                KeycloakAuthenticationToken token, RedirectAttributes redirect,
                                @RequestParam("title") String title) {
     accountService.authorize(model, token);
+
+    accountService.authorize(model, token);
     Portfolio portfolio = portfolioService.getTemplate(token, title);
 
     redirect.addAttribute("templateId", portfolio.getId());
@@ -202,4 +204,5 @@ public class AdminController {
 
     return "admin/asciidoc/view";
   }
+
 }
