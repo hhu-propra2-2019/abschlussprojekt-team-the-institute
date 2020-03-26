@@ -34,6 +34,8 @@ repositories {
 
 dependencies {
 
+	testRuntimeOnly 'com.h2database:h2'
+
 	annotationProcessor 'org.projectlombok:lombok'
 
 	compile	"org.asciidoctor:asciidoctorj:2.2.0"
