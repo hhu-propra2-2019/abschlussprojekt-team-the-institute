@@ -69,6 +69,7 @@ public class Url {
     return true;
   }
 
+  @SuppressWarnings("PMD")
   private boolean isValidScheme(String scheme) {
     for (UrlScheme supportedScheme : UrlScheme.values()) {
       if (scheme.equals(supportedScheme.toString())) {

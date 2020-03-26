@@ -228,7 +228,7 @@ public class DatabaseUpdaterTest {
     groupIds.add(2L);
 
     when(groupRepository.findAllById(groupIds)).thenReturn(new ArrayList<>());
-    verify(groupRepository, times(1)).save(any(Group.class));
+    verify(groupRepository, times(2)).save(any(Group.class));
 
     Assert.assertEquals(new ArrayList<>(), groupRepository.findAllById(groupIds));
 
