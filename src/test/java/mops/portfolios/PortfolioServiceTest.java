@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @SpringBootTest
@@ -60,6 +61,20 @@ public class PortfolioServiceTest {
         Entry testEntry = portfolioService.findEntryById(testPortfolio, 0L);
 
         assert(testEntry == null);
+    }
+
+    @Test
+    public void findEntryByIdTest() {
+        Portfolio testPortfolio = new Portfolio();
+        HashSet<Entry> entrySet = new HashSet<>();
+        Entry testEntry = new Entry("test");
+        testEntry.setId(7357L);
+        entrySet.add(testEntry);
+        testPortfolio.setEntries(entrySet);
+
+        Entry testEntry2 = portfolioService.findEntryById(testPortfolio, 7357L);
+
+        assert(testEntry2.equals(testEntry));
     }
 
 
