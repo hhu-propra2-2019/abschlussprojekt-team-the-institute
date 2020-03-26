@@ -142,7 +142,7 @@ public class PortfolioServiceTest {
 
     when(repository.findById(1L)).thenReturn(Optional.of(portfolio));
 
-    Portfolio updatedPortfolio = portfolioService.getPortfolio(token, "1" , "Lorem", "true");
+    Portfolio updatedPortfolio = portfolioService.getNewPortfolio(token, "1" , "Lorem", "true");
 
     Assert.assertEquals(portfolio, updatedPortfolio);
 

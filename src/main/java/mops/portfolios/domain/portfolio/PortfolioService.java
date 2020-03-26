@@ -10,6 +10,7 @@ import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.User;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,7 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Service
 public class PortfolioService {
 
-  private @NonNull final transient PortfolioRepository repository;
+  @NonNull @Autowired
+  transient PortfolioRepository repository;
 
   private static final String requestTitle = "title";
   private static final String requestTemplateId = "templateId";
@@ -241,7 +243,7 @@ public class PortfolioService {
    * Gets portfolio and checks if it is a template.
    * @return portfolio
    */
-  public Portfolio getPortfolio(KeycloakAuthenticationToken token,
+  public Portfolio getNewPortfolio(KeycloakAuthenticationToken token,
                                 @RequestParam(value = requestTemplateId, required = false)
                                         String templateId,
                                 @RequestParam(value = requestTitle, required = false)
@@ -249,20 +251,41 @@ public class PortfolioService {
                                 @RequestParam("isTemplate") String isTemplate) {
 
     User user = new User();
-    user.setName(token.getName()); //FIXME
+    user.setName(token.getName());
 
     Portfolio portfolio;
     if (isTemplate.equals("true")) {
 
       Portfolio template = findPortfolioById(Long.valueOf(templateId));
-      portfolio = new Portfolio(template.getTitle(), user);
+      portfolio = generateNewPortfolioFromTemplate(template, user);
 
-      //FIXME: clone template into portfolio? how are we going to save answers..
     } else {
       portfolio = new Portfolio(title, user);
     }
 
     portfolio = update(portfolio);
+    return portfolio;
+  }
+
+  /**
+   * Generates a portfolio by cloning a template.
+   *
+   * @param template the template to clone
+   * @param user     the user of the new portfolio
+   */
+  @SuppressWarnings("PMD")
+  public Portfolio generateNewPortfolioFromTemplate(Portfolio template, User user) {
+    Portfolio portfolio = new Portfolio(template.getTitle(), user);
+    for (Entry entry : template.getEntries()) {
+      Entry entryClone = new Entry(entry.getTitle());
+      portfolio.getEntries().add(entryClone);
+      for (EntryField field : entry.getFields()) {
+        EntryField fieldClone = new EntryField();
+        fieldClone.setTitle(field.getTitle());
+        fieldClone.setContent(field.getContent());
+        entryClone.getFields().add(fieldClone);
+      }
+    }
     return portfolio;
   }
 
