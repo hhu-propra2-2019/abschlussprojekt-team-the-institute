@@ -66,7 +66,6 @@ public class PortfolioServiceTest {
     user.setName("studentin");
     Portfolio portfolio = new Portfolio("Lorem", user);
     portfolio.setId(1L);
-    System.out.println(portfolio);
 
     when(repository.save(any(Portfolio.class))).thenReturn(portfolio);
     repository.save(portfolio);
@@ -74,18 +73,20 @@ public class PortfolioServiceTest {
     when(repository.findById(1L)).thenReturn(Optional.of(portfolio));
 
     Portfolio newPortfolio = portfolioService.findPortfolioById(1L);
-
     Portfolio portfolioWithEntry = portfolioService.getPortfolioWithNewEntry(1L, "Lorem");
 
     Assert.assertEquals(newPortfolio, portfolioWithEntry);
 
   }
 
+  @SuppressWarnings("PMD")
   @Test
   void getNewEntryTest() {
     User user = new User();
     user.setName("studentin");
     Portfolio portfolio = new Portfolio("Lorem", user);
+    portfolio.setId(1L);
+
     when(repository.save(any(Portfolio.class))).thenReturn(portfolio);
     repository.save(portfolio);
 
@@ -100,11 +101,9 @@ public class PortfolioServiceTest {
     when(entryRepository.save(any(Entry.class))).thenReturn(entry);
     entryRepository.save(entry);
 
-    when(portfolioService.getNewEntry(1L, "Question?", portfolio)).thenReturn(entry);
+    Entry newEntry = portfolioService.getNewEntry(1L, "Question?", portfolio);
 
-    Set<EntryField> fields = portfolioService.getNewEntry(1L, "Question?", portfolio).getFields();
-
-    System.out.println(fields);
+    Set<EntryField> fields = newEntry.getFields();
 
     for (EntryField newField: fields) {
       Assert.assertEquals("EntryField(id=null, title=Question?, content=TEXT;Some hint, attachment=null)", newField.toString());
