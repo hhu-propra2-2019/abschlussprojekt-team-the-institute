@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/portfolio/admin")
 @RolesAllowed({"ROLE_orga"})
 @AllArgsConstructor
 public class AdminController {
@@ -48,7 +48,7 @@ public class AdminController {
   public String redirect(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    return "redirect:/admin/list";
+    return "redirect:/portfolio/admin/list";
   }
 
   /**
@@ -120,7 +120,7 @@ public class AdminController {
 
     redirect.addAttribute("templateId", portfolio.getId());
 
-    return "redirect:/admin/view";
+    return "redirect:/portfolio/admin/view";
   }
 
 
@@ -149,7 +149,7 @@ public class AdminController {
     redirect.addAttribute("templateId", templateId);
     redirect.addAttribute("entryId", entry.getId());
 
-    return "redirect:/admin/view";
+    return "redirect:/portfolio/admin/view";
   }
 
   /**
@@ -181,7 +181,7 @@ public class AdminController {
     redirect.addAttribute("templateId", templateId);
     redirect.addAttribute("entryId", entryId);
 
-    return "redirect:/admin/view";
+    return "redirect:/portfolio/admin/view";
   }
 
   /**
@@ -199,7 +199,7 @@ public class AdminController {
 
     portfolioService.deletePortfolioById(templateId);
 
-    return "redirect:/admin/list";
+    return "redirect:/portfolio/admin/list";
   }
 
   /**
