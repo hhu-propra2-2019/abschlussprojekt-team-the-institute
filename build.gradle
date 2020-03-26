@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.2.5.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'com.avast.gradle.docker-compose' version '0.7.1'
 	id "com.github.spotbugs" version "4.0.0"
 	id 'java'
 	id 'pmd'
@@ -68,6 +69,10 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+dockerCompose {
+    useComposeFiles = ['docker-compose.yml']
 }
 
 // checkstyle {

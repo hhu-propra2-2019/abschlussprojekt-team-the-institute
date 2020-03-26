@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
 import mops.portfolios.controller.services.FileService;
 import mops.portfolios.domain.entry.Entry;
-import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
@@ -78,7 +77,6 @@ public class UserController {
 
     model.addAttribute("templateList", templateList);
 
-
     return "user/list";
   }
 
@@ -96,7 +94,7 @@ public class UserController {
     accountService.authorize(model, token);
     model.addAttribute("portfolio", portfolioService.findPortfolioById(portfolioId));
 
-    portfolioService.getPortfoliosToView(model, portfolioId, entryId);
+    portfolioService.getPortfoliosTemplatesToView(model, portfolioId, entryId, "portfolioEntry");
 
     return "user/view";
   }

@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 import lombok.NonNull;
 import mops.portfolios.AccountService;
 import mops.portfolios.demodata.DemoDataGenerator;
+
+import lombok.NonNull;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.group.Group;
@@ -19,19 +21,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@SuppressWarnings("PMD") //FIXME: Strings "title" "templateId" "entryId" "portfolioId" appear to often
 @Service
 public class PortfolioService {
 
   private @NonNull final
   transient PortfolioRepository repository;
-  private transient AccountService accountService;
-  private transient UserService userService;
 
-  public PortfolioService(PortfolioRepository repository, AccountService accountService, UserService userService) {
+  private static final String requestTitle = "title";
+  private static final String requestTemplateId = "templateId";
+
+  public PortfolioService(PortfolioRepository repository) {
     this.repository = repository;
-    this.accountService = accountService;
-    this.userService = userService;
   }
 
   /**
@@ -162,7 +162,7 @@ public class PortfolioService {
     return entry;
   }
 
-  public Portfolio getPortfolioWithNewEntry(@RequestParam Long portfolioId, @RequestParam("title") String title) {
+  public Portfolio getPortfolioWithNewEntry(@RequestParam Long portfolioId, @RequestParam(requestTitle) String title) {
     Objects.requireNonNull(portfolioId);
 
     DemoDataGenerator dataGenerator = new DemoDataGenerator();
@@ -183,15 +183,7 @@ public class PortfolioService {
     return portfolio;
   }
 
-  public void templateFieldCreation(@RequestParam Long templateId, @RequestParam Long entryId, @RequestParam("question") String question, @RequestParam("fieldType") String fieldType, @RequestParam(value = "hint", required = false) String hint) {
-    Portfolio portfolio = findPortfolioById(templateId);
-
-    createAndAddField(portfolio, entryId,
-            question, AnswerType.valueOf(fieldType) + ";" + hint);
-    update(portfolio);
-  }
-
-  public Portfolio getTemplate(KeycloakAuthenticationToken token, @RequestParam("title") String title) {
+  public Portfolio getTemplate(KeycloakAuthenticationToken token, @RequestParam(requestTitle) String title) {
     User user = new User();
     user.setName(token.getName()); // FIXME: Nutzen wir auch an jeder Stelle diese Methode? \
     // Geht es ohne user id auch klar?
@@ -202,21 +194,7 @@ public class PortfolioService {
     return portfolio;
   }
 
-  public void getTemplatesToView(Model model, @RequestParam Long templateId, @RequestParam(required = false) Long entryId) {
-
-    Portfolio template = findPortfolioById(templateId);
-
-    if (entryId == null && !template.getEntries().isEmpty()) {
-      entryId = template.getEntries().stream().findFirst().get().getId();
-    }
-
-    if (entryId != null) {
-      Entry entry = findEntryInPortfolioById(template, entryId);
-      model.addAttribute("templateEntry", entry);
-    }
-  }
-
-  public void getPortfoliosToView(Model model, @RequestParam Long portfolioId, @RequestParam(required = false) Long entryId) {
+  public void getPortfoliosTemplatesToView(Model model, @RequestParam Long portfolioId, @RequestParam(required = false) Long entryId, String entryName) {
 
     Portfolio portfolio = findPortfolioById(portfolioId);
 
@@ -226,7 +204,7 @@ public class PortfolioService {
 
     if (entryId != null) {
       Entry entry = findEntryInPortfolioById(portfolio, entryId);
-      model.addAttribute("portfolioEntry", entry);
+      model.addAttribute(entryName, entry);
     }
   }
 
@@ -237,7 +215,7 @@ public class PortfolioService {
     return entry;
   }
 
-  public Portfolio getPortfolio(KeycloakAuthenticationToken token, @RequestParam(value = "templateId", required = false) String templateId, @RequestParam(value = "title", required = false) String title, @RequestParam("isTemplate") String isTemplate) {
+  public Portfolio getPortfolio(KeycloakAuthenticationToken token, @RequestParam(value = requestTemplateId, required = false) String templateId, @RequestParam(value = requestTitle, required = false) String title, @RequestParam("isTemplate") String isTemplate) {
 
     User user = new User();
     user.setName(token.getName()); //FIXME
@@ -257,7 +235,7 @@ public class PortfolioService {
     return portfolio;
   }
 
-  public Entry portfolioEntryCreation(@RequestParam Long portfolioId, @RequestParam("title") String title) {
+  public Entry portfolioEntryCreation(@RequestParam Long portfolioId, @RequestParam(requestTitle) String title) {
 
     Portfolio portfolio = findPortfolioById(portfolioId);
     Entry entry = new Entry(title);
