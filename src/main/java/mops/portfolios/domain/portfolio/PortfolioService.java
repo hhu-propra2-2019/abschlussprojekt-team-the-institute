@@ -273,6 +273,7 @@ public class PortfolioService {
    * @param template the template to clone
    * @param user     the user of the new portfolio
    */
+  @SuppressWarnings("PMD")
   public Portfolio generateNewPortfolioFromTemplate(Portfolio template, User user) {
     Portfolio portfolio = new Portfolio(template.getTitle(), user);
     for (Entry entry : template.getEntries()) {
