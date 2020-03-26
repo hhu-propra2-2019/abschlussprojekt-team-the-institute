@@ -1,6 +1,9 @@
 package mops.portfolios.domain.file;
 
 import java.io.IOException;
+
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import mops.portfolios.PortfoliosApplication;
 import mops.portfolios.domain.file.FileRepository;
 import mops.portfolios.domain.entry.EntryField;
@@ -11,11 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@AllArgsConstructor
 public class FileService {
   private static final transient Logger logger =
           LoggerFactory.getLogger(PortfoliosApplication.class);
 
-  @Autowired
+  @Autowired @NonNull
   private transient FileRepository fileRepository;
 
   /**
@@ -54,6 +58,8 @@ public class FileService {
 
 
   public void updateField(MultipartFile file, EntryField field) {
+    System.out.println(field.getContent());
+    System.out.println(file.getName());
     fileRepository.saveFile(file, field);
   }
 }

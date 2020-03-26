@@ -37,7 +37,7 @@ public class UserController {
   private transient UserService userService;
   private transient PortfolioService portfolioService;
   private transient EntryService entryService;
-  private final transient FileService fileService = new FileService();
+  private final transient FileService fileService;
 
   /**
    * Redirect to main page.

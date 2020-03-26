@@ -27,13 +27,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RolesAllowed({"ROLE_orga"})
 @AllArgsConstructor
 public class AdminController {
-  private final transient FileService fileService = new FileService();
-  private final transient EntryService entryService = new EntryService();
-
+  private final transient FileService fileService;
+  private final transient EntryService entryService;
   private transient AccountService accountService;
-
   private transient PortfolioService portfolioService;
-
   private transient AsciiDocConverter asciiConverter;
 
   /**
@@ -80,7 +77,6 @@ public class AdminController {
                              @RequestParam(required = false) Long entryId) {
     accountService.authorize(model, token);
     model.addAttribute("template", portfolioService.findPortfolioById(templateId));
-
 
     portfolioService.getPortfoliosTemplatesToView(model, templateId, entryId, "templateEntry");
 

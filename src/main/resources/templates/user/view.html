@@ -124,7 +124,7 @@
                 </div>
 
                 <div th:case="${AnswerType.ATTACHEMENT}">
-                    <form method="post" th:action="@{/portfolio/user/updateRadio(portfolioId=${portfolio.getId()},entryId=${portfolioEntry.getId()},entryFieldId=${field.getId()})}"
+                    <form method="post" enctype="multipart/form-data" th:action="@{/portfolio/user/uploadFile(portfolioId=${portfolio.getId()},entryId=${portfolioEntry.getId()},entryFieldId=${field.getId()})}"
                           th:id="'singleChoice' + ${field.getId()}">
                         <label>
                             <u th:text="${fieldQuestion}">Question</u>
@@ -132,7 +132,7 @@
                         <br>
                         <div class="custom-file w-50">
                             <input class="custom-file-input" name="file" id="INPUT_FILE" required th:accept="${fieldHint}"
-                                   type="file">
+                                   type="file" th:text="${field.getContent()}">
                             <label class="custom-file-label" for="INPUT_FILE">Datei auswählen</label>
                         </div>
                         <button class="btn btn-primary"  type="submit">Absenden</button>

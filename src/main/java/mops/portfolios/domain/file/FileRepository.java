@@ -26,7 +26,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 @Repository
 public class FileRepository {
-
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
   private static String bucketName = "portfolios";
   private transient MinioClient minioClient;
