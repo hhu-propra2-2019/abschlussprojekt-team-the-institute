@@ -115,7 +115,7 @@ public class DatabaseUpdaterTest {
     JSONObject jsonObject = new JSONObject(response);
 
     boolean result = databaseUpdater.isNotModified(jsonObject);
-    assertEquals(true, result);
+    assertTrue(result);
   }
 
   @SuppressWarnings("PMD")
@@ -278,9 +278,7 @@ public class DatabaseUpdaterTest {
             "}";
 
     databaseUpdater.updateDatabaseEvents(response);
-
-    List<Long> groupIds = new ArrayList<>();
-    groupIds.add(2L);
+    
     List<User> users = new ArrayList<>();
     User user1 = new User();
     user1.setName("student");
