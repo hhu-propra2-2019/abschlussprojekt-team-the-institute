@@ -5,6 +5,8 @@ import javax.persistence.EntityManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import mops.portfolios.demodata.DemoDataGenerator;
+import mops.portfolios.domain.FileRepository;
+import mops.portfolios.domain.entry.EntryFieldRepository;
 import mops.portfolios.domain.group.GroupRepository;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioRepository;
