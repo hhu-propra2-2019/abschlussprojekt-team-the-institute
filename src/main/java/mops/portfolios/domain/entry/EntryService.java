@@ -37,45 +37,12 @@ public class EntryService {
     entryRepository.save(entry);
   }
   
+  public void updateEntryFields(RedirectAttributes redirect, @RequestParam Long entryId, @RequestParam Long entryFieldId, @RequestParam("content") String newContent, Entry entry) {
+    EntryField field = findFieldById(entry, entryFieldId);
 
-  /**
-   * Creates and adds an EntryField to an Entry.
-   * @param entryId the id of the entry the field is to be added
-   * @param question the question or title of the field to be added
-   * @param hint a hint
-   * @param portfolio the portfolio the entry belongs to
-   */
-  public void createAndAddField(Long entryId, String question, String hint, Portfolio portfolio) {
-    Objects.requireNonNull(entryId);
-    Entry entry;
-    if (portfolioService.findEntryInPortfolioById(portfolio,entryId) != null) {
-      entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
-    } else {
-      entry = new Entry();
-    }
-    EntryField field = new EntryField();
-    entry.getFields().add(field);
+    field.setContent(newContent);
+    update(entry);
 
-    field.setTitle(question);
-    if (hint == null) {
-      hint = "Some hint";
-    }
-    field.setContent(AnswerType.TEXT + ";" + hint);
   }
-
-  /* FIXME: DELETE IF NOT REQUIRED
-   * Get the last entry in the provided Set.
-   * @param entries The Set of Entries
-   * @return the last entry in the provided Set
-   */
-  /*
-  @SuppressWarnings("PMD")
-  public Entry getLast(Set<Entry> entries) {
-    Iterator itr = entries.iterator();
-    Entry last = (Entry)itr.next();
-    while (itr.hasNext()) {
-      last = (Entry)itr.next();
-    }
-    return last;
-  }*/
+  
 }

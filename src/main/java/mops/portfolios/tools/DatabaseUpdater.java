@@ -138,7 +138,14 @@ public class DatabaseUpdater {
 
       JSONObject group = (JSONObject) groupElement;
       Long groupId = group.getBigInteger("id").longValue();
-      String title = group.getString("title");
+
+      String title = null;
+
+      if (!group.isNull("title")) {
+        title = group.getString("title");
+
+      }
+
       JSONArray members = group.getJSONArray("members");
 
       List<User> userList = new ArrayList<>();
@@ -158,7 +165,7 @@ public class DatabaseUpdater {
           groupRepository.deleteById(groupId);
           logger.info("Group deleted: " + groupId);
         }
-        for (User user: userList) {
+        for (User user : userList) {
           if (userRepository.findOneByName(user.getName()) == null) {
             userRepository.save(user);
             logger.info("Couldn't find user. Added " + user.getName());

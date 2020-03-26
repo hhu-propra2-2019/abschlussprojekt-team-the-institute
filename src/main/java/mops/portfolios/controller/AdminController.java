@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/portfolio/admin")
 @RolesAllowed({"ROLE_orga"})
 @AllArgsConstructor
 public class AdminController {
@@ -46,7 +46,7 @@ public class AdminController {
   public String redirect(Model model, KeycloakAuthenticationToken token) {
     accountService.authorize(model, token);
 
-    return "redirect:/admin/list";
+    return "redirect:/portfolio/admin/list";
   }
 
   /**
@@ -71,7 +71,7 @@ public class AdminController {
    *
    * @param model      The spring model to add the attributes to
    * @param templateId The ID of the template
-   * @param entryId The ID of the entry
+   * @param entryId    The ID of the entry
    * @return The page to load
    */
   @GetMapping("/view")
@@ -79,59 +79,12 @@ public class AdminController {
                              @RequestParam Long templateId,
                              @RequestParam(required = false) Long entryId) {
     accountService.authorize(model, token);
+    model.addAttribute("template", portfolioService.findPortfolioById(templateId));
 
-    Portfolio template = portfolioService.findPortfolioById(templateId);
-    model.addAttribute("template", template);
 
-    if (entryId == null && !template.getEntries().isEmpty()) {
-      entryId = template.getEntries().stream().findFirst().get().getId();
-    }
-
-    if (entryId != null) {
-      Entry entry = portfolioService.findEntryInPortfolioById(template, entryId);
-      model.addAttribute("templateEntry", entry);
-    }
+    portfolioService.getTemplatesToView(model, templateId, entryId);
 
     return "admin/view";
-  }
-
-  /**
-   * Upload mapping for GET requests.
-   *
-   * @param model The spring model to add the attributes to
-   * @return The page to load
-   */
-  @GetMapping("/upload")
-  public String uploadAscii(Model model, KeycloakAuthenticationToken token) {
-    accountService.authorize(model, token);
-
-    model.addAttribute("templateList", portfolioService.findAllTemplates());
-
-    return "admin/asciidoc/upload";
-  }
-
-  /**
-   * View mapping for POST requests.
-   *
-   * @param model The spring model to add the attributes to
-   * @param file  The uploaded (AsciiDoc) template file
-   * @return The page to load
-   */
-  @SuppressWarnings("PMD")
-  @PostMapping("/viewAscii")
-  public String viewUploadedAscii(Model model, @RequestParam("file") MultipartFile file,
-                                  KeycloakAuthenticationToken token) {
-    accountService.authorize(model, token);
-
-    if (fileService.nothingUploaded(file)) {
-      return "admin/asciidoc/upload";
-    }
-
-    byte[] fileBytes = fileService.readFile(file);
-    String text = new String(fileBytes, StandardCharsets.UTF_8);
-    String html = asciiConverter.convertToHtml(text);
-    model.addAttribute("html", html);
-    return "admin/asciidoc/view";
   }
 
 
@@ -139,7 +92,7 @@ public class AdminController {
   /**
    * Create Template mapping for POST requests.
    *
-   * @param model         The spring model to add the attributes to
+   * @param model The spring model to add the attributes to
    * @param title The title of the new template
    * @return The page to load
    */
@@ -149,17 +102,12 @@ public class AdminController {
                                @RequestParam("title") String title) {
     accountService.authorize(model, token);
 
-    User user = new User();
-    user.setName(token.getName()); // FIXME: Nutzen wir auch an jeder Stelle diese Methode? \
-    // Geht es ohne user id auch klar?
-
-    Portfolio portfolio = new Portfolio(title, user);
-    portfolio.setTemplate(true);
-    portfolio = portfolioService.update(portfolio);
+    accountService.authorize(model, token);
+    Portfolio portfolio = portfolioService.getTemplate(token, title);
 
     redirect.addAttribute("templateId", portfolio.getId());
 
-    return "redirect:/admin/view";
+    return "redirect:/portfolio/admin/view";
   }
 
 
@@ -178,18 +126,15 @@ public class AdminController {
                                     @RequestParam("title") String title) {
     accountService.authorize(model, token);
 
-    Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    Entry entry = new Entry(title);
-    portfolio.getEntries().add(entry);
-
-    portfolio = portfolioService.update(portfolio);
-    entry = portfolioService.findLastEntryInPortfolio(portfolio);
+    Entry entry = portfolioService.portfolioEntryCreation(templateId,title);
 
     redirect.addAttribute("templateId", templateId);
     redirect.addAttribute("entryId", entry.getId());
 
-    return "redirect:/admin/view";
+    return "redirect:/portfolio/admin/view";
   }
+
+
 
   /**
    * Create Template Entry mapping for POST requests.
@@ -207,18 +152,60 @@ public class AdminController {
                                     @RequestParam Long templateId,
                                     @RequestParam Long entryId,
                                     @RequestParam("question") String question,
+                                    @RequestParam("fieldType") String fieldType,
                                     @RequestParam(value = "hint", required = false) String hint) {
     accountService.authorize(model, token);
 
-    Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    entryService.createAndAddField(entryId, question, hint, portfolio);
-    portfolioService.update(portfolio);
+    portfolioService.templateFieldCreation(templateId, entryId, question, fieldType, hint);
 
-    redirect.addAttribute("templateId", templateId);
     redirect.addAttribute("entryId", entryId);
-
-    return "redirect:/admin/view";
+    redirect.addAttribute("templateId", templateId);
+    return "redirect:/portfolio/admin/view";
   }
 
+  /**
+   * Delete Template mapping for POST requests.
+   *
+   * @param model      The spring model to add the attributes to
+   * @param templateId The id of the template
+   * @return The page to load
+   */
+  @PostMapping("/deleteTemplate")
+  public String deleteTemplate(Model model,
+                               KeycloakAuthenticationToken token,
+                               @RequestParam Long templateId) {
+    accountService.authorize(model, token);
+    portfolioService.deletePortfolioById(templateId);
+
+    return "redirect:/portfolio/admin/list";
+  }
+
+  /**
+   * Upload Template mapping for POST requests.
+   *
+   * @param model      The spring model to add the attributes to
+   * @param templateId The id of the template
+   * @return The page to load
+   */
+  @SuppressWarnings("PMD")
+  @PostMapping("/uploadTemplate")
+  public String uploadTemplate(Model model,
+                               KeycloakAuthenticationToken token,
+                               @RequestParam Long templateId,
+                               @RequestParam("file") MultipartFile file) {
+    accountService.authorize(model, token);
+
+    if (fileService.nothingUploaded(file)) {
+      return "admin/asciidoc/upload";
+    }
+
+    byte[] fileBytes = fileService.readFile(file);
+
+    String text = new String(fileBytes, StandardCharsets.UTF_8);
+    String html = asciiConverter.convertToHtml(text);
+    model.addAttribute("html", html);
+
+    return "admin/asciidoc/view";
+  }
 
 }

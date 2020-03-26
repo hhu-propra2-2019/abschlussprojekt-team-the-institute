@@ -11,6 +11,8 @@
                   required></textarea>
     </div>
 
+    <input name="fieldType" value="TEXT" hidden>
+
 </div>
 
 <div th:fragment="addSingleChoiceField">
@@ -21,13 +23,27 @@
                 <input type="radio">
             </div>
         </div>
-        <input type="text" class="form-control">
+        <input type="text" class="form-control" oninput="updateSingleChoiceHint()">
     </div>
 
     <button class="btn" type="button"
             onclick="let option = this.previousElementSibling; let optionClone = option.cloneNode(true); option.parentNode.insertBefore(optionClone, this);">
         <i class="fas fa-plus"></i>
     </button>
+
+    <input name="fieldType" value="SINGLE_CHOICE" hidden>
+    <input name="hint" id="HINT_SINGLECHOICE" hidden>
+
+    <script>
+        function updateSingleChoiceHint() {
+            let HINT_SINGLECHOICE = document.getElementById('HINT_SINGLECHOICE');
+            let hint = '';
+            for (let inputs of HINT_SINGLECHOICE.parentElement.getElementsByClassName('form-control')) {
+                hint += (',' + inputs.value);
+            }
+            HINT_SINGLECHOICE.value = hint.replace(',', '');
+        }
+    </script>
 
 </div>
 
@@ -39,7 +55,7 @@
                 <input type="checkbox">
             </div>
         </div>
-        <input type="text" class="form-control">
+        <input type="text" class="form-control" oninput="updateMultiChoiceHint()">
     </div>
 
     <button class="btn" type="button"
@@ -47,17 +63,30 @@
         <i class="fas fa-plus"></i>
     </button>
 
+    <input name="fieldType" value="MULTIPLE_CHOICE" hidden>
+    <input name="hint" id="HINT_MULTICHOICE" hidden>
+
+    <script>
+        function updateMultiChoiceHint() {
+            let HINT_MULTICHOICE = document.getElementById('HINT_MULTICHOICE');
+            let hint = '';
+            for (let inputs of HINT_MULTICHOICE.parentElement.getElementsByClassName('form-control')) {
+                hint += (',' + inputs.value);
+            }
+            HINT_MULTICHOICE.value = hint.replace(',', '');
+        }
+    </script>
+
 </div>
 
 <div th:fragment="addSliderField" class="row">
-
-    <!--<label for="INPUT_SLIDER">Example range</label>-->
 
     <div class="input-group col-4">
         <div class="input-group-prepend">
             <span class="input-group-text">Min.</span>
         </div>
-        <input id="INPUT_MIN" type="number" class="form-control" placeholder="1" required>
+        <input id="INPUT_SLIDER_MIN" type="number" class="form-control" placeholder="1" required
+               oninput="updateSliderHint()">
     </div>
 
     <div class="col">
@@ -69,8 +98,21 @@
         <div class="input-group-prepend">
             <span class="input-group-text">Max.</span>
         </div>
-        <input type="number" class="form-control" placeholder="10" required>
+        <input id="INPUT_SLIDER_MAX" type="number" class="form-control" placeholder="10" required
+               oninput="updateSliderHint()">
     </div>
+
+    <input name="fieldType" value="NUMBER_SLIDER" hidden>
+    <input name="hint" id="HINT_SLIDER" hidden>
+
+    <script>
+        function updateSliderHint() {
+            let HINT_SLIDER = document.getElementById('HINT_SLIDER');
+            let INPUT_SLIDER_MIN = document.getElementById('INPUT_SLIDER_MIN');
+            let INPUT_SLIDER_MAX = document.getElementById('INPUT_SLIDER_MAX');
+            HINT_SLIDER.value = INPUT_SLIDER_MIN.value + "," + INPUT_SLIDER_MAX.value;
+        }
+    </script>
 
 </div>
 
@@ -83,6 +125,8 @@
         <input type="text" class="form-control" name="hint"
                placeholder="zB. .pdf,.ascii,.adoc,.java,..." required>
     </div>
+
+    <input name="fieldType" value="ATTACHEMENT" hidden>
 
 </div>
 

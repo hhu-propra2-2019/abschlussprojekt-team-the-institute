@@ -27,67 +27,29 @@ public class PortfoliosApplication {
 
   final @NonNull EntityManager entityManager;
   final @NonNull PortfolioRepository repository;
+  final @NonNull FileRepository fileRepository;
+  final @NonNull EntryFieldRepository entryFieldRepository;
 
-  /** Starts the application.
+  /**
+   * Starts the application.
+   *
    * @param args - command-line arguments
    */
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args){
     SpringApplication.run(PortfoliosApplication.class, args);
   }
 
-    // PLS DO NOT document this - we remove this before release, this runner is just a playground.
-    @Bean
-    public CommandLineRunner demo(StateService stateService, PortfolioService portfolioService) {
-        return (args) -> {
-      /*      Set<String> roles = new HashSet<>(Arrays.asList("student"));
+  @Bean
+  public CommandLineRunner demo(StateService stateService, PortfolioService portfolioService) {
+    return (args) -> {
 
-            User user1 = new User("User1", "mail1@example.com", null, roles, "UUID-1234-5678");
-            User user2 = new User("User2", "mail2@example.com", null, roles, "UUID-4321-9876");
+      DemoDataGenerator demo = new DemoDataGenerator();
+      for (int i = 0; i < 4; i++) {
+        repository.save(demo.generateUserPortfolio());
+        repository.save(demo.generateGroupPortfolio());
+        repository.save(demo.generateTemplate());
+      }
 
-            Group group1 = new Group(123L, "Group1");
-
-            UserGroup userGroup1 = new UserGroup(user1.getId(), group1.getId(), "title11111111111");
-            UserGroup userGroup2 = new UserGroup(user2.getId(), group1.getId(), "title22222222222");
-
-            repository.save(userGroup1);
-            repository.save(userGroup2); */
-
-            log.info("1==================================================================================");
-            log.info("2==================================================================================");
-            log.info("3==================================================================================");
-            log.info("4==================================================================================");
-            log.info("5==================================================================================");
-            log.info("6==================================================================================");
-            log.info("7==================================================================================");
-
-     DemoDataGenerator demo = new DemoDataGenerator();
-
-            for (int i = 0; i < 10; i++) {
-                repository.save(demo.generateUserPortfolio());
-                repository.save(demo.generateGroupPortfolio());
-                repository.save(demo.generateTemplate());
-            }
-
-            log.info("8==================================================================================");
-            log.info("Non-templates:");
-
-            for (Portfolio portfolio : portfolioService.findAllPortfolios()) {
-                log.info(portfolio.toString());
-            }
-
-            log.info("9==================================================================================");
-            log.info("Templates:");
-            for (Portfolio portfolio : portfolioService.findAllTemplates()) {
-                log.info(portfolio.toString());
-            }
-
-            log.info(stateService.getState("gruppenbildung2").toString());
-
-            stateService.setState("gruppenbildung2", Math.abs(new Random().nextLong()));
-
-            log.info(stateService.getState("gruppenbildung2").toString());
-
-
-        };
-    }
+    };
+  }
 }
