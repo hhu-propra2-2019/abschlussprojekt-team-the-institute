@@ -1,5 +1,6 @@
 package mops.portfolios;
 
+import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioRepository;
@@ -50,6 +51,15 @@ public class PortfolioServiceTest {
         assert(listOfGroupPortfolios.contains(portfolio3));
         assert(listOfGroupPortfolios.contains(portfolio4));
 
+    }
+
+    @Test
+    public void findNoEntryByIdInEmptyPortfolioTest() {
+        Portfolio testPortfolio = new Portfolio();
+
+        Entry testEntry = portfolioService.findEntryById(testPortfolio, 0L);
+
+        assert(testEntry == null);
     }
 
 
