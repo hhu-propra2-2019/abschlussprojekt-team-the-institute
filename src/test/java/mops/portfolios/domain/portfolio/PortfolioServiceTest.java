@@ -10,8 +10,7 @@ import mops.portfolios.domain.user.User;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.keycloak.representations.AccessToken;
+
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -142,7 +141,7 @@ public class PortfolioServiceTest {
 
     when(repository.findById(1L)).thenReturn(Optional.of(portfolio));
 
-    Portfolio updatedPortfolio = portfolioService.getPortfolio(token, "1" , "Lorem", "true");
+    Portfolio updatedPortfolio = portfolioService.getNewPortfolio(token, "1" , "Lorem", "true");
 
     Assert.assertEquals(portfolio, updatedPortfolio);
 

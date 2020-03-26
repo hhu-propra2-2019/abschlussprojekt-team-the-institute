@@ -196,7 +196,7 @@ public class UserController {
                                 @RequestParam("isTemplate") String isTemplate) {
     accountService.authorize(model, token);
 
-    Portfolio portfolio = portfolioService.getPortfolio(token, templateId, title, isTemplate);
+    Portfolio portfolio = portfolioService.getNewPortfolio(token, templateId, title, isTemplate);
 
     redirect.addAttribute("portfolioId", portfolio.getId());
 
