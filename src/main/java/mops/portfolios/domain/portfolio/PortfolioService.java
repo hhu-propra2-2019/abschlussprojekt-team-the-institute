@@ -25,13 +25,9 @@ public class PortfolioService {
 
   private @NonNull final
   transient PortfolioRepository repository;
-  private transient AccountService accountService;
-  private transient UserService userService;
 
-  public PortfolioService(PortfolioRepository repository, AccountService accountService, UserService userService) {
+  public PortfolioService(PortfolioRepository repository) {
     this.repository = repository;
-    this.accountService = accountService;
-    this.userService = userService;
   }
 
   /**
