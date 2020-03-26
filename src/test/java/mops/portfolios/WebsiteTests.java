@@ -26,12 +26,6 @@ public class WebsiteTests {
 
   @Test
   @WithMockKeycloackAuth(name = nameSt, roles = {nameSt})
-  void testErrorWhenCorrectRoleStudentCreate () throws Exception {
-    mockMvc.perform(get("/portfolio/user/create")).andExpect(MockMvcResultMatchers.status().isOk());
-  }
-
-  @Test
-  @WithMockKeycloackAuth(name = nameSt, roles = {nameSt})
   void testErrorWhenCorrectRoleStudentView () throws Exception {
     mockMvc.perform(get("/portfolio/user/view?portfolioId=1")).andExpect(MockMvcResultMatchers.status().isOk());
   }

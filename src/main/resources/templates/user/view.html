@@ -3,9 +3,7 @@
       th:replace="~{mopslayout :: html(name='Lernportfolio', title='Portfolio ansehen', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 
 <head>
-    <th:block th:fragment="headcontent">
-        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
-    </th:block>
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment"/>
 
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
@@ -15,45 +13,13 @@
                 </a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#MODAL_CREATE_ENTRY">
+                <a href="#" data-toggle="modal" data-target="#MODAL_CREATE_PORTFOLIOENTRY">
                     <p><i class="far fa-calendar-plus fa-lg"></i> Eintrag hinzufügen</p>
                 </a>
             </li>
-            <li th:if="${Entry != null}">
-                <div class="dropdown">
-                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                        <p><i class="far fa-plus-square fa-lg"></i> Feld hinzufügen</p>
-                    </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_TEXT_FIELD">
-                            <p><i class="fas fa-align-left"></i> Text Feld</p>
-                        </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal"
-                           data-target="#MODAL_CREATE_SINGLECHOICE_FIELD">
-                            <p><i class="fas fa-list-ul"></i> Single Choice Feld</p>
-                        </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal"
-                           data-target="#MODAL_CREATE_MULTICHOICE_FIELD">
-                            <p><i class="fas fa-tasks"></i> Multiple Choice Feld</p>
-                        </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_SLIDER_FIELD">
-                            <p><i class="fas fa-sliders-h"></i> Range Slider Feld</p>
-                        </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal"
-                           data-target="#MODAL_CREATE_ATTACHEMENT_FIELD">
-                            <p><i class="fas fa-paperclip"></i> Anhang Feld</p>
-                        </a>
-                    </div>
-                </div>
-            </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#MODAL_UPLOAD_TEMPLATE">
-                    <p><i class="fas fa-file-upload fa-lg"></i> Portfolio hochladen</p>
-                </a>
-            </li>
-            <li>
-                <a href="#" data-toggle="modal" data-target="#MODAL_DELETE_TEMPLATE">
-                    <p><i class="far fa-calendar-minus fa-lg"></i> Portfolio löschen</p>
+                <a href="#" data-toggle="modal" data-target="#MODAL_DELETE_PORTFOLIO">
+                    <p><i class="fas fa-trash-alt fa-lg"></i> Portfolio löschen</p>
                 </a>
             </li>
         </ul>
@@ -61,34 +27,28 @@
 </head>
 
 <body th:fragment="bodycontent"
-      th:replace="fragments/defaults :: defaultBody(title='Vorlage ansehen', description='Hier kannst du eine Vorlage ansehen und editieren.', content=~{::content})">
+      th:replace="fragments/defaults :: defaultBody(title='Portfolio ansehen', description='Hier kannst du ein Portfolio ansehen und ausfüllen.', content=~{::content})">
 
 <div th:fragment="content">
-    <div class="jumbotron pt-1 font-italic">
 
-    <h1 class="display-5">Portfolio ansehen</h1>
-    <p class="lead">Du siehst das Portfolio <u th:text="${portfolio.getTitle()}">Title</u></p>
-    <hr class="my-4">
-
-    <p>TODO: Vorlagen View einbinden -> <a class="btn btn-primary" href="submit">Klick mich</a></p>
-    <br>
+    <p>Du siehst das Portfolio <u th:text="${portfolio.getTitle()}">Title</u></p>
 
     <ul class="nav nav-tabs">
         <li class="nav-item" th:each="entry : ${portfolio.getEntries()}">
             <a class="nav-link" th:href="@{view(portfolioId=${portfolio.getId()},entryId=${entry.getId()})}"
-               th:text="${entry.getTitle()}" th:classappend="${entry.getId() == Entry.getId()} ? 'active'">Entry
+               th:text="${entry.getTitle()}" th:classappend="${entry.getId() == portfolioEntry.getId()} ? 'active'">Entry
                 title</a>
         </li>
     </ul>
 
-    <hr>
     <br>
 
     <div class="tab-content">
 
         <div th:if="${portfolio.getEntries() != null}">
 
-            <div th:each="field : ${Entry.getFields()}" th:switch="${fieldType}"
+
+            <div th:each="field : ${portfolioEntry.getFields()}" th:switch="${fieldType}"
                  th:with="
                   AnswerType = ${T(mops.portfolios.domain.portfolio.templates.AnswerType)},
                   fieldQuestion = ${field.getTitle()},
@@ -192,6 +152,9 @@
 
     </div>
 
+    <div th:replace="fragments/modals :: createPortfolioEntryModal(portfolioId=${portfolio.getId()})"></div>
+    <div th:replace="fragments/modals :: deletePortfolioModal(portfolioId=${portfolio.getId()})"></div>
+
     <!--
     <div class="card">
     <h5 class="card-header">Neuen Eintrag erstellen</h5>
@@ -228,11 +191,6 @@
    </div>
     -->
 </div>
-</div>
-
-<script>
-    $('.nav-tabs a:first').tab('show');
-</script>
 
 </body>
 </html>
