@@ -35,6 +35,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UserController {
 
   private transient AccountService accountService;
+  private transient UserService userService;
   private transient PortfolioService portfolioService;
   private transient EntryService entryService;
 
@@ -59,7 +60,25 @@ public class UserController {
    */
   @GetMapping("/list")
   public String listPortfolios(Model model, KeycloakAuthenticationToken token) {
-    portfolioService.getPortfolioList(model, token);
+
+    accountService.authorize(model, token);
+    String userName = accountService.getUserName(token);
+
+    List<Group> groups = userService.getGroupsByUserName(userName);
+    // TODO Implement optional sublisting with method overload in portfolioService
+    List<Portfolio> groupPortfolios = portfolioService.findAllByGroupList(groups);
+    List<Portfolio> userPortfolios = portfolioService.findAllByUserId(userName);
+    List<Portfolio> allPortfolios = Stream.of(userPortfolios, groupPortfolios)
+            .flatMap(Collection::stream).collect(Collectors.toList());
+
+    List<Portfolio> templateList = portfolioService.findAllTemplates();
+
+    model.addAttribute("groupPortfolios", groupPortfolios);
+    model.addAttribute("userPortfolios", userPortfolios);
+    model.addAttribute("allPortfolios", allPortfolios);
+
+    model.addAttribute("templateList", templateList);
+
 
     return "user/list";
   }
@@ -91,7 +110,9 @@ public class UserController {
                             RedirectAttributes redirectAttributes,
                             @RequestParam Long portfolioId,
                             @RequestParam("title") String title) {
-    portfolioService.createNewEntryForPortfolio(model, token, redirectAttributes, portfolioId, title);
+
+    Portfolio portfolio = portfolioService.getPortfolioWithNewEntry(token, model, portfolioId, title);
+    redirectAttributes.addAttribute("portfolioId", portfolio.getId());
 
     System.out.println("Updated");
     return "redirect:/portfolio/user/view";
@@ -109,8 +130,10 @@ public class UserController {
                             KeycloakAuthenticationToken token, RedirectAttributes redirect,
                             @RequestParam Long portfolioId, @RequestParam Long entryId,
                             @RequestParam("question") String question) {
-    portfolioService.fieldCreation(model, token, redirect, portfolioId, entryId, question);
+    Entry entry = portfolioService.getNewEntry(token, model, entryId, question, portfolioService.findPortfolioById(portfolioId));
 
+    redirect.addAttribute("templateId", portfolioService.findPortfolioById(portfolioId).getId());
+    redirect.addAttribute("entryId", entry.getId());
     return "redirect:/portfolio/user/view";
   }
 
@@ -133,7 +156,9 @@ public class UserController {
                              @RequestParam Long entryId, @RequestParam Long entryFieldId,
                              @RequestParam("content") String newContent) {
     Entry entry = portfolioService.getEntry(model, token, redirect, portfolioId, entryId);
+    redirect.addAttribute("portfolioId", portfolioId);
     entryService.updateEntryFields(redirect, entryId, entryFieldId, newContent, entry);
+    redirect.addAttribute("entryId", entryId);
 
     return "redirect:/portfolio/user/view";
   }
@@ -153,7 +178,9 @@ public class UserController {
                                 @RequestParam(value = "templateId", required = false) String templateId,
                                 @RequestParam(value = "title", required = false) String title,
                                 @RequestParam("isTemplate") String isTemplate) {
-    portfolioService.portfolioCreation(model, token, redirect, templateId, title, isTemplate);
+    Portfolio portfolio = portfolioService.getPortfolio(model, token, templateId, title, isTemplate);
+
+    redirect.addAttribute("portfolioId", portfolio.getId());
 
     return "redirect:/portfolio/user/view";
   }
@@ -172,7 +199,10 @@ public class UserController {
                                     KeycloakAuthenticationToken token, RedirectAttributes redirect,
                                     @RequestParam Long portfolioId,
                                     @RequestParam("title") String title) {
-    portfolioService.portfolioEntryCreation(model, token, redirect, portfolioId, title);
+    Entry entry = portfolioService.portfolioEntryCreation(model, token, portfolioId, title);
+
+    redirect.addAttribute("portfolioId", portfolioId);
+    redirect.addAttribute("entryId", entry.getId());
 
     return "redirect:/portfolio/user/view";
   }

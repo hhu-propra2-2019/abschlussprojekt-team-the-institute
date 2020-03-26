@@ -49,7 +49,6 @@ public class EntryService {
     field.setContent(newContent);
     update(entry);
 
-    redirect.addAttribute("entryId", entryId);
   }
 
 }

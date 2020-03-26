@@ -143,7 +143,9 @@ public class PortfolioService {
     entry.getFields().add(field);
   }
 
-  public Entry getNewEntry(@RequestParam Long entryId, @RequestParam("question") String question, Portfolio portfolio) {
+  public Entry getNewEntry(KeycloakAuthenticationToken token, Model model, @RequestParam Long entryId, @RequestParam("question") String question, Portfolio portfolio) {
+    accountService.authorize(model, token);
+
     Entry entry;
     if (findEntryInPortfolioById(portfolio,entryId) != null) {
       entry = findEntryInPortfolioById(portfolio, entryId);
@@ -162,8 +164,10 @@ public class PortfolioService {
     return entry;
   }
 
-  public Portfolio getPortfolioWithNewEntry(@RequestParam Long portfolioId, @RequestParam("title") String title) {
+  public Portfolio getPortfolioWithNewEntry(KeycloakAuthenticationToken token, Model model, @RequestParam Long portfolioId, @RequestParam("title") String title) {
     Objects.requireNonNull(portfolioId);
+    accountService.authorize(model, token);
+
     DemoDataGenerator dataGenerator = new DemoDataGenerator();
 
     Portfolio portfolio;
@@ -205,7 +209,9 @@ public class PortfolioService {
     redirect.addAttribute("entryId", entryId);
   }
 
-  public void templateCreation(KeycloakAuthenticationToken token, RedirectAttributes redirect, @RequestParam("title") String title) {
+  public Portfolio getTemplate(Model model, KeycloakAuthenticationToken token, @RequestParam("title") String title) {
+    accountService.authorize(model, token);
+
     User user = new User();
     user.setName(token.getName()); // FIXME: Nutzen wir auch an jeder Stelle diese Methode? \
     // Geht es ohne user id auch klar?
@@ -213,11 +219,12 @@ public class PortfolioService {
     Portfolio portfolio = new Portfolio(title, user);
     portfolio.setTemplate(true);
     portfolio = update(portfolio);
-
-    redirect.addAttribute("templateId", portfolio.getId());
+    return portfolio;
   }
 
-  public void getTemplatesToView(Model model, @RequestParam Long templateId, @RequestParam(required = false) Long entryId) {
+  public void getTemplatesToView(Model model, @RequestParam Long templateId, @RequestParam(required = false) Long entryId, KeycloakAuthenticationToken token) {
+    accountService.authorize(model, token);
+
     Portfolio template = findPortfolioById(templateId);
     model.addAttribute("template", template);
 
@@ -229,26 +236,6 @@ public class PortfolioService {
       Entry entry = findEntryInPortfolioById(template, entryId);
       model.addAttribute("templateEntry", entry);
     }
-  }
-
-  public void getPortfolioList(Model model, KeycloakAuthenticationToken token) {
-    accountService.authorize(model, token);
-    String userName = accountService.getUserName(token);
-
-    List<Group> groups = userService.getGroupsByUserName(userName);
-    // TODO Implement optional sublisting with method overload in portfolioService
-    List<Portfolio> groupPortfolios = findAllByGroupList(groups);
-    List<Portfolio> userPortfolios = findAllByUserId(userName);
-    List<Portfolio> allPortfolios = Stream.of(userPortfolios, groupPortfolios)
-            .flatMap(Collection::stream).collect(Collectors.toList());
-
-    List<Portfolio> templateList = findAllTemplates();
-
-    model.addAttribute("groupPortfolios", groupPortfolios);
-    model.addAttribute("userPortfolios", userPortfolios);
-    model.addAttribute("allPortfolios", allPortfolios);
-
-    model.addAttribute("templateList", templateList);
   }
 
   public void getPortfoliosToView(Model model, KeycloakAuthenticationToken token, @RequestParam Long portfolioId, @RequestParam(required = false) Long entryId) {
@@ -268,36 +255,15 @@ public class PortfolioService {
     }
   }
 
-  public void createNewEntryForPortfolio(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirectAttributes, @RequestParam Long portfolioId, @RequestParam("title") String title) {
-    accountService.authorize(model, token);
-    Portfolio portfolio = getPortfolioWithNewEntry(portfolioId, title);
-
-    // Ist portofolioId und portfolio.getId() unterschiedlich?
-    redirectAttributes.addAttribute("portfolioId", portfolio.getId());
-  }
-
-  public void fieldCreation(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirect, @RequestParam Long portfolioId, @RequestParam Long entryId, @RequestParam("question") String question) {
-    accountService.authorize(model, token);
-
-    Portfolio portfolio = findPortfolioById(portfolioId);
-
-    Entry entry = getNewEntry(entryId, question, portfolio);
-
-    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
-    redirect.addAttribute("templateId", portfolio.getId());
-    redirect.addAttribute("entryId", entry.getId());
-  }
-
   public Entry getEntry(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirect, @RequestParam Long portfolioId, @RequestParam Long entryId) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = findPortfolioById(portfolioId);
     Entry entry = findEntryInPortfolioById(portfolio, entryId);
-    redirect.addAttribute("portfolioId", portfolioId);
     return entry;
   }
 
-  public void portfolioCreation(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirect, @RequestParam(value = "templateId", required = false) String templateId, @RequestParam(value = "title", required = false) String title, @RequestParam("isTemplate") String isTemplate) {
+  public Portfolio getPortfolio(Model model, KeycloakAuthenticationToken token, @RequestParam(value = "templateId", required = false) String templateId, @RequestParam(value = "title", required = false) String title, @RequestParam("isTemplate") String isTemplate) {
     accountService.authorize(model, token);
 
     User user = new User();
@@ -315,11 +281,10 @@ public class PortfolioService {
     }
 
     portfolio = update(portfolio);
-
-    redirect.addAttribute("portfolioId", portfolio.getId());
+    return portfolio;
   }
 
-  public void portfolioEntryCreation(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirect, @RequestParam Long portfolioId, @RequestParam("title") String title) {
+  public Entry portfolioEntryCreation(Model model, KeycloakAuthenticationToken token, @RequestParam Long portfolioId, @RequestParam("title") String title) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = findPortfolioById(portfolioId);
@@ -328,9 +293,7 @@ public class PortfolioService {
 
     portfolio = update(portfolio);
     entry = findLastEntryInPortfolio(portfolio);
-
-    redirect.addAttribute("portfolioId", portfolioId);
-    redirect.addAttribute("entryId", entry.getId());
+    return entry;
   }
 
 }
