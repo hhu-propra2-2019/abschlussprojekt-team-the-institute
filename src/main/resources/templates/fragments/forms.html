@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
+<!----------------------------[Admin]---------------------------------------------->
+
 <form method="post" th:fragment="createTemplateForm"
       th:action="@{createTemplate}">
 
@@ -98,6 +100,94 @@
         }
     </script>
 
+</form>
+
+<!----------------------------[User]---------------------------------------------->
+
+<form method="post" th:fragment="createPortfolioForm"
+      th:action="@{createPortfolio}">
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#personal">Persönlich</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#template">Mit Vorlage</a>
+        </li>
+    </ul>
+
+    <br>
+
+    <div class="tab-content">
+
+        <div class="tab-pane fade show active" id="personal">
+
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Titel des Portfolios</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Portfolio Name" name="title">
+            </div>
+
+        </div>
+
+        <div class="tab-pane fade" id="template">
+
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="SELECT_TEMPLATE">Vorlage auswählen</label>
+                </div>
+                <select class="custom-select" id="SELECT_TEMPLATE" name="templateId">
+                    <option th:each="template : ${templateList}" th:text="${template.getTitle()}" th:value="${template.getId()}">Template</option>
+                </select>
+            </div>
+
+        </div>
+
+        <input name="isTemplate" id="isTemplate" value="true" hidden onclick="updateIsTemplate()">
+
+        <script>
+            function updateIsTemplate() {
+                let isTemplate = document.getElementById("isTemplate");
+                let templateTab = document.getElementById("template");
+
+                if(templateTab.classList.contains("active") && templateTab.classList.contains("show")) {
+                    isTemplate.value = "true";
+                } else {
+                    isTemplate.value = "false";
+                }
+            }
+        </script>
+
+    </div>
+
+    <hr>
+    <button type="submit" class="btn btn-primary" onclick="updateIsTemplate()">Portfolio erstellen</button>
+
+</form>
+
+<form method="post" th:fragment="createPortfolioEntryForm"
+      th:action="@{createPortfolioEntry(portfolioId=${portfolioId})}">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Titel</span>
+        </div>
+        <input type="text" class="form-control" name="title"
+               placeholder="zB. Woche 1, Woche 2, ..." required>
+    </div>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Eintrag hinzufügen</button>
+</form>
+
+<form method="post" th:fragment="deletePortfolioForm"
+      th:action="@{deletePortfolio(portfolioId=${portfolioId})}">
+
+    <p>Möchtest du das Portfolio wirklich löschen?</p>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Löschen</button>
 </form>
 
 </html>

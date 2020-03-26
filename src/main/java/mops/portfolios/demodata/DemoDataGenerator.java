@@ -29,7 +29,7 @@ public class DemoDataGenerator {
   private EntryField generateEntryField(Entry entry) {
     EntryField entryField = new EntryField();
     entryField.setAttachment(faker.shakespeare().hamletQuote());
-    entryField.setContent(faker.shakespeare().kingRichardIIIQuote());
+    entryField.setContent(getRandomElement(templateEntryFieldContents));
     entryField.setTitle(faker.shakespeare().romeoAndJulietQuote());
     return entryField;
   }

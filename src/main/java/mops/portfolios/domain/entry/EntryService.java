@@ -10,6 +10,7 @@ import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -18,13 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @NoArgsConstructor
 public class EntryService {
 
-  @NonNull
+  @NonNull @Autowired
   transient EntryRepository entryRepository;
 
-  @NonNull
+  @NonNull @Autowired
   transient EntryFieldRepository entryFieldRepository;
 
-  @NonNull
+  @NonNull @Autowired
   transient PortfolioService portfolioService;
 
   @SuppressWarnings("PMD")

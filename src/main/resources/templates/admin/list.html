@@ -4,9 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <th:block th:fragment="headcontent">
-        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
-    </th:block>
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment"/>
 
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
