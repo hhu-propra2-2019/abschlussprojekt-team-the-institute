@@ -56,40 +56,6 @@ public class PortfoliosApplication {
         repository.save(demo.generateTemplate());
       }
 
-      /*
-       * This is an example of using FileRepository
-       * If you want to test it this way, provide a valid
-       * path to any file in the right format for your OS.
-       * This example uses a file placed in /tmp/pic.png
-       * (Linux)
-       */
-
-      Path path = Paths.get("/tmp/pic.png");
-      String name = "pic.png";
-      String originalFileName = "/tmp/pic.png";
-      String contentType = "image/png";
-
-      byte[] content = null;
-
-      try {
-        content = Files.readAllBytes(path);
-      } catch (final IOException e) {
-        System.out.println(e.toString());
-      }
-
-      MultipartFile result = new MockMultipartFile(name,
-          originalFileName, contentType, content);
-
-      EntryField entryField = new EntryField();
-
-      fileRepository.saveFile(result, entryField);
-
-        if (entryField.getAttachment() != null) {
-            System.out.println(
-                fileRepository.getFileUrl(entryField.getAttachment())
-            );
-        }
-
     };
   }
 }
