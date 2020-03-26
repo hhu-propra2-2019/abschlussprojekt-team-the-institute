@@ -86,7 +86,7 @@
 
     <div class="tab-content">
 
-        <form th:if="${portfolio.getEntries() != null}">
+        <div th:if="${portfolio.getEntries() != null}">
 
             <div th:each="field : ${Entry.getFields()}" th:switch="${fieldType}"
                  th:with="
@@ -96,8 +96,17 @@
                   fieldType = ${AnswerType.valueOf(fieldData[0])},
                   fieldHint = ${fieldData[1]}">
 
-                <div th:case="${AnswerType.TEXT}"
-                     th:insert="fragments/entryfields :: textField(${fieldQuestion}, ${fieldHint})"></div>
+                <div th:case="${AnswerType.TEXT}">
+                    <form method="post" th:action="@{/portfolio/user/update(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
+                          th:id="'textForm' + ${field.getId()}">
+                        <label for="INPUT_TEXT">
+                            <u th:text="${fieldQuestion}">Question</u>
+                        </label>
+                        <textarea class="form-control" id="INPUT_TEXT" th:form="'textForm' + ${field.getId()}" name="content" required
+                                  th:text="${fieldHint}"></textarea>
+                        <input type="submit">
+                    </form>
+                </div>
 
                 <div th:case="${AnswerType.SINGLE_CHOICE}"
                      th:insert="fragments/entryfields :: singlechoiceField(${fieldQuestion}, ${fieldHint})"></div>
@@ -120,7 +129,7 @@
 
             <button class="btn btn-primary" disabled type="submit">Absenden</button>
 
-        </form>
+        </div>
 
     </div>
 

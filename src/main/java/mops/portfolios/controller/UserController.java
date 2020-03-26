@@ -18,6 +18,7 @@ import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.UserService;
+import org.jruby.RubyProcess;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -197,9 +198,12 @@ public class UserController {
    * @return - redirects to /view
    */
   @PostMapping("/update")
-  public String updateFields(Model model, KeycloakAuthenticationToken token,
-                             RedirectAttributes redirect, @RequestParam Long portfolioId,
-                             @RequestParam Long entryId, @RequestParam Long entryFieldId,
+  public String updateFields(Model model,
+                             KeycloakAuthenticationToken token,
+                             RedirectAttributes redirect,
+                             @RequestParam Long portfolioId,
+                             @RequestParam Long entryId,
+                             @RequestParam Long entryFieldId,
                              @RequestParam("content") String newContent) {
     accountService.authorize(model, token);
 
@@ -207,10 +211,13 @@ public class UserController {
     Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
     EntryField field = entryService.findFieldById(entry, entryFieldId);
 
-    field.setContent(newContent);
+    String[] content = field.getContent().split(";");
+    content[1] = newContent;
+    field.setContent(content[0] + ";" + content[1]);
     entryService.update(entry);
 
     // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
+    //System.out.println("Updated");
     redirect.addAttribute("portfolioId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());
     return "redirect:/portfolio/user/view";
