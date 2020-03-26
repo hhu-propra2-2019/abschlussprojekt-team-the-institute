@@ -42,10 +42,7 @@ public class PortfoliosApplication {
 
     private static final Logger log = LoggerFactory.getLogger(PortfoliosApplication.class);
 
-    final @NonNull EntityManager entityManager;
     final @NonNull PortfolioRepository repository;
-    final @NonNull FileRepository fileRepository;
-    final @NonNull EntryFieldRepository entryFieldRepository;
 
     /**
      * Starts the application.
@@ -57,7 +54,7 @@ public class PortfoliosApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(StateService stateService, PortfolioService portfolioService) {
+    public CommandLineRunner demo() {
         return (args) -> {
 
             DemoDataGenerator demo = new DemoDataGenerator();
