@@ -10,6 +10,7 @@ import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.User;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,7 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Service
 public class PortfolioService {
 
-  private @NonNull final transient PortfolioRepository repository;
+  @NonNull @Autowired
+  transient PortfolioRepository repository;
 
   private static final String requestTitle = "title";
   private static final String requestTemplateId = "templateId";
