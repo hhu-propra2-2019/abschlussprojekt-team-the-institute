@@ -88,9 +88,10 @@ public class Url {
     String scheme = url.split("/")[0];
     url.replaceFirst(scheme, "");
     url.replaceFirst("//", "/");
-    String domain = url.split("/")[0];
+    String domain = url.split("/")[2]; // The split looks like this: scheme, , domain, path1, path2, ...
 
     if (domain == null || domain.isEmpty()) {
+      logger.error("The url doesn't have a domain or IP");
       return false;
     }
 
