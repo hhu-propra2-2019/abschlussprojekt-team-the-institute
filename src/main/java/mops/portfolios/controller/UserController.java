@@ -2,21 +2,16 @@ package mops.portfolios.controller;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
-import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
-import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.portfolio.templates.AnswerType;
-import mops.portfolios.domain.user.User;
 import mops.portfolios.domain.user.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -79,7 +74,6 @@ public class UserController {
 
     model.addAttribute("templateList", templateList);
 
-
     return "user/list";
   }
 
@@ -97,7 +91,7 @@ public class UserController {
     accountService.authorize(model, token);
     model.addAttribute("portfolio", portfolioService.findPortfolioById(portfolioId));
 
-    portfolioService.getPortfoliosToView(model, portfolioId, entryId);
+    portfolioService.getPortfoliosTemplatesToView(model, portfolioId, entryId, "portfolioEntry");
 
     return "user/view";
   }

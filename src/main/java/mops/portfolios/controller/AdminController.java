@@ -10,7 +10,6 @@ import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.user.User;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -82,12 +81,10 @@ public class AdminController {
     model.addAttribute("template", portfolioService.findPortfolioById(templateId));
 
 
-    portfolioService.getTemplatesToView(model, templateId, entryId);
+    portfolioService.getPortfoliosTemplatesToView(model, templateId, entryId, "templateEntry");
 
     return "admin/view";
   }
-
-
 
   /**
    * Create Template mapping for POST requests.
@@ -134,8 +131,6 @@ public class AdminController {
     return "redirect:/portfolio/admin/view";
   }
 
-
-
   /**
    * Create Template Entry mapping for POST requests.
    *
@@ -155,8 +150,9 @@ public class AdminController {
                                     @RequestParam("fieldType") String fieldType,
                                     @RequestParam(value = "hint", required = false) String hint) {
     accountService.authorize(model, token);
-
-    portfolioService.templateFieldCreation(templateId, entryId, question, fieldType, hint);
+    Portfolio portfolio = portfolioService.findPortfolioById(templateId);
+    portfolioService.createAndAddField(portfolio, entryId, question, hint);
+    portfolioService.update(portfolio);
 
     redirect.addAttribute("entryId", entryId);
     redirect.addAttribute("templateId", templateId);
@@ -175,6 +171,7 @@ public class AdminController {
                                KeycloakAuthenticationToken token,
                                @RequestParam Long templateId) {
     accountService.authorize(model, token);
+
     portfolioService.deletePortfolioById(templateId);
 
     return "redirect:/portfolio/admin/list";
