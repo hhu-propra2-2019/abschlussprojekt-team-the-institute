@@ -150,7 +150,7 @@ public class UserController {
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
 
-    Entry entry = portfolioService.getNewPortfolio(entryId, question, portfolio);
+    Entry entry = portfolioService.getNewEntry(entryId, question, portfolio);
 
     // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute("templateId", portfolio.getId());

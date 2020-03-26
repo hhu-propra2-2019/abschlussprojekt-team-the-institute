@@ -2,9 +2,12 @@ package mops.portfolios.domain.portfolio;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
@@ -17,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Service
 public class PortfolioService {
 
-  @Autowired
+
   transient PortfolioRepository repository;
 
   /**
@@ -115,7 +118,12 @@ public class PortfolioService {
    * @param content content of the field to be added
    */
   public void createAndAddField(Portfolio portfolio, Long entryId, String title, String content) {
-    Entry entry = findEntryInPortfolioById(portfolio, entryId);
+    Entry entry;
+    if (findEntryInPortfolioById(portfolio,entryId) != null) {
+      entry = findEntryInPortfolioById(portfolio, entryId);
+    } else {
+      entry = new Entry();
+    }
 
     EntryField field = new EntryField();
     field.setTitle(title);
@@ -124,8 +132,13 @@ public class PortfolioService {
     entry.getFields().add(field);
   }
 
-  public Entry getNewPortfolio(@RequestParam Long entryId, @RequestParam("question") String question, Portfolio portfolio) {
-    Entry entry = findEntryInPortfolioById(portfolio, entryId);
+  public Entry getNewEntry(@RequestParam Long entryId, @RequestParam("question") String question, Portfolio portfolio) {
+    Entry entry;
+    if (findEntryInPortfolioById(portfolio,entryId) != null) {
+      entry = findEntryInPortfolioById(portfolio, entryId);
+    } else {
+      entry = new Entry();
+    }
 
     Set<EntryField> fields = entry.getFields();
     EntryField field = new EntryField();
@@ -139,9 +152,16 @@ public class PortfolioService {
   }
 
   public Portfolio getPortfolioWithNewEntry(@RequestParam Long portfolioId, @RequestParam("title") String title) {
+    Objects.requireNonNull(portfolioId);
     DemoDataGenerator dataGenerator = new DemoDataGenerator();
 
-    Portfolio portfolio = findPortfolioById(portfolioId);
+    Portfolio portfolio;
+    if (findPortfolioById(portfolioId) != null) {
+      portfolio = findPortfolioById(portfolioId);
+    } else {
+      portfolio = new Portfolio();
+    }
+
     Entry entry = new Entry(title);
     entry.setFields(dataGenerator.generateTemplateEntryFieldSet());
     Set<Entry> newEntries = portfolio.getEntries();
