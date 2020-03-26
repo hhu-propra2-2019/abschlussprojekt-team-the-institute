@@ -28,6 +28,9 @@ public class ScheduledDatabaseUpdater {
 
   transient DatabaseUpdater databaseUpdater;
 
+  /**
+   * Constructor.
+   */
   @Autowired
   public ScheduledDatabaseUpdater(GroupRepository groupRepository, UserRepository userRepository,
                                   StateService stateService) {
