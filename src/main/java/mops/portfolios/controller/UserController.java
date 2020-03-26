@@ -1,24 +1,19 @@
 package mops.portfolios.controller;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
 import mops.portfolios.controller.services.FileService;
-import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.portfolio.templates.AnswerType;
-import mops.portfolios.domain.user.User;
 import mops.portfolios.domain.user.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -172,10 +167,6 @@ public class UserController {
     accountService.authorize(model, token);
 
     Entry entry = portfolioService.getEntry(portfolioId, entryId);
-    String[] content = field.getContent().split(";");
-    content[1] = newContent;
-    field.setContent(content[0] + ";" + content[1] + ";" + content[2]);
-    entryService.update(entry);
 
     redirect.addAttribute("portfolioId", portfolioId);
     entryService.updateEntryFields(redirect, entryId, entryFieldId, newContent, entry);
@@ -262,23 +253,7 @@ public class UserController {
 
     // System.out.println(field.getContent());
 
-    String[] content = field.getContent().split(";");
-    String[] values = content[2].split(",");
-    int i = 0;
-    for(String nC : newContent) {
-      if (nC.equals("checked")) {
-        values[i] = nC;
-      }
-      i++;
-    }
-    content[2] = "";
-    for (String v : values){
-      content[2] += v + ",";
-    }
-
-    field.setContent(content[0] + ";" + content[1] + ";" + content[2].stripTrailing());
-
-    entryService.update(entry);
+    entryService.updateEntryFieldCheck(newContent, entry, field, this);
 
     // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute("portfolioId", portfolio.getId());
@@ -312,12 +287,9 @@ public class UserController {
     Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
     EntryField field = entryService.findFieldById(entry, entryFieldId);
 
-    String[] content = field.getContent().split(";");
-    String[] values = content[1].split(",");
-    values[2] = newContent;
-    field.setContent(content[0] + ";" + values[0] + "," + values[1] + "," + values[2] + ";" + content[2]);
+    entryService.updateEntryFieldSlider(newContent, field);
 
-    System.out.println(field.getContent());
+    //System.out.println(field.getContent());
     entryService.update(entry);
 
     // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
@@ -362,7 +334,7 @@ public class UserController {
     redirect.addAttribute("entryId", entry.getId());
     return "redirect:/portfolio/user/view";
   }
-}
+
   /**
    * Delete Portfolio mapping for POST requests.
    *
