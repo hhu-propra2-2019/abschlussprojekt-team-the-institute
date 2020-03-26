@@ -21,6 +21,7 @@ public class PortfolioService {
   private @NonNull @Autowired
   final transient PortfolioRepository repository;
 
+
   private static final String requestTitle = "title";
   private static final String requestTemplateId = "templateId";
 
@@ -244,7 +245,7 @@ public class PortfolioService {
    * @return portfolio
    */
   public Portfolio getNewPortfolio(KeycloakAuthenticationToken token,
-                                   @RequestParam(value = requestTemplateId, required = false)
+                                @RequestParam(value = requestTemplateId, required = false)
                                         String templateId,
                                    @RequestParam(value = requestTitle, required = false)
                                         String title,
@@ -255,7 +256,6 @@ public class PortfolioService {
 
     Portfolio portfolio;
     if (isTemplate.equals("true")) {
-
       Portfolio template = findPortfolioById(Long.valueOf(templateId));
       portfolio = generateNewPortfolioFromTemplate(template, user);
     } else {
@@ -272,6 +272,7 @@ public class PortfolioService {
    * @param template the template to clone
    * @param user     the user of the new portfolio
    */
+  @SuppressWarnings("PMD")
   public Portfolio generateNewPortfolioFromTemplate(Portfolio template, User user) {
     Portfolio portfolio = new Portfolio(template.getTitle(), user);
     for (Entry entry : template.getEntries()) {
