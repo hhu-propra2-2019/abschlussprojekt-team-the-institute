@@ -183,27 +183,12 @@ public class PortfolioService {
     return portfolio;
   }
 
-  public void templateEntryCreation(RedirectAttributes redirect, @RequestParam Long templateId, @RequestParam("title") String title) {
-    Portfolio portfolio = findPortfolioById(templateId);
-    Entry entry = new Entry(title);
-    portfolio.getEntries().add(entry);
-
-    portfolio = update(portfolio);
-    entry = findLastEntryInPortfolio(portfolio);
-
-    redirect.addAttribute("templateId", templateId);
-    redirect.addAttribute("entryId", entry.getId());
-  }
-
-  public void templateFieldCreation(RedirectAttributes redirect, @RequestParam Long templateId, @RequestParam Long entryId, @RequestParam("question") String question, @RequestParam("fieldType") String fieldType, @RequestParam(value = "hint", required = false) String hint) {
+  public void templateFieldCreation(@RequestParam Long templateId, @RequestParam Long entryId, @RequestParam("question") String question, @RequestParam("fieldType") String fieldType, @RequestParam(value = "hint", required = false) String hint) {
     Portfolio portfolio = findPortfolioById(templateId);
 
     createAndAddField(portfolio, entryId,
             question, AnswerType.valueOf(fieldType) + ";" + hint);
     update(portfolio);
-
-    redirect.addAttribute("templateId", templateId);
-    redirect.addAttribute("entryId", entryId);
   }
 
   public Portfolio getTemplate(KeycloakAuthenticationToken token, @RequestParam("title") String title) {
@@ -220,7 +205,6 @@ public class PortfolioService {
   public void getTemplatesToView(Model model, @RequestParam Long templateId, @RequestParam(required = false) Long entryId) {
 
     Portfolio template = findPortfolioById(templateId);
-    model.addAttribute("template", template);
 
     if (entryId == null && !template.getEntries().isEmpty()) {
       entryId = template.getEntries().stream().findFirst().get().getId();
@@ -235,8 +219,6 @@ public class PortfolioService {
   public void getPortfoliosToView(Model model, @RequestParam Long portfolioId, @RequestParam(required = false) Long entryId) {
 
     Portfolio portfolio = findPortfolioById(portfolioId);
-
-    model.addAttribute("portfolio", portfolio);
 
     if (entryId == null && !portfolio.getEntries().isEmpty()) {
       entryId = portfolio.getEntries().stream().findFirst().get().getId();

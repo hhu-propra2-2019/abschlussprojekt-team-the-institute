@@ -95,6 +95,7 @@ public class UserController {
                               @RequestParam Long portfolioId,
                               @RequestParam(required = false) Long entryId) {
     accountService.authorize(model, token);
+    model.addAttribute("portfolio", portfolioService.findPortfolioById(portfolioId));
 
     portfolioService.getPortfoliosToView(model, portfolioId, entryId);
 

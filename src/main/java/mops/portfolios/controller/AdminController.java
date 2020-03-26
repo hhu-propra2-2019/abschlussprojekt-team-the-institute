@@ -81,6 +81,8 @@ public class AdminController {
                              @RequestParam Long templateId,
                              @RequestParam(required = false) Long entryId) {
     accountService.authorize(model, token);
+    model.addAttribute("template", portfolioService.findPortfolioById(templateId));
+
 
     portfolioService.getTemplatesToView(model, templateId, entryId);
 
@@ -123,7 +125,11 @@ public class AdminController {
                                     @RequestParam Long templateId,
                                     @RequestParam("title") String title) {
     accountService.authorize(model, token);
-    portfolioService.templateEntryCreation(redirect, templateId, title);
+
+    Entry entry = portfolioService.portfolioEntryCreation(templateId,title);
+
+    redirect.addAttribute("templateId", templateId);
+    redirect.addAttribute("entryId", entry.getId());
 
     return "redirect:/portfolio/admin/view";
   }
@@ -149,8 +155,11 @@ public class AdminController {
                                     @RequestParam("fieldType") String fieldType,
                                     @RequestParam(value = "hint", required = false) String hint) {
     accountService.authorize(model, token);
-    portfolioService.templateFieldCreation(redirect, templateId, entryId, question, fieldType, hint);
 
+    portfolioService.templateFieldCreation(templateId, entryId, question, fieldType, hint);
+
+    redirect.addAttribute("entryId", entryId);
+    redirect.addAttribute("templateId", templateId);
     return "redirect:/portfolio/admin/view";
   }
 
