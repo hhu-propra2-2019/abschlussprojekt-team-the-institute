@@ -212,7 +212,7 @@ public class UserController {
 
     String[] content = field.getContent().split(";");
     content[1] = newContent;
-    field.setContent(content[0] + ";" + content[1]);
+    field.setContent(content[0] + ";" + content[1] + ";" + content[2]);
     entryService.update(entry);
 
     // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
@@ -239,16 +239,70 @@ public class UserController {
                             @RequestParam Long portfolioId,
                              @RequestParam Long entryId,
                             @RequestParam Long entryFieldId,
-                             @RequestParam("radio[]") String newContent) {
+                             @RequestParam("button") List<String> newContent) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
     Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
     EntryField field = entryService.findFieldById(entry, entryFieldId);
 
-    System.out.println(field.getContent());
+    // System.out.println(field.getContent());
 
-    field.setContent(newContent);
+    String[] content = field.getContent().split(";");
+    String[] values = content[2].split(",");
+    int i = 0;
+    for(String nC : newContent) {
+      if (nC.equals("checked")) {
+        values[i] = nC;
+      }
+      i++;
+    }
+    content[2] = "";
+    for (String v : values){
+      content[2] += v + ",";
+    }
+
+    field.setContent(content[0] + ";" + content[1] + ";" + content[2].stripTrailing());
+
+    entryService.update(entry);
+
+    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
+    redirect.addAttribute("portfolioId", portfolio.getId());
+    redirect.addAttribute("entryId", entry.getId());
+    return "redirect:/portfolio/user/view";
+  }
+
+  /**
+   * Post Mapping to update EntryField Content.
+   * @param model - Spring MVC model
+   * @param token - KeycloakAuthenticationToken
+   * @param redirect - injects RedirectAttributes
+   * @param portfolioId - Id of current portfolio
+   * @param entryId - Id of current entry
+   * @param entryFieldId - Id of updated EntryField
+   * @param newContent - new content of entryfield
+   * @return - redirects to /view
+   */
+  @PostMapping("/updateSlider")
+  public String updateSlider(Model model,
+                            KeycloakAuthenticationToken token,
+                            RedirectAttributes redirect,
+                            @RequestParam Long portfolioId,
+                            @RequestParam Long entryId,
+                            @RequestParam Long entryFieldId,
+                            @RequestParam("value") String newContent) {
+    accountService.authorize(model, token);
+
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
+    EntryField field = entryService.findFieldById(entry, entryFieldId);
+
+    String[] content = field.getContent().split(";");
+    String[] values = content[1].split(",");
+    values[2] = newContent;
+    field.setContent(content[0] + ";" + values[0] + "," + values[1] + "," + values[2] + ";" + content[2]);
+
+    System.out.println(field.getContent());
     entryService.update(entry);
 
     // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?

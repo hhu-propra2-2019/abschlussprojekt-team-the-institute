@@ -94,7 +94,8 @@
                   fieldQuestion = ${field.getTitle()},
                   fieldData = ${field.getContent().split(';')},
                   fieldType = ${AnswerType.valueOf(fieldData[0])},
-                  fieldHint = ${fieldData[1]}">
+                  fieldHint = ${fieldData[1]},
+                  fieldChecked = ${fieldData[2].split(',')}">
 
                 <div th:case="${AnswerType.TEXT}">
                     <form method="post" th:action="@{/portfolio/user/update(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
@@ -104,7 +105,7 @@
                         </label>
                         <textarea class="form-control" id="INPUT_TEXT" th:form="'textForm' + ${field.getId()}" name="content" required
                                   th:text="${fieldHint}"></textarea>
-                        <input type="submit">
+                        <button class="btn btn-primary"  type="submit">Absenden</button>
                     </form>
                 </div>
 
@@ -115,12 +116,15 @@
                             <u th:text="${fieldQuestion}">Question</u>
                         </label>
 
-                        <div class="form-check" th:each="choice : ${fieldHint.split(',')}"
+                        <div class="form-check" th:each="choice, iterChoice : ${fieldHint.split(',')}"
                              th:with="id=${choice.replace(' ', '')}">
-                            <input class="form-check-input" name="radio" required th:id="${id}" type="radio">
+                            <input class="form-check-input" type="radio"
+                                   name="button" value="checked" required
+                                   th:checked="${fieldChecked[iterChoice.index] == 'checked'}"
+                                   th:id="${id}">
                             <label class="form-check-label" th:for="${id}" th:text="${choice}">Choice</label>
                         </div>
-                        <input type="submit">
+                        <button class="btn btn-primary"  type="submit">Absenden</button>
                     </form>
                 </div>
 
@@ -130,29 +134,32 @@
                     <label>
                         <u th:text="${fieldQuestion}">Question</u>
                     </label>
-                    <div class="form-check" th:each="choice : ${fieldHint.split(',')}"
+                    <div class="form-check" th:each="choice, iterChoice : ${fieldHint.split(',')}"
                          th:with="id=${choice.replace(' ', '')}">
-                        <input class="form-check-input" required th:id="${id}" type="checkbox">
+                        <input class="form-check-input"  type="checkbox"
+                               name="button" value="checked"
+                               th:checked="${fieldChecked[iterChoice.index] == 'checked'}"
+                               th:id="${id}">
                         <label class="form-check-label" th:for="${id}" th:text="${choice}">
                             Choice
                         </label>
                     </div>
-                        <input type="submit">
+                        <button class="btn btn-primary"  type="submit">Absenden</button>
                     </form>
                 </div>
 
                 <div th:case="${AnswerType.NUMBER_SLIDER}" th:with="range = ${fieldHint.split(',')}">
-                    <form method="post" th:action="@{/portfolio/user/updateRadio(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
+                    <form method="post" th:action="@{/portfolio/user/updateSlider(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
                           th:id="'singleChoice' + ${field.getId()}">
                         <label for="INPUT_RANGE">
                             <u th:text="${fieldQuestion}">Question</u>
                         </label>
                         <br>
                         <input class="custom-range w-50" type="range" id="INPUT_RANGE" required
-                               data-toggle="popover" data-placement="right"
+                               data-toggle="popover" data-placement="right" name="value"
                                oninput="$(this).attr('data-content', this.value);$(this).popover('show')"
                                th:min="${range[0]}" th:max="${range[1]}" th:value="${range[2]}">
-                        <input type="submit">
+                        <button class="btn btn-primary"  type="submit">Absenden</button>
                     </form>
                 </div>
 
@@ -168,7 +175,7 @@
                                    type="file">
                             <label class="custom-file-label" for="INPUT_FILE">Datei auswählen</label>
                         </div>
-                        <input type="submit">
+                        <button class="btn btn-primary"  type="submit">Absenden</button>
                     </form>
                 </div>
 
