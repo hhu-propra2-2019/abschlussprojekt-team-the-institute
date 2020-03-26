@@ -197,7 +197,7 @@ public class AdminController {
     accountService.authorize(model, token);
 
     if (fileService.nothingUploaded(file)) {
-      return "admin/asciidoc/upload";
+      return "common/error";
     }
 
     byte[] fileBytes = fileService.readFile(file);
@@ -206,7 +206,7 @@ public class AdminController {
     String html = asciiConverter.convertToHtml(text);
     model.addAttribute("html", html);
 
-    return "admin/asciidoc/view";
+    return "admin/upload";
   }
 
 }
