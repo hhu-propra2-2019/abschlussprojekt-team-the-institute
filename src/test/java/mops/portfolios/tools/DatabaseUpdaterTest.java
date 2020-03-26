@@ -45,20 +45,20 @@ public class DatabaseUpdaterTest {
   public void testClientError() {
     ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
 
-    assertThrows(RuntimeException.class, () -> {
-      listAppender.start();
-      logger.addAppender(listAppender);
-      IHttpClient httpClient = new FakeHttpClient();
-      databaseUpdater.getGroupUpdatesFromUrl(httpClient, "400");
-      listAppender.stop();
 
-      List<ILoggingEvent> logsList = listAppender.list;
-      int logSize = logsList.size();
+    listAppender.start();
+    logger.addAppender(listAppender);
+    IHttpClient httpClient = new FakeHttpClient();
+    databaseUpdater.getGroupUpdatesFromUrl(httpClient, "400");
+    listAppender.stop();
 
-      assertEquals("The service Gruppenbildung is not reachable: 400 BAD_REQUEST",
-              logsList.get(logSize - 2).getMessage());
-      assertEquals("An error occured while parsing the JSON data received by the service Gruppenbildung", logsList.get(logSize - 1).getMessage());
-    });
+    List<ILoggingEvent> logsList = listAppender.list;
+    int logSize = logsList.size();
+
+    assertEquals("The service gruppen2 is not reachable: 400 BAD_REQUEST",
+            logsList.get(logSize - 2).getMessage());
+    assertEquals("Nothing received. The received String is null",
+            logsList.get(logSize - 1).getMessage());
   }
 
   @Test
@@ -78,12 +78,24 @@ public class DatabaseUpdaterTest {
 
   @Test
   public void objectNotJson() {
-    assertThrows(RuntimeException.class, () -> databaseUpdater.updateDatabaseEvents("blabla"));
+    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+
+    listAppender.start();
+    logger.addAppender(listAppender);
+    databaseUpdater.updateDatabaseEvents("blabla");
+    listAppender.stop();
+
+    List<ILoggingEvent> logsList = listAppender.list;
+    int logSize = logsList.size();
+
+    assertEquals("An error occured while parsing the JSON data received by the service gruppen2",
+            logsList.get(logSize - 1).getMessage());
+    // TODO: check logs instead.
   }
 
   @Test
   public void testUpdateDatabaseEventsIllegalArgument() {
-    databaseUpdater.url = "/bla/bla";
+    databaseUpdater.url = new Url("http://bla/bla/");
     assertThrows(RuntimeException.class, () -> databaseUpdater.getUpdatesFromJsonObject());
   }
   @Test

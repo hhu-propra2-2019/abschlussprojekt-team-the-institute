@@ -6,22 +6,23 @@ import org.slf4j.LoggerFactory;
 
 public class Url {
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
-  private String url;
+  private transient String value;
 
   /**
    * Creates an Url object.
-   * @param url The URL String to generate the Url Object from. It must be formatted as in following:<br>
+   * @param value The URL String to generate the Url Object from. It must be formatted as in following:<br>
    *            <code>[scheme]://[domain]/[path]/</code><br>
    *            The String must start with the scheme (e.g. "http", or "https") and end with a slash.
    * @throws IllegalArgumentException If the entered url String is not formatted correctly.
    */
-  public Url(String url) throws IllegalArgumentException {
-    logger.info("Generating an Url object from entered String: " +url);
-    checkUrl(url); // this may throw an IllegalArgumentException
-    this.url = url;
-    logger.info("Url object generated succesfully from entered String: " +url);
+  public Url(String value) throws IllegalArgumentException {
+    logger.info("Generating an Url object from entered String: " + value);
+    checkUrl(value); // this may throw an IllegalArgumentException
+    this.value = value;
+    logger.info("Url object generated succesfully from entered String: " + value);
   }
 
+  @SuppressWarnings("PMD")
   private void checkUrl(String url) throws IllegalArgumentException {
     if(url == null) {
       logger.error("Entered url String is null");
@@ -32,12 +33,13 @@ public class Url {
       if (startsWithValidScheme(url) && containsDomain(url) && endsWithSlash(url)) {
         return; // all checks passed. just return without any Exceptions
       }
-    } catch (Throwable t) {
+    } catch (Exception e) {
       ; // do nothing and throw exception below
     }
     throw new IllegalArgumentException("Entered url String is not formatted correctly. It was: " + url);
   }
 
+  @SuppressWarnings("PMD")
   private boolean startsWithValidScheme(String url) {
     String scheme = url.split("/")[0].toLowerCase();
     if (scheme.charAt(scheme.length() - 1) != ':') {
@@ -91,6 +93,7 @@ public class Url {
     return true;
   }
 
+  @SuppressWarnings("PMD")
   private boolean endsWithSlash(String url) {
     if(url.charAt(url.length()-1) == '/') {
       return true;
@@ -102,6 +105,6 @@ public class Url {
 
   @Override
   public String toString() {
-    return this.url;
+    return this.value;
   }
 }

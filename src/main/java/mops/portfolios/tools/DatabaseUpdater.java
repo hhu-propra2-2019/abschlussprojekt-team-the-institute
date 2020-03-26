@@ -61,12 +61,11 @@ public class DatabaseUpdater {
     try {
       responseBody = httpClient.get(url);
     } catch (HttpClientErrorException clientErr) { // if status 4xx or 5xx returned
-      logger.warn("The service Gruppenbildung is not reachable: " + clientErr.getRawStatusCode()
+      logger.warn("The service " + this.serviceName + " is not reachable: " + clientErr.getRawStatusCode()
               + " " + clientErr.getStatusText());
       responseBody = null;
     } catch (IllegalArgumentException argException) {
-      logger.error(argException.getMessage()); // Most likely URL formatted wrong
-     // throw new RuntimeException(argException);
+      logger.error(argException.getMessage()); // Most likely URL formatted wrong, read logs from Url generation
     }
 
     updateDatabaseEvents(responseBody);
@@ -80,22 +79,24 @@ public class DatabaseUpdater {
   @SuppressWarnings("PMD")
   public void updateDatabaseEvents(String jsonUpdate) {
 
+    if(jsonUpdate == null) {
+      logger.error("Nothing received. The received String is null");
+      return;
+    }
+
     // check for possible errors
     JSONObject jsonObject = null;
     try {
       jsonObject = new JSONObject(jsonUpdate);
     } catch (JSONException jsonErr) {
-      logger.error("An error occured while parsing the JSON data "
-              + "received by the service Gruppenbildung ", jsonErr);
-      // FIXME: keep this only while in development
-      // throw new RuntimeException("Error while trying to parse HTTP response to JSON object: "
-          //    + jsonErr.getMessage());
+      logger.warn("An error occured while parsing the JSON data "
+              + "received by the service " + this.serviceName, jsonErr);
+      return; // cannot update anyways
     }
     if (jsonObject == null) {
-      logger.error("An error occured while parsing the JSON data "
-              + "received by the service Gruppenbildung");
-      // FIXME: Keep this only while in development
-     // throw new RuntimeException("JSON Object is null");
+      logger.warn("An error occured while parsing the JSON data "
+              + "received by the service " + this.serviceName + ": jsonObject is null");
+      return; // cannot update anyways
     }
 
     if (isNotModified(jsonObject)) {

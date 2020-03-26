@@ -44,8 +44,8 @@ public class ScheduledDatabaseUpdater {
   @PostConstruct
   @Scheduled(fixedRate = 10_000)
   public void updateDatabase() {
-    this.url = "200"; // FIXME: Only call getUpdatesFromJsonObject later here
-    databaseUpdater.getGroupUpdatesFromUrl(new FakeHttpClient(), this.url);
+    // this.url = "200"; // FIXME: Only call getUpdatesFromJsonObject later here
+    databaseUpdater.getGroupUpdatesFromUrl(new HttpClient(), this.url);
   }
 
 }
