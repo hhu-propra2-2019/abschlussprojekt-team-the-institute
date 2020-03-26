@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
-import mops.portfolios.controller.services.FileService;
+import mops.portfolios.domain.file.FileService;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryService;
@@ -328,9 +328,8 @@ public class UserController {
       return "redirect:/portfolio/user/view";
     }
 
-    byte[] fileBytes = fileService.readFile(file);
-
-
+    fileService.updateField(file, field);
+    entryService.update(entry);
 
     redirect.addAttribute("portfolioId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());

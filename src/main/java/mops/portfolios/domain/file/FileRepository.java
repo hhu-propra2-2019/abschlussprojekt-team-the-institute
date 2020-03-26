@@ -1,4 +1,4 @@
-package mops.portfolios.domain;
+package mops.portfolios.domain.file;
 
 import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;

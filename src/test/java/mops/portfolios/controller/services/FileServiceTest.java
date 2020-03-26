@@ -1,5 +1,6 @@
 package mops.portfolios.controller.services;
 
+import mops.portfolios.domain.file.FileService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.mock.web.MockMultipartFile;

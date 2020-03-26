@@ -1,9 +1,12 @@
-package mops.portfolios.controller.services;
+package mops.portfolios.domain.file;
 
 import java.io.IOException;
 import mops.portfolios.PortfoliosApplication;
+import mops.portfolios.domain.file.FileRepository;
+import mops.portfolios.domain.entry.EntryField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileService {
   private static final transient Logger logger =
           LoggerFactory.getLogger(PortfoliosApplication.class);
+
+  @Autowired
+  private transient FileRepository fileRepository;
 
   /**
    * Checks whether anything is uploaded (whether file has any content).
@@ -47,4 +53,7 @@ public class FileService {
   }
 
 
+  public void updateField(MultipartFile file, EntryField field) {
+    fileRepository.saveFile(file, field);
+  }
 }
