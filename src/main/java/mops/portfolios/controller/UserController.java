@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@SuppressWarnings("PMD") //FIXME: avoidduplicateliterals: The String literal
-// 'portfolioId' appears 4 times in this file;
 @Controller
 @RequestMapping("/portfolio/user")
 @RolesAllowed({"ROLE_studentin"})
@@ -38,6 +36,8 @@ public class UserController {
   private transient PortfolioService portfolioService;
   private transient EntryService entryService;
   private final transient FileService fileService = new FileService();
+  private final String portfolioIdAttribute = "portfolioId";
+  private final String entryIdAttribute = "entryId";
 
   /**
    * Redirect to main page.
@@ -115,7 +115,7 @@ public class UserController {
                             @RequestParam("title") String title) {
     accountService.authorize(model, token);
     Portfolio portfolio = portfolioService.getPortfolioWithNewEntry(portfolioId, title);
-    redirectAttributes.addAttribute("portfolioId", portfolio.getId());
+    redirectAttributes.addAttribute(portfolioIdAttribute, portfolio.getId());
 
     System.out.println("Updated");
     return "redirect:/portfolio/user/view";
@@ -139,7 +139,7 @@ public class UserController {
             question, portfolioService.findPortfolioById(portfolioId));
 
     redirect.addAttribute("templateId", portfolioService.findPortfolioById(portfolioId).getId());
-    redirect.addAttribute("entryId", entry.getId());
+    redirect.addAttribute(entryIdAttribute, entry.getId());
     return "redirect:/portfolio/user/view";
   }
 
@@ -169,9 +169,9 @@ public class UserController {
 
     Entry entry = portfolioService.getEntry(portfolioId, entryId);
 
-    redirect.addAttribute("portfolioId", portfolioId);
+    redirect.addAttribute(portfolioIdAttribute, portfolioId);
     entryService.updateEntryFields(redirect, entryId, entryFieldId, newContent, entry);
-    redirect.addAttribute("entryId", entryId);
+    redirect.addAttribute(entryIdAttribute, entryId);
 
     return "redirect:/portfolio/user/view";
   }
@@ -198,7 +198,7 @@ public class UserController {
 
     Portfolio portfolio = portfolioService.getPortfolio(token, templateId, title, isTemplate);
 
-    redirect.addAttribute("portfolioId", portfolio.getId());
+    redirect.addAttribute(portfolioIdAttribute, portfolio.getId());
 
     return "redirect:/portfolio/user/view";
   }
@@ -221,8 +221,8 @@ public class UserController {
 
     Entry entry = portfolioService.portfolioEntryCreation(portfolioId, title);
 
-    redirect.addAttribute("portfolioId", portfolioId);
-    redirect.addAttribute("entryId", entry.getId());
+    redirect.addAttribute(portfolioIdAttribute, portfolioId);
+    redirect.addAttribute(entryIdAttribute, entry.getId());
 
     return "redirect:/portfolio/user/view";
   }
@@ -258,8 +258,8 @@ public class UserController {
     entryService.updateEntryFieldCheck(newContent, entry, field, this);
 
     // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
-    redirect.addAttribute("portfolioId", portfolio.getId());
-    redirect.addAttribute("entryId", entry.getId());
+    redirect.addAttribute(portfolioIdAttribute, portfolio.getId());
+    redirect.addAttribute(entryIdAttribute, entry.getId());
     return "redirect:/portfolio/user/view";
   }
 
@@ -295,8 +295,8 @@ public class UserController {
     entryService.update(entry);
 
     // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
-    redirect.addAttribute("portfolioId", portfolio.getId());
-    redirect.addAttribute("entryId", entry.getId());
+    redirect.addAttribute(portfolioIdAttribute, portfolio.getId());
+    redirect.addAttribute(entryIdAttribute, entry.getId());
     return "redirect:/portfolio/user/view";
   }
 
@@ -323,17 +323,15 @@ public class UserController {
     EntryField field = entryService.findFieldById(entry, entryFieldId);
 
     if (fileService.nothingUploaded(file)) {
-      redirect.addAttribute("portfolioId", portfolio.getId());
-      redirect.addAttribute("entryId", entry.getId());
+      redirect.addAttribute(portfolioIdAttribute, portfolio.getId());
+      redirect.addAttribute(entryIdAttribute, entry.getId());
       return "redirect:/portfolio/user/view";
     }
 
     byte[] fileBytes = fileService.readFile(file);
 
-
-
-    redirect.addAttribute("portfolioId", portfolio.getId());
-    redirect.addAttribute("entryId", entry.getId());
+    redirect.addAttribute(portfolioIdAttribute, portfolio.getId());
+    redirect.addAttribute(entryIdAttribute, entry.getId());
     return "redirect:/portfolio/user/view";
   }
 
