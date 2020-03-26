@@ -78,4 +78,8 @@ public class EntryService {
     values[2] = newContent;
     field.setContent(content[0] + ";" + values[0] + "," + values[1] + "," + values[2] + ";" + content[2]);
   }
+
+  public Entry findEntryById(Long entryId) {
+    return entryRepository.findById(entryId).get();
+  }
 }

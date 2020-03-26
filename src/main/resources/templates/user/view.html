@@ -36,7 +36,7 @@
     <ul class="nav nav-tabs">
         <li class="nav-item" th:each="entry : ${portfolio.getEntries()}">
             <a class="nav-link" th:href="@{view(portfolioId=${portfolio.getId()},entryId=${entry.getId()})}"
-               th:text="${entry.getTitle()}" th:classappend="${entry.getId() == portfolioEntry.getId()} ? 'active'">Entry
+               th:text="${entry.getTitle()}" th:classappend="${entry.getId() == Entry.getId()} ? 'active'">Entry
                 title</a>
         </li>
     </ul>
@@ -48,7 +48,7 @@
         <div th:if="${portfolio.getEntries() != null}">
 
 
-            <div th:each="field : ${portfolioEntry.getFields()}" th:switch="${fieldType}"
+            <div th:each="field : ${Entry.getFields()}" th:switch="${fieldType}"
                  th:with="
                   AnswerType = ${T(mops.portfolios.domain.portfolio.templates.AnswerType)},
                   fieldQuestion = ${field.getTitle()},
