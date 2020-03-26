@@ -65,7 +65,7 @@ public class DatabaseUpdater {
       logger.warn("The service " + this.serviceName + " is not reachable: "
               + clientErr.getRawStatusCode()
               + " " + clientErr.getStatusText());
-      responseBody = null;
+      return;
     } catch (IllegalArgumentException argException) {
       logger.error(argException.getMessage());
       // Most likely URL formatted wrong, read logs from Url generation
