@@ -278,7 +278,7 @@ public class DatabaseUpdaterTest {
             "}";
 
     databaseUpdater.updateDatabaseEvents(response);
-    
+
     List<User> users = new ArrayList<>();
     User user1 = new User();
     user1.setName("student");
