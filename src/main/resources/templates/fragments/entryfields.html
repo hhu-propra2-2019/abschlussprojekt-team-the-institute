@@ -147,7 +147,7 @@
     <div class="form-check" th:each="choice : ${hint.split(',')}"
          th:with="id=${choice.replace(' ', '')}">
         <input class="form-check-input" name="radio" required th:id="${id}" type="radio">
-        <label class="form-check-label" th:for="id" th:text="${choice}">
+        <label class="form-check-label" th:for="${id}" th:text="${choice}">
             Choice
         </label>
     </div>
