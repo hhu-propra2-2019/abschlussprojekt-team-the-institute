@@ -7,12 +7,9 @@ import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
 import mops.portfolios.controller.services.FileService;
 import mops.portfolios.domain.entry.Entry;
-import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.portfolio.templates.AnswerType;
-import mops.portfolios.domain.user.User;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -84,7 +81,7 @@ public class AdminController {
     model.addAttribute("template", portfolioService.findPortfolioById(templateId));
 
 
-    portfolioService.getTemplatesToView(model, templateId, entryId);
+    portfolioService.getPortfoliosTemplatesToView(model, templateId, entryId, "templateEntry");
 
     return "admin/view";
   }
