@@ -144,3 +144,6 @@ Dazu mussten wir diese in einer Liste speichern.
 .. Teilweise lag es daran, dass wir diese nicht abgefangen haben.
 .. Sonst war häufiger das Problem die richtigen Sachen zu mocken und bei allem daran zu denken, dass man mit `when(...).thenReturn(...)` arbeiten muss.
 
+== Qualitätsszenarien
+
+
