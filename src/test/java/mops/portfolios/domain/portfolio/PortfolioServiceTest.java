@@ -26,9 +26,9 @@ public class PortfolioServiceTest {
 
   private transient PortfolioRepository repository = mock(PortfolioRepository.class);
   @Autowired
-  AccountService accountService;
+  transient AccountService accountService;
   @Autowired
-  UserService userService;
+  transient UserService userService;
   @NonNull
   private transient PortfolioService portfolioService = new PortfolioService(repository,accountService,userService);
   private transient EntryRepository entryRepository = mock(EntryRepository.class);

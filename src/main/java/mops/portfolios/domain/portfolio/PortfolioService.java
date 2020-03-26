@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+@SuppressWarnings("PMD") //FIXME: Strings "title" "templateId" "entryId" "portfolioId" appear to often
 @Service
 public class PortfolioService {
 
