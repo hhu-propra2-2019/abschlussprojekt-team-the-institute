@@ -3,9 +3,7 @@
       th:replace="~{mopslayout :: html(name='Lernportfolio', title='Portfolio ansehen', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 
 <head>
-    <th:block th:fragment="headcontent">
-        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
-    </th:block>
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment"/>
 
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
@@ -15,45 +13,13 @@
                 </a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#MODAL_CREATE_ENTRY">
+                <a href="#" data-toggle="modal" data-target="#MODAL_CREATE_PORTFOLIOENTRY">
                     <p><i class="far fa-calendar-plus fa-lg"></i> Eintrag hinzufügen</p>
                 </a>
             </li>
-            <li th:if="${Entry != null}">
-                <div class="dropdown">
-                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                        <p><i class="far fa-plus-square fa-lg"></i> Feld hinzufügen</p>
-                    </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_TEXT_FIELD">
-                            <p><i class="fas fa-align-left"></i> Text Feld</p>
-                        </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal"
-                           data-target="#MODAL_CREATE_SINGLECHOICE_FIELD">
-                            <p><i class="fas fa-list-ul"></i> Single Choice Feld</p>
-                        </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal"
-                           data-target="#MODAL_CREATE_MULTICHOICE_FIELD">
-                            <p><i class="fas fa-tasks"></i> Multiple Choice Feld</p>
-                        </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_SLIDER_FIELD">
-                            <p><i class="fas fa-sliders-h"></i> Range Slider Feld</p>
-                        </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal"
-                           data-target="#MODAL_CREATE_ATTACHEMENT_FIELD">
-                            <p><i class="fas fa-paperclip"></i> Anhang Feld</p>
-                        </a>
-                    </div>
-                </div>
-            </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#MODAL_UPLOAD_TEMPLATE">
-                    <p><i class="fas fa-file-upload fa-lg"></i> Portfolio hochladen</p>
-                </a>
-            </li>
-            <li>
-                <a href="#" data-toggle="modal" data-target="#MODAL_DELETE_TEMPLATE">
-                    <p><i class="far fa-calendar-minus fa-lg"></i> Portfolio löschen</p>
+                <a href="#" data-toggle="modal" data-target="#MODAL_DELETE_PORTFOLIO">
+                    <p><i class="fas fa-trash-alt fa-lg"></i> Portfolio löschen</p>
                 </a>
             </li>
         </ul>
@@ -61,17 +27,11 @@
 </head>
 
 <body th:fragment="bodycontent"
-      th:replace="fragments/defaults :: defaultBody(title='Vorlage ansehen', description='Hier kannst du eine Vorlage ansehen und editieren.', content=~{::content})">
+      th:replace="fragments/defaults :: defaultBody(title='Portfolio ansehen', description='Hier kannst du ein Portfolio ansehen und ausfüllen.', content=~{::content})">
 
 <div th:fragment="content">
-    <div class="jumbotron pt-1 font-italic">
 
-    <h1 class="display-5">Portfolio ansehen</h1>
-    <p class="lead">Du siehst das Portfolio <u th:text="${portfolio.getTitle()}">Title</u></p>
-    <hr class="my-4">
-
-    <p>TODO: Vorlagen View einbinden -> <a class="btn btn-primary" href="submit">Klick mich</a></p>
-    <br>
+    <p>Du siehst das Portfolio <u th:text="${portfolio.getTitle()}">Title</u></p>
 
     <ul class="nav nav-tabs">
         <li class="nav-item" th:each="entry : ${portfolio.getEntries()}">
@@ -81,12 +41,12 @@
         </li>
     </ul>
 
-    <hr>
     <br>
 
     <div class="tab-content">
 
         <div th:if="${portfolio.getEntries() != null}">
+
 
             <div th:each="field : ${Entry.getFields()}" th:switch="${fieldType}"
                  th:with="
@@ -94,7 +54,8 @@
                   fieldQuestion = ${field.getTitle()},
                   fieldData = ${field.getContent().split(';')},
                   fieldType = ${AnswerType.valueOf(fieldData[0])},
-                  fieldHint = ${fieldData[1]}">
+                  fieldHint = ${fieldData[1]},
+                  fieldChecked = ${fieldData[2].split(',')}">
 
                 <div th:case="${AnswerType.TEXT}">
                     <form method="post" th:action="@{/portfolio/user/update(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
@@ -104,21 +65,79 @@
                         </label>
                         <textarea class="form-control" id="INPUT_TEXT" th:form="'textForm' + ${field.getId()}" name="content" required
                                   th:text="${fieldHint}"></textarea>
-                        <input type="submit">
+                        <button class="btn btn-primary"  type="submit">Absenden</button>
                     </form>
                 </div>
 
-                <div th:case="${AnswerType.SINGLE_CHOICE}"
-                     th:insert="fragments/entryfields :: singlechoiceField(${fieldQuestion}, ${fieldHint})"></div>
+                <div th:case="${AnswerType.SINGLE_CHOICE}">
+                    <form method="post" th:action="@{/portfolio/user/updateRadio(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
+                          th:id="'singleChoice' + ${field.getId()}">
+                        <label>
+                            <u th:text="${fieldQuestion}">Question</u>
+                        </label>
 
-                <div th:case="${AnswerType.MULTIPLE_CHOICE}"
-                     th:insert="fragments/entryfields :: multichoiceField(${fieldQuestion}, ${fieldHint})"></div>
+                        <div class="form-check" th:each="choice, iterChoice : ${fieldHint.split(',')}"
+                             th:with="id=${choice.replace(' ', '')}">
+                            <input class="form-check-input" type="radio"
+                                   name="button" value="checked" required
+                                   th:checked="${fieldChecked[iterChoice.index] == 'checked'}"
+                                   th:id="${id}">
+                            <label class="form-check-label" th:for="${id}" th:text="${choice}">Choice</label>
+                        </div>
+                        <button class="btn btn-primary"  type="submit">Absenden</button>
+                    </form>
+                </div>
 
-                <div th:case="${AnswerType.NUMBER_SLIDER}"
-                     th:insert="fragments/entryfields :: sliderField(${fieldQuestion}, ${fieldHint})"></div>
+                <div th:case="${AnswerType.MULTIPLE_CHOICE}">
+                    <form method="post" th:action="@{/portfolio/user/updateRadio(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
+                          th:id="'multipleChoice' + ${field.getId()}">
+                    <label>
+                        <u th:text="${fieldQuestion}">Question</u>
+                    </label>
+                    <div class="form-check" th:each="choice, iterChoice : ${fieldHint.split(',')}"
+                         th:with="id=${choice.replace(' ', '')}">
+                        <input class="form-check-input"  type="checkbox"
+                               name="button" value="checked"
+                               th:checked="${fieldChecked[iterChoice.index] == 'checked'}"
+                               th:id="${id}">
+                        <label class="form-check-label" th:for="${id}" th:text="${choice}">
+                            Choice
+                        </label>
+                    </div>
+                        <button class="btn btn-primary"  type="submit">Absenden</button>
+                    </form>
+                </div>
 
-                <div th:case="${AnswerType.ATTACHEMENT}"
-                     th:insert="fragments/entryfields :: attachementField(${fieldQuestion}, ${fieldHint})"></div>
+                <div th:case="${AnswerType.NUMBER_SLIDER}" th:with="range = ${fieldHint.split(',')}">
+                    <form method="post" th:action="@{/portfolio/user/updateSlider(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
+                          th:id="'singleChoice' + ${field.getId()}">
+                        <label for="INPUT_RANGE">
+                            <u th:text="${fieldQuestion}">Question</u>
+                        </label>
+                        <br>
+                        <input class="custom-range w-50" type="range" id="INPUT_RANGE" required
+                               data-toggle="popover" data-placement="right" name="value"
+                               oninput="$(this).attr('data-content', this.value);$(this).popover('show')"
+                               th:min="${range[0]}" th:max="${range[1]}" th:value="${range[2]}">
+                        <button class="btn btn-primary"  type="submit">Absenden</button>
+                    </form>
+                </div>
+
+                <div th:case="${AnswerType.ATTACHEMENT}">
+                    <form method="post" th:action="@{/portfolio/user/updateRadio(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
+                          th:id="'singleChoice' + ${field.getId()}">
+                        <label>
+                            <u th:text="${fieldQuestion}">Question</u>
+                        </label>
+                        <br>
+                        <div class="custom-file w-50">
+                            <input class="custom-file-input" name="file" id="INPUT_FILE" required th:accept="${fieldHint}"
+                                   type="file">
+                            <label class="custom-file-label" for="INPUT_FILE">Datei auswählen</label>
+                        </div>
+                        <button class="btn btn-primary"  type="submit">Absenden</button>
+                    </form>
+                </div>
 
                 <div th:case="*">Type not found</div>
 
@@ -132,6 +151,9 @@
         </div>
 
     </div>
+
+    <div th:replace="fragments/modals :: createPortfolioEntryModal(portfolioId=${portfolio.getId()})"></div>
+    <div th:replace="fragments/modals :: deletePortfolioModal(portfolioId=${portfolio.getId()})"></div>
 
     <!--
     <div class="card">
@@ -169,11 +191,6 @@
    </div>
     -->
 </div>
-</div>
-
-<script>
-    $('.nav-tabs a:first').tab('show');
-</script>
 
 </body>
 </html>

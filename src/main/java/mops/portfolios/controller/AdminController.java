@@ -7,12 +7,9 @@ import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
 import mops.portfolios.controller.services.FileService;
 import mops.portfolios.domain.entry.Entry;
-import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.portfolio.templates.AnswerType;
-import mops.portfolios.domain.user.User;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -81,18 +78,10 @@ public class AdminController {
                              @RequestParam Long templateId,
                              @RequestParam(required = false) Long entryId) {
     accountService.authorize(model, token);
+    model.addAttribute("template", portfolioService.findPortfolioById(templateId));
 
-    Portfolio template = portfolioService.findPortfolioById(templateId);
-    model.addAttribute("template", template);
 
-    if (entryId == null && !template.getEntries().isEmpty()) {
-      entryId = template.getEntries().stream().findFirst().get().getId();
-    }
-
-    if (entryId != null) {
-      Entry entry = portfolioService.findEntryInPortfolioById(template, entryId);
-      model.addAttribute("templateEntry", entry);
-    }
+    portfolioService.getPortfoliosTemplatesToView(model, templateId, entryId, "templateEntry");
 
     return "admin/view";
   }
@@ -110,13 +99,8 @@ public class AdminController {
                                @RequestParam("title") String title) {
     accountService.authorize(model, token);
 
-    User user = new User();
-    user.setName(token.getName()); // FIXME: Nutzen wir auch an jeder Stelle diese Methode? \
-    // Geht es ohne user id auch klar?
-
-    Portfolio portfolio = new Portfolio(title, user);
-    portfolio.setTemplate(true);
-    portfolio = portfolioService.update(portfolio);
+    accountService.authorize(model, token);
+    Portfolio portfolio = portfolioService.getTemplate(token, title);
 
     redirect.addAttribute("templateId", portfolio.getId());
 
@@ -139,12 +123,7 @@ public class AdminController {
                                     @RequestParam("title") String title) {
     accountService.authorize(model, token);
 
-    Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    Entry entry = new Entry(title);
-    portfolio.getEntries().add(entry);
-
-    portfolio = portfolioService.update(portfolio);
-    entry = portfolioService.findLastEntryInPortfolio(portfolio);
+    Entry entry = portfolioService.portfolioEntryCreation(templateId,title);
 
     redirect.addAttribute("templateId", templateId);
     redirect.addAttribute("entryId", entry.getId());
@@ -171,16 +150,12 @@ public class AdminController {
                                     @RequestParam("fieldType") String fieldType,
                                     @RequestParam(value = "hint", required = false) String hint) {
     accountService.authorize(model, token);
-
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-
-    portfolioService.createAndAddField(portfolio, entryId,
-        question, AnswerType.valueOf(fieldType) + ";" + hint);
+    portfolioService.createAndAddField(portfolio, entryId, question, hint);
     portfolioService.update(portfolio);
 
-    redirect.addAttribute("templateId", templateId);
     redirect.addAttribute("entryId", entryId);
-
+    redirect.addAttribute("templateId", templateId);
     return "redirect:/portfolio/admin/view";
   }
 
@@ -229,4 +204,5 @@ public class AdminController {
 
     return "admin/asciidoc/view";
   }
+
 }
