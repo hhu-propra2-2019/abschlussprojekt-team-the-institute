@@ -1,16 +1,12 @@
 package mops.portfolios.domain.entry;
 
 import java.util.Objects;
-import java.util.Set;
-
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -20,13 +16,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @NoArgsConstructor
 public class EntryService {
 
-  @NonNull @Autowired
+  @NonNull
   transient EntryRepository entryRepository;
 
-  @NonNull @Autowired
+  @NonNull
   transient EntryFieldRepository entryFieldRepository;
 
-  @NonNull @Autowired
+  @NonNull
   transient PortfolioService portfolioService;
 
   @SuppressWarnings("PMD")
@@ -42,7 +38,7 @@ public class EntryService {
   public void update(Entry entry) {
     entryRepository.save(entry);
   }
-
+  
   public void updateEntryFields(RedirectAttributes redirect, @RequestParam Long entryId, @RequestParam Long entryFieldId, @RequestParam("content") String newContent, Entry entry) {
     EntryField field = findFieldById(entry, entryFieldId);
 
@@ -50,5 +46,5 @@ public class EntryService {
     update(entry);
 
   }
-
+  
 }

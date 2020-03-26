@@ -28,7 +28,7 @@ public class HtmlErrorController implements ErrorController {
     model.addAttribute("errorCode", response.getStatus());
     model.addAttribute("errorMessage", "Some error message");
 
-    //TODO: ADD LOG ENTRY
+    logger.warn("an error occured. Status Code: " + response.getStatus());
 
     return "common/error";
   }
