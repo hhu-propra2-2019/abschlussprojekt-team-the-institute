@@ -25,7 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@SuppressWarnings("PMD") //FIXME: avoidduplicateliterals: The String literal 'portfolioId' appears 4 times in this file;
+@SuppressWarnings("PMD") //FIXME: avoidduplicateliterals: The String literal
+// 'portfolioId' appears 4 times in this file;
 @Controller
 @RequestMapping("/portfolio/user")
 @RolesAllowed({"ROLE_studentin"})
@@ -134,7 +135,8 @@ public class UserController {
                             @RequestParam Long portfolioId, @RequestParam Long entryId,
                             @RequestParam("question") String question) {
     accountService.authorize(model, token);
-    Entry entry = portfolioService.getNewEntry(entryId, question, portfolioService.findPortfolioById(portfolioId));
+    Entry entry = portfolioService.getNewEntry(entryId,
+            question, portfolioService.findPortfolioById(portfolioId));
 
     redirect.addAttribute("templateId", portfolioService.findPortfolioById(portfolioId).getId());
     redirect.addAttribute("entryId", entry.getId());
@@ -188,7 +190,8 @@ public class UserController {
   @PostMapping("/createPortfolio")
   public String createPortfolio(Model model,
                                 KeycloakAuthenticationToken token, RedirectAttributes redirect,
-                                @RequestParam(value = "templateId", required = false) String templateId,
+                                @RequestParam(value = "templateId", required = false)
+                                          String templateId,
                                 @RequestParam(value = "title", required = false) String title,
                                 @RequestParam("isTemplate") String isTemplate) {
     accountService.authorize(model, token);

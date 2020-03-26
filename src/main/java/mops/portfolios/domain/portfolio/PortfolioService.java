@@ -2,30 +2,22 @@ package mops.portfolios.domain.portfolio;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import lombok.NonNull;
-import mops.portfolios.AccountService;
 import mops.portfolios.demodata.DemoDataGenerator;
-
-import lombok.NonNull;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.User;
-import mops.portfolios.domain.user.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Service
 public class PortfolioService {
 
-  private @NonNull final
-  transient PortfolioRepository repository;
+  private @NonNull final transient PortfolioRepository repository;
 
   private static final String requestTitle = "title";
   private static final String requestTemplateId = "templateId";
@@ -143,7 +135,13 @@ public class PortfolioService {
     entry.getFields().add(field);
   }
 
-  public Entry getNewEntry(@RequestParam Long entryId, @RequestParam("question") String question, Portfolio portfolio) {
+  /**
+   * Gets new entry and updates portfolio.
+   *
+   * @return new Entry
+   */
+  public Entry getNewEntry(@RequestParam Long entryId,
+                           @RequestParam("question") String question, Portfolio portfolio) {
     Entry entry;
     if (findEntryInPortfolioById(portfolio,entryId) != null) {
       entry = findEntryInPortfolioById(portfolio, entryId);
@@ -162,7 +160,14 @@ public class PortfolioService {
     return entry;
   }
 
-  public Portfolio getPortfolioWithNewEntry(@RequestParam Long portfolioId, @RequestParam(requestTitle) String title) {
+  /**
+   * Gets portfolio with new entry.
+   *
+   * @return new portfolio
+   */
+
+  public Portfolio getPortfolioWithNewEntry(@RequestParam Long portfolioId,
+                                            @RequestParam(requestTitle) String title) {
     Objects.requireNonNull(portfolioId);
 
     DemoDataGenerator dataGenerator = new DemoDataGenerator();
@@ -183,7 +188,12 @@ public class PortfolioService {
     return portfolio;
   }
 
-  public Portfolio getTemplate(KeycloakAuthenticationToken token, @RequestParam(requestTitle) String title) {
+  /**
+   * Gets new template.
+   * @return new Template
+   */
+  public Portfolio getTemplate(KeycloakAuthenticationToken token,
+                               @RequestParam(requestTitle) String title) {
     User user = new User();
     user.setName(token.getName()); // FIXME: Nutzen wir auch an jeder Stelle diese Methode? \
     // Geht es ohne user id auch klar?
@@ -194,7 +204,14 @@ public class PortfolioService {
     return portfolio;
   }
 
-  public void getPortfoliosTemplatesToView(Model model, @RequestParam Long portfolioId, @RequestParam(required = false) Long entryId, String entryName) {
+  /**
+   * Gets portfolio/template view.
+   *
+   */
+  public void getPortfoliosTemplatesToView(Model model,
+                                           @RequestParam Long portfolioId,
+                                           @RequestParam(required = false) Long entryId,
+                                           String entryName) {
 
     Portfolio portfolio = findPortfolioById(portfolioId);
 
@@ -208,6 +225,11 @@ public class PortfolioService {
     }
   }
 
+  /**
+   * Gets entry.
+   * @return entry
+   */
+
   public Entry getEntry(@RequestParam Long portfolioId, @RequestParam Long entryId) {
 
     Portfolio portfolio = findPortfolioById(portfolioId);
@@ -215,7 +237,16 @@ public class PortfolioService {
     return entry;
   }
 
-  public Portfolio getPortfolio(KeycloakAuthenticationToken token, @RequestParam(value = requestTemplateId, required = false) String templateId, @RequestParam(value = requestTitle, required = false) String title, @RequestParam("isTemplate") String isTemplate) {
+  /**
+   * Gets portfolio and checks if it is a template.
+   * @return portfolio
+   */
+  public Portfolio getPortfolio(KeycloakAuthenticationToken token,
+                                @RequestParam(value = requestTemplateId, required = false)
+                                        String templateId,
+                                @RequestParam(value = requestTitle, required = false)
+                                        String title,
+                                @RequestParam("isTemplate") String isTemplate) {
 
     User user = new User();
     user.setName(token.getName()); //FIXME
@@ -235,7 +266,13 @@ public class PortfolioService {
     return portfolio;
   }
 
-  public Entry portfolioEntryCreation(@RequestParam Long portfolioId, @RequestParam(requestTitle) String title) {
+  /**
+   * Creates an entry.
+   * @return created entry
+   */
+
+  public Entry portfolioEntryCreation(@RequestParam Long portfolioId,
+                                      @RequestParam(requestTitle) String title) {
 
     Portfolio portfolio = findPortfolioById(portfolioId);
     Entry entry = new Entry(title);

@@ -41,7 +41,8 @@ public class DatabaseUpdater {
   /**
    * Use this method to get the updates from Gruppenbildung regarding groups.
    */
-  public void getUpdatesFromJsonObject() { // TODO: use a better method name. Do this later to avoid merge conflicts
+  // TODO: use a better method name. Do this later to avoid merge conflicts
+  public void getUpdatesFromJsonObject() {
     IHttpClient httpClient = new HttpClient();
     long updateStatus = stateService.getState(this.serviceName);
     String requestUrl = this.url.toString(); // + updateStatus; FIXME: add status
@@ -61,11 +62,13 @@ public class DatabaseUpdater {
     try {
       responseBody = httpClient.get(url);
     } catch (HttpClientErrorException clientErr) { // if status 4xx or 5xx returned
-      logger.warn("The service " + this.serviceName + " is not reachable: " + clientErr.getRawStatusCode()
+      logger.warn("The service " + this.serviceName + " is not reachable: "
+              + clientErr.getRawStatusCode()
               + " " + clientErr.getStatusText());
       responseBody = null;
     } catch (IllegalArgumentException argException) {
-      logger.error(argException.getMessage()); // Most likely URL formatted wrong, read logs from Url generation
+      logger.error(argException.getMessage());
+      // Most likely URL formatted wrong, read logs from Url generation
     }
 
     updateDatabaseEvents(responseBody);
@@ -79,7 +82,7 @@ public class DatabaseUpdater {
   @SuppressWarnings("PMD")
   public void updateDatabaseEvents(String jsonUpdate) {
 
-    if(jsonUpdate == null) {
+    if (jsonUpdate == null) {
       logger.error("Nothing received. The received String is null");
       return;
     }
@@ -171,7 +174,8 @@ public class DatabaseUpdater {
             logger.info("Couldn't find user. Added " + user.getName());
           }
           groupRepository.save(new Group(groupId, title, userList));
-          logger.info("Saved group '" + title + "' with id " + groupId + " containing " + userList.size() + " members");
+          logger.info("Saved group '" + title + "' with id " + groupId
+                  + " containing " + userList.size() + " members");
         }
       }
     }

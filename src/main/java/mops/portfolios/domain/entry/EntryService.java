@@ -27,6 +27,10 @@ public class EntryService {
   @NonNull
   transient PortfolioService portfolioService;
 
+  /**
+   * Finds field.
+   *
+   */
   @SuppressWarnings("PMD")
   public EntryField findFieldById(Entry entry, Long entryFieldId) {
     for (EntryField field : entry.getFields()) {
@@ -41,8 +45,16 @@ public class EntryService {
     entryRepository.save(entry);
   }
 
+  /**
+   * Updates entryfield.
+   *
+   */
   @SuppressWarnings("PMD")
-  public void updateEntryFields(RedirectAttributes redirect, @RequestParam Long entryId, @RequestParam Long entryFieldId, @RequestParam("content") String newContent, Entry entry) {
+  public void updateEntryFields(RedirectAttributes redirect,
+                                @RequestParam Long entryId,
+                                @RequestParam Long entryFieldId,
+                                @RequestParam("content") String newContent,
+                                Entry entry) {
     EntryField field = findFieldById(entry, entryFieldId);
     String[] content = field.getContent().split(";");
     content[1] = newContent;
@@ -50,19 +62,24 @@ public class EntryService {
     update(entry);
   }
 
+  /**
+   * Updates entryfield when checked.
+   */
   @SuppressWarnings("PMD")
-  public void updateEntryFieldCheck(@RequestParam("button") List<String> newContent, Entry entry, EntryField field, UserController userController) {
+  public void updateEntryFieldCheck(@RequestParam("button") List<String> newContent,
+                                    Entry entry, EntryField field,
+                                    UserController userController) {
     String[] content = field.getContent().split(";");
     String[] values = content[2].split(",");
     int i = 0;
-    for(String nC : newContent) {
-      if (nC.equals("checked")) {
-        values[i] = nC;
+    for (String updatedContent : newContent) {
+      if (updatedContent.equals("checked")) {
+        values[i] = updatedContent;
       }
       i++;
     }
     content[2] = "";
-    for (String v : values){
+    for (String v : values) {
       content[2] += v + ",";
     }
 
@@ -71,12 +88,17 @@ public class EntryService {
     update(entry);
   }
 
+  /**
+   * Updates slider entryfield.
+   *
+   */
   @SuppressWarnings("PMD")
   public void updateEntryFieldSlider(@RequestParam("value") String newContent, EntryField field) {
     String[] content = field.getContent().split(";");
     String[] values = content[1].split(",");
     values[2] = newContent;
-    field.setContent(content[0] + ";" + values[0] + "," + values[1] + "," + values[2] + ";" + content[2]);
+    field.setContent(content[0] + ";" + values[0] + ","
+            + values[1] + "," + values[2] + ";" + content[2]);
   }
 
   public Entry findEntryById(Long entryId) {
