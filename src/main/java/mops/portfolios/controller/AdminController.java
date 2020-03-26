@@ -80,7 +80,9 @@ public class AdminController {
   public String viewTemplate(Model model, KeycloakAuthenticationToken token,
                              @RequestParam Long templateId,
                              @RequestParam(required = false) Long entryId) {
-    portfolioService.getTemplatesToView(model, templateId, entryId, token);
+    accountService.authorize(model, token);
+
+    portfolioService.getTemplatesToView(model, templateId, entryId);
 
     return "admin/view";
   }
@@ -98,7 +100,8 @@ public class AdminController {
   public String createTemplate(Model model,
                                KeycloakAuthenticationToken token, RedirectAttributes redirect,
                                @RequestParam("title") String title) {
-    Portfolio portfolio = portfolioService.getTemplate(model, token, title);
+    accountService.authorize(model, token);
+    Portfolio portfolio = portfolioService.getTemplate(token, title);
 
     redirect.addAttribute("templateId", portfolio.getId());
 

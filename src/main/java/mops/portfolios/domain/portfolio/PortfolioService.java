@@ -143,9 +143,7 @@ public class PortfolioService {
     entry.getFields().add(field);
   }
 
-  public Entry getNewEntry(KeycloakAuthenticationToken token, Model model, @RequestParam Long entryId, @RequestParam("question") String question, Portfolio portfolio) {
-    accountService.authorize(model, token);
-
+  public Entry getNewEntry(@RequestParam Long entryId, @RequestParam("question") String question, Portfolio portfolio) {
     Entry entry;
     if (findEntryInPortfolioById(portfolio,entryId) != null) {
       entry = findEntryInPortfolioById(portfolio, entryId);
@@ -164,9 +162,8 @@ public class PortfolioService {
     return entry;
   }
 
-  public Portfolio getPortfolioWithNewEntry(KeycloakAuthenticationToken token, Model model, @RequestParam Long portfolioId, @RequestParam("title") String title) {
+  public Portfolio getPortfolioWithNewEntry(@RequestParam Long portfolioId, @RequestParam("title") String title) {
     Objects.requireNonNull(portfolioId);
-    accountService.authorize(model, token);
 
     DemoDataGenerator dataGenerator = new DemoDataGenerator();
 
@@ -209,9 +206,7 @@ public class PortfolioService {
     redirect.addAttribute("entryId", entryId);
   }
 
-  public Portfolio getTemplate(Model model, KeycloakAuthenticationToken token, @RequestParam("title") String title) {
-    accountService.authorize(model, token);
-
+  public Portfolio getTemplate(KeycloakAuthenticationToken token, @RequestParam("title") String title) {
     User user = new User();
     user.setName(token.getName()); // FIXME: Nutzen wir auch an jeder Stelle diese Methode? \
     // Geht es ohne user id auch klar?
@@ -222,8 +217,7 @@ public class PortfolioService {
     return portfolio;
   }
 
-  public void getTemplatesToView(Model model, @RequestParam Long templateId, @RequestParam(required = false) Long entryId, KeycloakAuthenticationToken token) {
-    accountService.authorize(model, token);
+  public void getTemplatesToView(Model model, @RequestParam Long templateId, @RequestParam(required = false) Long entryId) {
 
     Portfolio template = findPortfolioById(templateId);
     model.addAttribute("template", template);
@@ -238,8 +232,7 @@ public class PortfolioService {
     }
   }
 
-  public void getPortfoliosToView(Model model, KeycloakAuthenticationToken token, @RequestParam Long portfolioId, @RequestParam(required = false) Long entryId) {
-    accountService.authorize(model, token);
+  public void getPortfoliosToView(Model model, @RequestParam Long portfolioId, @RequestParam(required = false) Long entryId) {
 
     Portfolio portfolio = findPortfolioById(portfolioId);
 
@@ -255,16 +248,14 @@ public class PortfolioService {
     }
   }
 
-  public Entry getEntry(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirect, @RequestParam Long portfolioId, @RequestParam Long entryId) {
-    accountService.authorize(model, token);
+  public Entry getEntry(@RequestParam Long portfolioId, @RequestParam Long entryId) {
 
     Portfolio portfolio = findPortfolioById(portfolioId);
     Entry entry = findEntryInPortfolioById(portfolio, entryId);
     return entry;
   }
 
-  public Portfolio getPortfolio(Model model, KeycloakAuthenticationToken token, @RequestParam(value = "templateId", required = false) String templateId, @RequestParam(value = "title", required = false) String title, @RequestParam("isTemplate") String isTemplate) {
-    accountService.authorize(model, token);
+  public Portfolio getPortfolio(KeycloakAuthenticationToken token, @RequestParam(value = "templateId", required = false) String templateId, @RequestParam(value = "title", required = false) String title, @RequestParam("isTemplate") String isTemplate) {
 
     User user = new User();
     user.setName(token.getName()); //FIXME
@@ -284,8 +275,7 @@ public class PortfolioService {
     return portfolio;
   }
 
-  public Entry portfolioEntryCreation(Model model, KeycloakAuthenticationToken token, @RequestParam Long portfolioId, @RequestParam("title") String title) {
-    accountService.authorize(model, token);
+  public Entry portfolioEntryCreation(@RequestParam Long portfolioId, @RequestParam("title") String title) {
 
     Portfolio portfolio = findPortfolioById(portfolioId);
     Entry entry = new Entry(title);
