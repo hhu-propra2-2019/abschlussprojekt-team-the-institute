@@ -1,18 +1,18 @@
 package mops.portfolios.domain.portfolio;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lombok.NonNull;
+import mops.portfolios.AccountService;
 import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.User;
+import mops.portfolios.domain.user.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -22,11 +22,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Service
 public class PortfolioService {
 
-  @NonNull final
+  private @NonNull final
   transient PortfolioRepository repository;
+  private transient AccountService accountService;
+  private transient UserService userService;
 
-  public PortfolioService(PortfolioRepository repository) {
+  public PortfolioService(PortfolioRepository repository, AccountService accountService, UserService userService) {
     this.repository = repository;
+    this.accountService = accountService;
+    this.userService = userService;
   }
 
   /**
@@ -224,6 +228,108 @@ public class PortfolioService {
       Entry entry = findEntryInPortfolioById(template, entryId);
       model.addAttribute("templateEntry", entry);
     }
+  }
+
+  public void getPortfolioList(Model model, KeycloakAuthenticationToken token) {
+    accountService.authorize(model, token);
+    String userName = accountService.getUserName(token);
+
+    List<Group> groups = userService.getGroupsByUserName(userName);
+    // TODO Implement optional sublisting with method overload in portfolioService
+    List<Portfolio> groupPortfolios = findAllByGroupList(groups);
+    List<Portfolio> userPortfolios = findAllByUserId(userName);
+    List<Portfolio> allPortfolios = Stream.of(userPortfolios, groupPortfolios)
+            .flatMap(Collection::stream).collect(Collectors.toList());
+
+    List<Portfolio> templateList = findAllTemplates();
+
+    model.addAttribute("groupPortfolios", groupPortfolios);
+    model.addAttribute("userPortfolios", userPortfolios);
+    model.addAttribute("allPortfolios", allPortfolios);
+
+    model.addAttribute("templateList", templateList);
+  }
+
+  public void getPortfoliosToView(Model model, KeycloakAuthenticationToken token, @RequestParam Long portfolioId, @RequestParam(required = false) Long entryId) {
+    accountService.authorize(model, token);
+
+    Portfolio portfolio = findPortfolioById(portfolioId);
+
+    model.addAttribute("portfolio", portfolio);
+
+    if (entryId == null && !portfolio.getEntries().isEmpty()) {
+      entryId = portfolio.getEntries().stream().findFirst().get().getId();
+    }
+
+    if (entryId != null) {
+      Entry entry = findEntryInPortfolioById(portfolio, entryId);
+      model.addAttribute("portfolioEntry", entry);
+    }
+  }
+
+  public void createNewEntryForPortfolio(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirectAttributes, @RequestParam Long portfolioId, @RequestParam("title") String title) {
+    accountService.authorize(model, token);
+    Portfolio portfolio = getPortfolioWithNewEntry(portfolioId, title);
+
+    // Ist portofolioId und portfolio.getId() unterschiedlich?
+    redirectAttributes.addAttribute("portfolioId", portfolio.getId());
+  }
+
+  public void fieldCreation(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirect, @RequestParam Long portfolioId, @RequestParam Long entryId, @RequestParam("question") String question) {
+    accountService.authorize(model, token);
+
+    Portfolio portfolio = findPortfolioById(portfolioId);
+
+    Entry entry = getNewEntry(entryId, question, portfolio);
+
+    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
+    redirect.addAttribute("templateId", portfolio.getId());
+    redirect.addAttribute("entryId", entry.getId());
+  }
+
+  public Entry getEntry(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirect, @RequestParam Long portfolioId, @RequestParam Long entryId) {
+    accountService.authorize(model, token);
+
+    Portfolio portfolio = findPortfolioById(portfolioId);
+    Entry entry = findEntryInPortfolioById(portfolio, entryId);
+    redirect.addAttribute("portfolioId", portfolioId);
+    return entry;
+  }
+
+  public void portfolioCreation(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirect, @RequestParam(value = "templateId", required = false) String templateId, @RequestParam(value = "title", required = false) String title, @RequestParam("isTemplate") String isTemplate) {
+    accountService.authorize(model, token);
+
+    User user = new User();
+    user.setName(token.getName()); //FIXME
+
+    Portfolio portfolio;
+    if (isTemplate.equals("true")) {
+
+      Portfolio template = findPortfolioById(Long.valueOf(templateId));
+      portfolio = new Portfolio(template.getTitle(), user);
+
+      //FIXME: clone template into portfolio? how are we going to save answers..
+    } else {
+      portfolio = new Portfolio(title, user);
+    }
+
+    portfolio = update(portfolio);
+
+    redirect.addAttribute("portfolioId", portfolio.getId());
+  }
+
+  public void portfolioEntryCreation(Model model, KeycloakAuthenticationToken token, RedirectAttributes redirect, @RequestParam Long portfolioId, @RequestParam("title") String title) {
+    accountService.authorize(model, token);
+
+    Portfolio portfolio = findPortfolioById(portfolioId);
+    Entry entry = new Entry(title);
+    portfolio.getEntries().add(entry);
+
+    portfolio = update(portfolio);
+    entry = findLastEntryInPortfolio(portfolio);
+
+    redirect.addAttribute("portfolioId", portfolioId);
+    redirect.addAttribute("entryId", entry.getId());
   }
 
 }

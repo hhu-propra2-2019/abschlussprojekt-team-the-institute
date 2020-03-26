@@ -1,14 +1,17 @@
 package mops.portfolios.domain.portfolio;
 
 import lombok.NonNull;
+import mops.portfolios.AccountService;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryFieldRepository;
 import mops.portfolios.domain.entry.EntryRepository;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.User;
+import mops.portfolios.domain.user.UserService;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -22,8 +25,12 @@ public class PortfolioServiceTest {
 
 
   private transient PortfolioRepository repository = mock(PortfolioRepository.class);
+  @Autowired
+  AccountService accountService;
+  @Autowired
+  UserService userService;
   @NonNull
-  private transient PortfolioService portfolioService = new PortfolioService(repository);
+  private transient PortfolioService portfolioService = new PortfolioService(repository,accountService,userService);
   private transient EntryRepository entryRepository = mock(EntryRepository.class);
   private transient EntryFieldRepository entryFieldRepository = mock(EntryFieldRepository.class);
 
