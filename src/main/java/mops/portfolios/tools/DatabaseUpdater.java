@@ -26,7 +26,10 @@ public class DatabaseUpdater {
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
   final String serviceName = "gruppen2";
 
-  transient String url;
+  /**
+   * The url to request the updates from. The formatting is highly important.
+   */ // Don't make this part of the Constructor as it's not feeded by Spring, but entered manually
+  transient Url url;
 
   final @NonNull GroupRepository groupRepository;
 
@@ -38,10 +41,10 @@ public class DatabaseUpdater {
   /**
    * Use this method to get the updates from Gruppenbildung regarding groups.
    */
-  public void getUpdatesFromJsonObject() {
+  public void getUpdatesFromJsonObject() { // TODO: use a better method name. Do this later to avoid merge conflicts
     IHttpClient httpClient = new HttpClient();
     long updateStatus = stateService.getState(this.serviceName);
-    String requestUrl = this.url; // + updateStatus;
+    String requestUrl = this.url.toString(); // + updateStatus; FIXME: add status
     getGroupUpdatesFromUrl(httpClient, requestUrl);
   }
 
