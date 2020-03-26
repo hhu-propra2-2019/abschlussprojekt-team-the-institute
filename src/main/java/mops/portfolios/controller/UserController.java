@@ -1,5 +1,6 @@
 package mops.portfolios.controller;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.stream.Stream;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
+import mops.portfolios.controller.services.FileService;
 import mops.portfolios.demodata.DemoDataGenerator;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -37,6 +40,7 @@ public class UserController {
   private transient UserService userService;
   private transient PortfolioService portfolioService;
   private transient EntryService entryService;
+  private final transient FileService fileService = new FileService();
 
   /**
    * Redirect to main page.
@@ -129,6 +133,7 @@ public class UserController {
    * @param model The spring model to add the attributes to
    * @return The page to load
    */
+  @SuppressWarnings("PMD")
   @PostMapping("/entry")
   public String createEntry(Model model, KeycloakAuthenticationToken token,
                                     RedirectAttributes redirectAttributes,
@@ -159,6 +164,7 @@ public class UserController {
    * @param model The spring model to add the attributes to
    * @return The page to load
    */
+  @SuppressWarnings("PMD")
   @PostMapping("/createField")
   public String createField(Model model,
                                     KeycloakAuthenticationToken token, RedirectAttributes redirect,
@@ -196,6 +202,7 @@ public class UserController {
    * @param newContent - new content of entryfield
    * @return - redirects to /view
    */
+  @SuppressWarnings("PMD")
   @PostMapping("/update")
   public String updateFields(Model model,
                              KeycloakAuthenticationToken token,
@@ -232,6 +239,7 @@ public class UserController {
    * @param newContent - new content of entryfield
    * @return - redirects to /view
    */
+  @SuppressWarnings("PMD")
   @PostMapping("/updateRadio")
   public String updateRadio(Model model,
                             KeycloakAuthenticationToken token,
@@ -283,6 +291,7 @@ public class UserController {
    * @param newContent - new content of entryfield
    * @return - redirects to /view
    */
+  @SuppressWarnings("PMD")
   @PostMapping("/updateSlider")
   public String updateSlider(Model model,
                             KeycloakAuthenticationToken token,
@@ -306,6 +315,43 @@ public class UserController {
     entryService.update(entry);
 
     // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
+    redirect.addAttribute("portfolioId", portfolio.getId());
+    redirect.addAttribute("entryId", entry.getId());
+    return "redirect:/portfolio/user/view";
+  }
+
+  /**
+   * Upload Template mapping for POST requests.
+   *
+   * @param model      The spring model to add the attributes to
+   * @param portfolioId The id of the portfolio
+   * @return The page to load
+   */
+  @SuppressWarnings("PMD")
+  @PostMapping("/uploadFile")
+  public String uploadFile(Model model,
+                               KeycloakAuthenticationToken token,
+                               RedirectAttributes redirect,
+                               @RequestParam Long portfolioId,
+                               @RequestParam Long entryId,
+                               @RequestParam Long entryFieldId,
+                               @RequestParam("file") MultipartFile file) {
+    accountService.authorize(model, token);
+
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
+    EntryField field = entryService.findFieldById(entry, entryFieldId);
+
+    if (fileService.nothingUploaded(file)) {
+      redirect.addAttribute("portfolioId", portfolio.getId());
+      redirect.addAttribute("entryId", entry.getId());
+      return "redirect:/portfolio/user/view";
+    }
+
+    byte[] fileBytes = fileService.readFile(file);
+
+
+
     redirect.addAttribute("portfolioId", portfolio.getId());
     redirect.addAttribute("entryId", entry.getId());
     return "redirect:/portfolio/user/view";
