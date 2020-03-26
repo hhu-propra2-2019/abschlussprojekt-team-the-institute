@@ -86,8 +86,6 @@ public class AdminController {
     return "admin/view";
   }
 
-
-
   /**
    * Create Template mapping for POST requests.
    *
@@ -131,8 +129,6 @@ public class AdminController {
     return "redirect:/portfolio/admin/view";
   }
 
-
-
   /**
    * Create Template Entry mapping for POST requests.
    *
@@ -173,6 +169,7 @@ public class AdminController {
                                KeycloakAuthenticationToken token,
                                @RequestParam Long templateId) {
     accountService.authorize(model, token);
+
     portfolioService.deletePortfolioById(templateId);
 
     return "redirect:/portfolio/admin/list";

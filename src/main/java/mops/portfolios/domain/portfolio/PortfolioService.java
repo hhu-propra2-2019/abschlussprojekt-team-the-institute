@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 import lombok.NonNull;
 import mops.portfolios.AccountService;
 import mops.portfolios.demodata.DemoDataGenerator;
+
+import lombok.NonNull;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.group.Group;

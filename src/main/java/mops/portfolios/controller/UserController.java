@@ -74,7 +74,6 @@ public class UserController {
 
     model.addAttribute("templateList", templateList);
 
-
     return "user/list";
   }
 
