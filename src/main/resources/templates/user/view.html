@@ -108,8 +108,23 @@
                     </form>
                 </div>
 
-                <div th:case="${AnswerType.SINGLE_CHOICE}"
-                     th:insert="fragments/entryfields :: singlechoiceField(${fieldQuestion}, ${fieldHint})"></div>
+                <div th:case="${AnswerType.SINGLE_CHOICE}">
+                    <form method="post" th:action="@{/portfolio/user/updateRadio(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
+                          th:id="'singleChoice' + ${field.getId()}">
+                        <label>
+                            <u th:text="${fieldQuestion}">Question</u>
+                        </label>
+
+                        <div class="form-check" th:each="choice : ${fieldHint.split(',')}"
+                             th:with="id=${choice.replace(' ', '')}">
+                            <input class="form-check-input" name="radio[]" required th:id="${id}" type="radio">
+                            <label class="form-check-label" th:for="id" th:text="${choice}">
+                                Choice
+                            </label>
+                        </div>
+                        <input type="submit">
+                    </form>
+                </div>
 
                 <div th:case="${AnswerType.MULTIPLE_CHOICE}"
                      th:insert="fragments/entryfields :: multichoiceField(${fieldQuestion}, ${fieldHint})"></div>

@@ -197,15 +197,54 @@ public class UserController {
    * @return - redirects to /view
    */
   @PostMapping("/update")
-  public String updateFields(Model model, KeycloakAuthenticationToken token,
-                             RedirectAttributes redirect, @RequestParam Long portfolioId,
-                             @RequestParam Long entryId, @RequestParam Long entryFieldId,
+  public String updateFields(Model model,
+                             KeycloakAuthenticationToken token,
+                             RedirectAttributes redirect,
+                             @RequestParam Long portfolioId,
+                             @RequestParam Long entryId,
+                             @RequestParam Long entryFieldId,
                              @RequestParam("content") String newContent) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
     Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
     EntryField field = entryService.findFieldById(entry, entryFieldId);
+
+    field.setContent(newContent);
+    entryService.update(entry);
+
+    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
+    redirect.addAttribute("portfolioId", portfolio.getId());
+    redirect.addAttribute("entryId", entry.getId());
+    return "redirect:/portfolio/user/view";
+  }
+
+  /**
+   * Post Mapping to update EntryField Content.
+   * @param model - Spring MVC model
+   * @param token - KeycloakAuthenticationToken
+   * @param redirect - injects RedirectAttributes
+   * @param portfolioId - Id of current portfolio
+   * @param entryId - Id of current entry
+   * @param entryFieldId - Id of updated EntryField
+   * @param newContent - new content of entryfield
+   * @return - redirects to /view
+   */
+  @PostMapping("/updateRadio")
+  public String updateRadio(Model model,
+                            KeycloakAuthenticationToken token,
+                             RedirectAttributes redirect,
+                            @RequestParam Long portfolioId,
+                             @RequestParam Long entryId,
+                            @RequestParam Long entryFieldId,
+                             @RequestParam("radio[]") String newContent) {
+    accountService.authorize(model, token);
+
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
+    EntryField field = entryService.findFieldById(entry, entryFieldId);
+
+    System.out.println(field.getContent());
 
     field.setContent(newContent);
     entryService.update(entry);
