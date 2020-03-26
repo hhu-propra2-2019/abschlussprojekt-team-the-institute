@@ -34,10 +34,13 @@ public class PortfoliosApplication {
    *
    * @param args - command-line arguments
    */
-  public static void main(String[] args){
+  public static void main(String[] args) {
     SpringApplication.run(PortfoliosApplication.class, args);
   }
 
+  /**
+   * Provides demodata.
+   */
   @Bean
   public CommandLineRunner demo() {
     return (args) -> {
