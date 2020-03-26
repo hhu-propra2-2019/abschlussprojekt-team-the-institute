@@ -81,21 +81,12 @@ public class AdminController {
                              @RequestParam Long templateId,
                              @RequestParam(required = false) Long entryId) {
     accountService.authorize(model, token);
-
-    Portfolio template = portfolioService.findPortfolioById(templateId);
-    model.addAttribute("template", template);
-
-    if (entryId == null && !template.getEntries().isEmpty()) {
-      entryId = template.getEntries().stream().findFirst().get().getId();
-    }
-
-    if (entryId != null) {
-      Entry entry = portfolioService.findEntryInPortfolioById(template, entryId);
-      model.addAttribute("templateEntry", entry);
-    }
+    portfolioService.getTemplatesToView(model, templateId, entryId);
 
     return "admin/view";
   }
+
+
 
   /**
    * Create Template mapping for POST requests.
@@ -109,16 +100,7 @@ public class AdminController {
                                KeycloakAuthenticationToken token, RedirectAttributes redirect,
                                @RequestParam("title") String title) {
     accountService.authorize(model, token);
-
-    User user = new User();
-    user.setName(token.getName()); // FIXME: Nutzen wir auch an jeder Stelle diese Methode? \
-    // Geht es ohne user id auch klar?
-
-    Portfolio portfolio = new Portfolio(title, user);
-    portfolio.setTemplate(true);
-    portfolio = portfolioService.update(portfolio);
-
-    redirect.addAttribute("templateId", portfolio.getId());
+    portfolioService.templateCreation(token, redirect, title);
 
     return "redirect:/portfolio/admin/view";
   }
@@ -138,19 +120,12 @@ public class AdminController {
                                     @RequestParam Long templateId,
                                     @RequestParam("title") String title) {
     accountService.authorize(model, token);
-
-    Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    Entry entry = new Entry(title);
-    portfolio.getEntries().add(entry);
-
-    portfolio = portfolioService.update(portfolio);
-    entry = portfolioService.findLastEntryInPortfolio(portfolio);
-
-    redirect.addAttribute("templateId", templateId);
-    redirect.addAttribute("entryId", entry.getId());
+    portfolioService.templateEntryCreation(redirect, templateId, title);
 
     return "redirect:/portfolio/admin/view";
   }
+
+
 
   /**
    * Create Template Entry mapping for POST requests.
@@ -171,15 +146,7 @@ public class AdminController {
                                     @RequestParam("fieldType") String fieldType,
                                     @RequestParam(value = "hint", required = false) String hint) {
     accountService.authorize(model, token);
-
-    Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-
-    portfolioService.createAndAddField(portfolio, entryId,
-        question, AnswerType.valueOf(fieldType) + ";" + hint);
-    portfolioService.update(portfolio);
-
-    redirect.addAttribute("templateId", templateId);
-    redirect.addAttribute("entryId", entryId);
+    portfolioService.templateFieldCreation(redirect, templateId, entryId, question, fieldType, hint);
 
     return "redirect:/portfolio/admin/view";
   }
@@ -196,7 +163,6 @@ public class AdminController {
                                KeycloakAuthenticationToken token,
                                @RequestParam Long templateId) {
     accountService.authorize(model, token);
-
     portfolioService.deletePortfolioById(templateId);
 
     return "redirect:/portfolio/admin/list";
