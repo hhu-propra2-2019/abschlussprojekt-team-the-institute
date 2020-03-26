@@ -10,9 +10,11 @@ public class Url {
 
   /**
    * Creates an Url object.
-   * @param value The URL String to generate the Url Object from. It must be formatted as in following:<br>
+   * @param value The URL String to generate the Url Object from.
+   *              It must be formatted as in following:<br>
    *            <code>[scheme]://[domain]/[path]/</code><br>
-   *            The String must start with the scheme (e.g. "http", or "https") and end with a slash.
+   *            The String must start with the scheme (e.g. "http", or "https")
+   *              and end with a slash.
    * @throws IllegalArgumentException If the entered url String is not formatted correctly.
    */
   public Url(String value) throws IllegalArgumentException {
@@ -24,7 +26,7 @@ public class Url {
 
   @SuppressWarnings("PMD")
   private void checkUrl(String url) throws IllegalArgumentException {
-    if(url == null) {
+    if (url == null) {
       logger.error("Entered url String is null");
       throw new IllegalArgumentException("Entered url String is null");
     }
@@ -36,7 +38,8 @@ public class Url {
     } catch (Exception e) {
       ; // do nothing and throw exception below
     }
-    throw new IllegalArgumentException("Entered url String is not formatted correctly. It was: " + url);
+    throw new IllegalArgumentException("Entered url String is not formatted correctly. It was: "
+            + url);
   }
 
   @SuppressWarnings("PMD")
@@ -96,7 +99,7 @@ public class Url {
 
   @SuppressWarnings("PMD")
   private boolean endsWithSlash(String url) {
-    if(url.charAt(url.length()-1) == '/') {
+    if (url.charAt(url.length() - 1) == '/') {
       return true;
     }
 
