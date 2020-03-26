@@ -210,7 +210,9 @@ public class UserController {
     Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
     EntryField field = entryService.findFieldById(entry, entryFieldId);
 
-    field.setContent(newContent);
+    String[] content = field.getContent().split(";");
+    content[1] = newContent;
+    field.setContent(content[0] + ";" + content[1]);
     entryService.update(entry);
 
     // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
