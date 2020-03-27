@@ -22,11 +22,11 @@ import static org.mockito.Mockito.when;
 public class GroupServiceTest {
 
     @NonNull @Autowired
-    UserRepository userRepository = mock(UserRepository.class);
+    private transient UserRepository userRepository = mock(UserRepository.class);
     @NonNull @Autowired
-    GroupRepository groupRepository = mock(GroupRepository.class);
+    private transient GroupRepository groupRepository = mock(GroupRepository.class);
     @NonNull @Autowired
-    GroupService groupService = new GroupService(groupRepository);
+    private transient GroupService groupService = new GroupService(groupRepository);
 
     @Test
     public void testTest() {
