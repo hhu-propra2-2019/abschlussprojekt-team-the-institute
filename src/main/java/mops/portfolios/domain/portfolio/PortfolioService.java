@@ -1,6 +1,9 @@
 package mops.portfolios.domain.portfolio;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 import mops.portfolios.demodata.DemoDataGenerator;
@@ -18,9 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Service
 public class PortfolioService {
 
-  private @NonNull @Autowired
-  final transient PortfolioRepository repository;
-
+  @NonNull @Autowired
+  transient PortfolioRepository repository;
 
   private static final String requestTitle = "title";
   private static final String requestTemplateId = "templateId";
@@ -125,7 +127,7 @@ public class PortfolioService {
    * @param hint field content of the field to be added
    */
   public void createAndAddField(Portfolio portfolio, Long entryId, String title,
-                                String fieldType, String hint) {
+                                AnswerType fieldType, String hint) {
 
     Entry entry;
     if (findEntryInPortfolioById(portfolio,entryId) != null) {
@@ -134,7 +136,10 @@ public class PortfolioService {
       entry = new Entry();
     }
 
-    String content = fieldType + ";" + hint + "; , ";
+    String content = fieldType + ";" + hint + "; ";
+    if (fieldType == AnswerType.SINGLE_CHOICE || fieldType == AnswerType.MULTIPLE_CHOICE) {
+      content += ", ";
+    }
 
     EntryField field = new EntryField();
     field.setTitle(title);
