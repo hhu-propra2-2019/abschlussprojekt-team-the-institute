@@ -69,16 +69,19 @@ public class EntryService {
   public void updateEntryFieldCheck(@RequestParam("button") List<String> newContent,
                                     @RequestParam Long entryFieldId,
                                     Entry entry) {
+    System.out.println(newContent);
+    System.out.println(newContent.size());
     EntryField field = findFieldById(entry, entryFieldId);
     System.out.println(field.getContent());
     String[] content = field.getContent().split(";");
+    String[] ids = content[1].split(",");
     String[] values = content[2].split(",");
     int i = 0;
-    for (String updatedContent : newContent) {
-      if (updatedContent.equals("checked")) {
-        values[i] = updatedContent;
+    for (String id : ids) {
+      if (newContent.contains(id)) {
+        values[i] = "checked";
       } else {
-        values[i] = "";
+        values[i] = "NO";
       }
       i++;
     }
