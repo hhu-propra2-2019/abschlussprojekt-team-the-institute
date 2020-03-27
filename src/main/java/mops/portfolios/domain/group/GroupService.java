@@ -27,6 +27,9 @@ public class GroupService {
         return group.getUsers();
     }
 
+    public void saveGroup(Group group) {
+        repository.save(group);
+    }
     public void updateGroup(Long groupId, List<User> users) {
 
         Group group = repository.findById(groupId).get();
