@@ -123,6 +123,14 @@ konnten wir nur ein Gerüst entwickeln. Bislang ist nur bekannt, dass wir JSON v
 
 === Beim Bau des Frontends / der Website
 . In unserem Mock haben wir Bootstrap verwendet, um neue Elemente anzeigen zu lassen. Dabei traten Probleme auf, was für uns ein Hinweis war, dass wir unser Design vereinfachen sollten.
+.. Am Ende des Projektes hatten wir es geschafft, die grundlegenden Design-Idee umzusetzten, aber unsere Umsetzung, in der das Laden eines neuen Eintrages das Laden einer neuen Seite bedeutet, ist stabiler und Fehlern gegenüber robust.
+. Eine weitere Problematik war, dass wir zum Teil komplizierte Thymeleaf-Logik verwenden, um den Inhalt richtig anzeigen zu können;
+.. Hier war für uns wichtig, klare Grenzen zwischen Dozenten und Studenten zu zeihen. Um dafür zu sorgen, dass die Logik dieser User Gruppen klar getrennt ist, haben wir uns dafür entschieden für beide Gruppen separate HTML Dateien und Controller Klassen zu schrieben.
+.. Thymeleaf war auch sehr nützlich für uns Fehler in unseren Controllern bzw. Service Klassen zu finden, da die kleinsten Fehler oder vergessenen Annotationen dafür sorgten, dass das Frontend nicht funktioniert.
+. Nachdem wir mit der Darstellung der Profolios fertig waren, wandten wir uns den Einträgen zu. Hier hatten wir das Problem, dass wir nicht nur Textfelder, sondern unter anderem auch Single & Multiple Choice Felder mit liefern wollten. Um dies zu implementieren, haben wir:
+.. Thymeleaf verwendt um die Darstellung des Fields auf der Webseite dem Field-Typ anzupassen.
+.. Mehrere Update Funktionen geschrieben, um die Geschäftslogik für die unterschiedlichen Felder zu implementieren.
+. Das heißt zwar, dass das Hinzufügen von neuen Feld-Typen etwas aufwändig ist, da man vermutlich auch eine Update Funktion schreiben muss, aber wir hielten unseren Lösungsansatz für sinnvoller, da wir so eine klarere Trennung im Code haben, was u.a. das Troubleshooting einfacher gemacht hat.
 
 === Beim Test
 . Der Test `AccessRestriction` hat mit einem einfachen MockUser nicht funktioniert. Wir wurden dann durch ein 'TodayILearned' in Rocketchat auf `WithMockKeycloakAuth` aufmerksam.
