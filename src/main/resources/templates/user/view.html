@@ -154,42 +154,6 @@
 
     <div th:replace="fragments/modals :: createPortfolioEntryModal(portfolioId=${portfolio.getId()})"></div>
     <div th:replace="fragments/modals :: deletePortfolioModal(portfolioId=${portfolio.getId()})"></div>
-
-    <!--
-    <div class="card">
-    <h5 class="card-header">Neuen Eintrag erstellen</h5>
-        <div class="card-body text-dark">
-            <h5 class="card-title">Eintrag erstellen</h5>
-            <p class="card-text">Hier kannst du einen neuen Eintrag erstellen:</p>
-            <form th:action="@{/portfolio/user/entry(portfolioId=${portfolio.getId()})}" method="post">
-                <input type="text" name="title" value="titel">
-                <br>
-                <br>
-                <input type="submit" name="action">
-            </form>
-        </div>
-    </div>
-
-    <div class="tab-pane fade" th:each="entry : ${portfolio.getEntries()}"
-         th:id="'tab'+${entry.getId()}">
-
-        <div class="card border-dark w-50 mb-2" th:each="field : ${entry.getFields()}">
-            <h5 class="card-header" th:text="${entry.getTitle()}">Entry title</h5>
-            <div class="card-body text-dark" th:each="field : ${entry.getFields()}">
-                <h5 class="card-title" th:text="${field.getTitle()}">Field title</h5>
-                <p class="card-text" th:text="${field.getContent()}">Field content</p>
-                <form th:action="@{/portfolio/user/update(portfolioId=${portfolio.getId()},entryId=${entry.getId()},entryFieldId=${field.getId()})}" method="post">
-                    <input type="text" name="content" value="content">
-                    <br>
-                    <input type="submit" name="action">
-                </form>
-                <a class="btn btn-primary" th:text="${field.getAttachment()}">Attachement</a>
-            </div>
-            <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()}">Date created</div>
-        </div>
-
-   </div>
-    -->
 </div>
 
 </body>
