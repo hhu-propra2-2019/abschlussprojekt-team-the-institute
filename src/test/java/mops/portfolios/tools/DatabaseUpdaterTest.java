@@ -100,7 +100,7 @@ public class DatabaseUpdaterTest {
   @Test
   void testUpdateDatabaseEventsIllegalArgument() {
     databaseUpdater.url = new Url("http://bla/bla/");
-    assertThrows(RuntimeException.class, () -> databaseUpdater.getUpdatesFromJsonObject());
+    assertThrows(RuntimeException.class, () -> databaseUpdater.execute());
   }
   @Test
   void testSuccessfulRequest() {
