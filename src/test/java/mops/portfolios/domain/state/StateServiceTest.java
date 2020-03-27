@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class StateServiceTest {
 
+  private transient final String stateName = "test";
   private transient StateRepository stateRepository = mock(StateRepository.class);
 
   private transient StateService stateService = new StateService(stateRepository);
@@ -22,15 +23,15 @@ public class StateServiceTest {
 
     State state = new State();
     state.setLastState(7257L);
-    state.setId("test");
+    state.setId(stateName);
 
     when(stateRepository.save(any(State.class))).thenReturn(state);
 
-    stateService.setState("test", 7257L);
+    stateService.setState(stateName, 7257L);
 
-    when(stateRepository.findById("test")).thenReturn(Optional.of(state));
+    when(stateRepository.findById(stateName)).thenReturn(Optional.of(state));
 
-    Long stateFromRepo = stateService.getState("test");
+    Long stateFromRepo = stateService.getState(stateName);
 
     assert(stateFromRepo == 7257L);
   }

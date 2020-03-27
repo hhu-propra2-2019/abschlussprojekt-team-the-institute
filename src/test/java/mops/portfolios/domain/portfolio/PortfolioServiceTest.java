@@ -34,7 +34,7 @@ public class PortfolioServiceTest {
 
 
   @SuppressWarnings("PMD")
-  @Test @Disabled
+  @Test
   void createAndAddEntryTest() {
 
     User user = new User();
@@ -56,12 +56,12 @@ public class PortfolioServiceTest {
     entryRepository.save(entry);
 
     portfolioService.createAndAddField(portfolio, 1L, "Question?", AnswerType.TEXT,
-        "hint");
+        "Some hint");
 
     Set<EntryField> newEntryFields = entry.getFields();
 
     for (EntryField newField: newEntryFields) {
-      Assert.assertEquals("EntryField(id=1, title=Question?, content=TEXT;hint; , attachment=null)", newField.toString());
+      Assert.assertEquals("EntryField(id=1, title=Question?, content=TEXT;Some hint, attachment=null)", newField.toString());
     }
 
   }
