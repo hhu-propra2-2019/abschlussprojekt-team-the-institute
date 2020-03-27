@@ -1,14 +1,11 @@
 package mops.portfolios.domain.entry;
 
 import java.util.List;
-import java.util.Objects;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import mops.portfolios.controller.UserController;
-import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.portfolio.templates.AnswerType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,18 +16,20 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @NoArgsConstructor
 public class EntryService {
 
-  @NonNull @Autowired
+  @NonNull
+  @Autowired
   transient EntryRepository entryRepository;
 
-  @NonNull @Autowired
+  @NonNull
+  @Autowired
   transient EntryFieldRepository entryFieldRepository;
 
-  @NonNull @Autowired
+  @NonNull
+  @Autowired
   transient PortfolioService portfolioService;
 
   /**
    * Finds field.
-   *
    */
   @SuppressWarnings("PMD")
   public EntryField findFieldById(Entry entry, Long entryFieldId) {
@@ -48,7 +47,6 @@ public class EntryService {
 
   /**
    * Updates entryfield.
-   *
    */
   @SuppressWarnings("PMD")
   public void updateEntryFields(RedirectAttributes redirect,
@@ -96,7 +94,6 @@ public class EntryService {
 
   /**
    * Updates slider entryfield.
-   *
    */
   @SuppressWarnings("PMD")
   public void updateEntryFieldSlider(@RequestParam("value") String newContent, EntryField field) {
@@ -104,7 +101,7 @@ public class EntryService {
     String[] values = content[1].split(",");
     values[2] = newContent;
     field.setContent(content[0] + ";" + values[0] + ","
-            + values[1] + "," + values[2] + ";" + content[2]);
+        + values[1] + "," + values[2] + ";" + content[2]);
   }
 
   public Entry findEntryById(Long entryId) {
