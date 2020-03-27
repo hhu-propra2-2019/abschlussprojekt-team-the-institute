@@ -10,12 +10,16 @@ import mops.portfolios.domain.user.User;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class PortfolioServiceTest {
 
 
