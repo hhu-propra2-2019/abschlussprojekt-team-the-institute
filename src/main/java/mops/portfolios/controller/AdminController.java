@@ -5,11 +5,12 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
-import mops.portfolios.controller.services.FileService;
+import mops.portfolios.domain.file.FileService;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
+import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.tools.AsciiDocConverter;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -26,13 +27,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RolesAllowed({"ROLE_orga"})
 @AllArgsConstructor
 public class AdminController {
-  private final transient FileService fileService = new FileService();
-  private final transient EntryService entryService = new EntryService();
-
+  private final transient FileService fileService;
+  private final transient EntryService entryService;
   private transient AccountService accountService;
-
   private transient PortfolioService portfolioService;
-
   private transient AsciiDocConverter asciiConverter;
 
   /**
@@ -79,7 +77,6 @@ public class AdminController {
                              @RequestParam(required = false) Long entryId) {
     accountService.authorize(model, token);
     model.addAttribute("template", portfolioService.findPortfolioById(templateId));
-
 
     portfolioService.getPortfoliosTemplatesToView(model, templateId, entryId, "templateEntry");
 
@@ -149,9 +146,12 @@ public class AdminController {
                                     @RequestParam("question") String question,
                                     @RequestParam("fieldType") String fieldType,
                                     @RequestParam(value = "hint", required = false) String hint) {
+
+    System.out.println("=============================");
+    System.out.println("=============================");
     accountService.authorize(model, token);
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    portfolioService.createAndAddField(portfolio, entryId, question, hint);
+    portfolioService.createAndAddField(portfolio, entryId, question, AnswerType.valueOf(fieldType) + ";" + hint);
     portfolioService.update(portfolio);
 
     redirect.addAttribute("entryId", entryId);
@@ -193,7 +193,7 @@ public class AdminController {
     accountService.authorize(model, token);
 
     if (fileService.nothingUploaded(file)) {
-      return "admin/asciidoc/upload";
+      return "common/error";
     }
 
     byte[] fileBytes = fileService.readFile(file);
@@ -202,7 +202,7 @@ public class AdminController {
     String html = asciiConverter.convertToHtml(text);
     model.addAttribute("html", html);
 
-    return "admin/asciidoc/view";
+    return "admin/upload";
   }
 
 }

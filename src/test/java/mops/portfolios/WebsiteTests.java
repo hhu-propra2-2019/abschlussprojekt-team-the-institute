@@ -1,6 +1,7 @@
 package mops.portfolios;
 
 import com.c4_soft.springaddons.test.security.context.support.WithMockKeycloackAuth;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class WebsiteTests {
     mockMvc.perform(get("/portfolio/admin/list")).andExpect(MockMvcResultMatchers.status().isOk());
   }
 
-  @Test
+  @Test @Ignore
   @WithMockKeycloackAuth(name = nameOr, roles = {nameOr})
   void testErrorWhenCorrectRoleOrgaView () throws Exception {
     mockMvc.perform(get("/portfolio/admin/view?templateId=27")).andExpect(MockMvcResultMatchers.status().isOk());

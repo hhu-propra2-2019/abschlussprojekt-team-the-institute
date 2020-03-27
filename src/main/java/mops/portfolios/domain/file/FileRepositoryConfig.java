@@ -1,4 +1,4 @@
-package mops.portfolios.domain;
+package mops.portfolios.domain.file;
 
 import lombok.Getter;
 import lombok.Setter;
