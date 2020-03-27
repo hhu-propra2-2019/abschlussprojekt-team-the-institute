@@ -3,6 +3,8 @@ package mops.portfolios.tools;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.net.ConnectException;
+
 public interface IHttpClient {
 
   /**
@@ -12,7 +14,7 @@ public interface IHttpClient {
    * @throws HttpClientErrorException if an HTTP error occured (status code 4xx or 5xx)
    * @author mkasimd & hanic101
    */
-  public String get(String url) throws HttpClientErrorException;
+  public String get(String url) throws HttpClientErrorException, ConnectException;
 
   /**
    * HTTP POST requestBody to specified url with specified requestBody body.
@@ -24,5 +26,5 @@ public interface IHttpClient {
    * @author mkasimd & hanic101
    */
   public String post(String url, String requestBody, HttpHeaders headers)
-          throws HttpClientErrorException;
+          throws HttpClientErrorException, ConnectException;
 }

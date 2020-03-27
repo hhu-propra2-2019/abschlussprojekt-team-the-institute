@@ -1,5 +1,6 @@
 package mops.portfolios.tools;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +72,9 @@ public class DatabaseUpdater {
     } catch (IllegalArgumentException argException) {
       logger.error(argException.getMessage());
       // Most likely URL formatted wrong, read logs from Url generation
+    } catch (ResourceAccessException | ConnectException exc) {
+      logger.warn("Could not connect to the host: " + exc.getMessage());
+      return;
     }
 
     updateDatabaseEvents(responseBody);

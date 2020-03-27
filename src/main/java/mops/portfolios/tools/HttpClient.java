@@ -7,10 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.ConnectException;
+
 public class HttpClient implements IHttpClient {
 
   @Override
-  public String get(String url) throws HttpClientErrorException {
+  public String get(String url) throws HttpClientErrorException, ConnectException {
     RestTemplate template = new RestTemplate();
     ResponseEntity<String> response = template.getForEntity(url, String.class);
     if (response.getStatusCode().isError()) { // Error means 4xx or 5xx
@@ -29,7 +31,7 @@ public class HttpClient implements IHttpClient {
 
   @Override
   public String post(String url, String requestBody, HttpHeaders headers)
-          throws HttpClientErrorException {
+          throws HttpClientErrorException, ConnectException {
     RestTemplate template = new RestTemplate();
 
     HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
