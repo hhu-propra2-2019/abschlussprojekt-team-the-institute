@@ -3,19 +3,18 @@ package mops.portfolios.domain.user;
 import java.util.ArrayList;
 import java.util.List;
 import mops.portfolios.domain.group.Group;
-import mops.portfolios.domain.group.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class UserService {
+    transient UserRepository repository;
 
-  @Autowired
-  transient UserRepository repository;
-
-  @Autowired
-  transient GroupRepository groupRepository;
+    @Autowired
+    public UserService(UserRepository repository) {
+        this.repository = repository;
+    }
 
   /**
    * Gets list fo groups from one username.
