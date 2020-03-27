@@ -1,4 +1,4 @@
-package mops.portfolios;
+package mops.portfolios.domain.user;
 
 import mops.portfolios.domain.group.Group;
 

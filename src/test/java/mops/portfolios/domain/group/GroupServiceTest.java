@@ -1,4 +1,4 @@
-package mops.portfolios;
+package mops.portfolios.domain.group;
 
 
 import lombok.NonNull;

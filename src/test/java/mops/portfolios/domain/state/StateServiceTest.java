@@ -1,4 +1,4 @@
-package mops.portfolios;
+package mops.portfolios.domain.state;
 
 import mops.portfolios.domain.state.State;
 import mops.portfolios.domain.state.StateRepository;
