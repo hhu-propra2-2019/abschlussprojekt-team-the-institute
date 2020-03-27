@@ -66,7 +66,6 @@ public class UserController {
     String userName = accountService.getUserName(token);
 
     List<Group> groups = userService.getGroupsByUserName(userName);
-    // TODO Implement optional sublisting with method overload in portfolioService
     List<Portfolio> groupPortfolios = portfolioService.findAllByGroupList(groups);
     List<Portfolio> userPortfolios = portfolioService.findAllByUserId(userName);
     List<Portfolio> allPortfolios = Stream.of(userPortfolios, groupPortfolios)
