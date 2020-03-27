@@ -5,10 +5,12 @@ import mops.portfolios.domain.group.GroupRepository;
 import mops.portfolios.domain.state.StateService;
 import mops.portfolios.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+@ConditionalOnProperty(value = "app.scheduling.enable", havingValue = "true", matchIfMissing = true)
 @Component
 @EnableScheduling
 public class ScheduledDatabaseUpdater {
@@ -48,8 +50,7 @@ public class ScheduledDatabaseUpdater {
   @PostLoad
   @Scheduled(fixedRate = 10_000)
   public void updateDatabase() {
-    // this.url = "200"; // FIXME: Only call getUpdatesFromJsonObject later here
-    databaseUpdater.getGroupUpdatesFromUrl(new HttpClient(), this.url);
+    databaseUpdater.execute();
   }
 
 }

@@ -7,8 +7,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class StateService {
 
-  @Autowired
-  private transient StateRepository repository;
+    private transient StateRepository repository;
+
+    @Autowired
+    public StateService(StateRepository repository) {
+        this.repository = repository;
+    }
+
 
   /**
    * Gets current state.
