@@ -10,7 +10,6 @@ services:
       - "MYSQL_ROOT_PASSWORD=password"
       - "MYSQL_DATABASE=portfolios"
 
-
   portfolio:
     build: .
     ports:
