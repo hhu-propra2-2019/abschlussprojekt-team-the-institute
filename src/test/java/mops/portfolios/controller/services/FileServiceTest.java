@@ -1,5 +1,6 @@
 package mops.portfolios.controller.services;
 
+import mops.portfolios.domain.file.FileService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.mock.web.MockMultipartFile;
@@ -8,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileServiceTest {
 
   private transient MultipartFile multipartFile = new MockMultipartFile("data", "filename.txt", "text/plain", "some xml".getBytes());
-  private transient FileService fileService = new FileService();
+  private transient FileService fileService;
 
 
 

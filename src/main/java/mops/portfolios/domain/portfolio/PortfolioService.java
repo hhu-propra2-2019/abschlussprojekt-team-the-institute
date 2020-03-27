@@ -18,8 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Service
 public class PortfolioService {
 
-  @NonNull @Autowired
-  transient PortfolioRepository repository;
+  private @NonNull @Autowired
+  final transient PortfolioRepository repository;
+
 
   private static final String requestTitle = "title";
   private static final String requestTemplateId = "templateId";
@@ -246,19 +247,17 @@ public class PortfolioService {
   public Portfolio getNewPortfolio(KeycloakAuthenticationToken token,
                                 @RequestParam(value = requestTemplateId, required = false)
                                         String templateId,
-                                @RequestParam(value = requestTitle, required = false)
+                                   @RequestParam(value = requestTitle, required = false)
                                         String title,
-                                @RequestParam("isTemplate") String isTemplate) {
+                                   @RequestParam("isTemplate") String isTemplate) {
 
     User user = new User();
     user.setName(token.getName());
 
     Portfolio portfolio;
     if (isTemplate.equals("true")) {
-
       Portfolio template = findPortfolioById(Long.valueOf(templateId));
       portfolio = generateNewPortfolioFromTemplate(template, user);
-
     } else {
       portfolio = new Portfolio(title, user);
     }
@@ -293,7 +292,6 @@ public class PortfolioService {
    * Creates an entry.
    * @return created entry
    */
-
   public Entry portfolioEntryCreation(@RequestParam Long portfolioId,
                                       @RequestParam(requestTitle) String title) {
 

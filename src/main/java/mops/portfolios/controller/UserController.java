@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
-import mops.portfolios.controller.services.FileService;
+import mops.portfolios.domain.file.FileService;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryService;
@@ -35,7 +35,7 @@ public class UserController {
   private transient UserService userService;
   private transient PortfolioService portfolioService;
   private transient EntryService entryService;
-  private final transient FileService fileService = new FileService();
+  private final transient FileService fileService;
   private final String portfolioIdAttribute = "portfolioId";
   private final String entryIdAttribute = "entryId";
 
@@ -95,6 +95,7 @@ public class UserController {
                               @RequestParam(required = false) Long entryId) {
     accountService.authorize(model, token);
     model.addAttribute("portfolio", portfolioService.findPortfolioById(portfolioId));
+    model.addAttribute("fileService", fileService);
 
     portfolioService.getPortfoliosTemplatesToView(model, portfolioId, entryId, "portfolioEntry");
 
@@ -328,7 +329,8 @@ public class UserController {
       return "redirect:/portfolio/user/view";
     }
 
-    byte[] fileBytes = fileService.readFile(file);
+    fileService.updateField(file, field);
+    entryService.update(entry);
 
     redirect.addAttribute(portfolioIdAttribute, portfolio.getId());
     redirect.addAttribute(entryIdAttribute, entry.getId());
