@@ -57,6 +57,7 @@ public class EntryService {
                                 @RequestParam("content") String newContent,
                                 Entry entry) {
     EntryField field = findFieldById(entry, entryFieldId);
+    System.out.println(field.getContent());
     String[] content = field.getContent().split(";");
     content[1] = newContent;
     field.setContent(content[0] + ";" + content[1] + ";" + content[2]);
@@ -68,14 +69,18 @@ public class EntryService {
    */
   @SuppressWarnings("PMD")
   public void updateEntryFieldCheck(@RequestParam("button") List<String> newContent,
-                                    Entry entry, EntryField field,
-                                    UserController userController) {
+                                    @RequestParam Long entryFieldId,
+                                    Entry entry) {
+    EntryField field = findFieldById(entry, entryFieldId);
+    System.out.println(field.getContent());
     String[] content = field.getContent().split(";");
     String[] values = content[2].split(",");
     int i = 0;
     for (String updatedContent : newContent) {
       if (updatedContent.equals("checked")) {
         values[i] = updatedContent;
+      } else {
+        values[i] = "";
       }
       i++;
     }
