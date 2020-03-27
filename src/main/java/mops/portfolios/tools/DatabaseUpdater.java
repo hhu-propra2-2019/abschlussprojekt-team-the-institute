@@ -24,7 +24,7 @@ import org.springframework.web.client.HttpClientErrorException;
 @SuppressWarnings("PMD")
 public class DatabaseUpdater {
   private static final Logger logger = LoggerFactory.getLogger(PortfoliosApplication.class);
-  final String serviceName = "gruppen2";
+  private final String serviceName = "gruppen2";
 
   /**
    * The url to request the updates from. The formatting is highly important.
@@ -36,7 +36,6 @@ public class DatabaseUpdater {
   final @NonNull UserRepository userRepository;
 
   final @NonNull StateService stateService;
-
 
   /**
    * Use this method to get the updates from Gruppenbildung regarding groups.
@@ -132,7 +131,7 @@ public class DatabaseUpdater {
     return groupList.isEmpty();
   }
 
-  void processGroupUpdates(JSONObject jsonUpdate) {
+  private void processGroupUpdates(JSONObject jsonUpdate) {
 
 
     JSONArray groupList = jsonUpdate.getJSONArray("groupList");
