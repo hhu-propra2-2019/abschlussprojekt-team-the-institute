@@ -131,7 +131,7 @@ konnten wir nur ein Gerüst entwickeln. Bislang ist nur bekannt, dass wir JSON v
 .. Thymeleaf verwendt um die Darstellung des Fields auf der Webseite dem Field-Typ anzupassen.
 .. Mehrere Update Funktionen geschrieben, um die Geschäftslogik für die unterschiedlichen Felder zu implementieren.
 . Das heißt zwar, dass das Hinzufügen von neuen, bisher nicht implementierten Feld-Typen etwas aufwändig ist, da man vermutlich auch eine Update Funktion schreiben muss, aber wir hielten unseren Lösungsansatz für sinnvoller, da wir so eine klarere Trennung im Code haben, was u.a. das Troubleshooting einfacher gemacht hat.
-. Bis jetzt haben wir folgende Feld-Typen Implementiert:
+. Wir haben folgende Feld-Typen Implementiert:
 .. Textfelder
 .. Single-Choice Auswahl Felder
 .. Mulitple-Choice Auswahl Felder
