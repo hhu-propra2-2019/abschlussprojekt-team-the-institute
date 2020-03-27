@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 @SpringBootTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class PortfolioServiceTest {
@@ -30,8 +32,8 @@ public class PortfolioServiceTest {
     public void findMultiplePortfoliosPerGroupTest() {
         List<Group> groupList = new ArrayList<>();
 
-        Group group1 = new Group(0L, "Group 1", new ArrayList<User>());
-        Group group2 = new Group(1L, "Group 2", new ArrayList<User>());
+        Group group1 = new Group(0L, "Group 1", new ArrayList<>());
+        Group group2 = new Group(1L, "Group 2", new ArrayList<>());
         groupList.add(group1);
         groupList.add(group2);
 
@@ -77,6 +79,37 @@ public class PortfolioServiceTest {
         assert(testEntry2.equals(testEntry));
     }
 
+    @Test
+    public void getTemplatesOutOfMixedRepositoryTest() {
+        Portfolio nonTemplate = new Portfolio("Portfolio 1", new User());
+        Portfolio template = new Portfolio("Portfolio 2", new Group());
 
+        template.setTemplate(true);
+
+        portfolioRepository.save(nonTemplate);
+        portfolioRepository.save(template);
+
+        List<Portfolio> templates = portfolioService.getAllTemplates();
+
+        assert(templates.contains(template));
+        assertFalse(templates.contains(nonTemplate));
+    }
+
+
+    @Test
+    public void getNonTemplatesOutOfMixedRepositoryTest() {
+        Portfolio nonTemplate = new Portfolio("Portfolio 1", new User());
+        Portfolio template = new Portfolio("Portfolio 2", new Group());
+
+        template.setTemplate(true);
+
+        portfolioRepository.save(nonTemplate);
+        portfolioRepository.save(template);
+
+        List<Portfolio> templates = portfolioService.getAllPortfolios();
+
+        assert(templates.contains(nonTemplate));
+        assertFalse(templates.contains(template));
+    }
 
 }
