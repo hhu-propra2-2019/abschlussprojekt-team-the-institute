@@ -132,7 +132,7 @@
                         <br>
                         <div class="custom-file w-50">
                             <input class="custom-file-input" name="file" id="INPUT_FILE" required th:accept="${fieldHint}"
-                                   type="file" th:text="${field.getContent()}">
+                                   type="file" th:text="${fileService.getFileName(field.getAttachment())}">
                             <label class="custom-file-label" for="INPUT_FILE">Datei auswählen</label>
                         </div>
                         <button class="btn btn-primary"  type="submit">Absenden</button>

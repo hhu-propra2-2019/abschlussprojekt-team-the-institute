@@ -55,10 +55,20 @@ public class FileService {
     return fileBytes;
   }
 
-
   public void updateField(MultipartFile file, EntryField field) {
-    System.out.println(field.getContent());
-    System.out.println(file.getName());
     fileRepository.saveFile(file, field);
+  }
+
+  public String getFileName(String fileName) {
+    if(fileName == null) {
+      return "Keine Datei hochgeladen";
+    } else {
+      String[] names = fileName.split(";");
+      if (names.length == 1) {
+        return names[0];
+      } else{
+        return names[1];
+      }
+    }
   }
 }

@@ -1,15 +1,8 @@
 package mops.portfolios.domain.file;
 
 import io.minio.MinioClient;
-import io.minio.errors.ErrorResponseException;
-import io.minio.errors.InsufficientDataException;
-import io.minio.errors.InternalException;
-import io.minio.errors.InvalidBucketNameException;
-import io.minio.errors.InvalidEndpointException;
-import io.minio.errors.InvalidPortException;
-import io.minio.errors.InvalidResponseException;
-import io.minio.errors.NoResponseException;
-import io.minio.errors.RegionConflictException;
+import io.minio.errors.*;
+
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -64,7 +57,7 @@ public class FileRepository {
    * @param entryField entryField to save the object to
    */
   public void saveFile(MultipartFile file, EntryField entryField) {
-    String objName = UUID.randomUUID().toString() + "." + file.getName();
+    String objName = UUID.randomUUID().toString() + ";" + file.getOriginalFilename();
     try {
       minioClient.putObject(bucketName, objName, file.getOriginalFilename());
     } catch (Exception e) {
@@ -72,6 +65,9 @@ public class FileRepository {
     }
     entryField.setAttachment(objName);
     entryFieldRepository.save(entryField);
+    System.out.println(entryField.getContent());
+    System.out.println(entryField.getAttachment());
+    System.out.println(file.getName());
   }
 
   /**
@@ -91,5 +87,4 @@ public class FileRepository {
     }
     return "";
   }
-
 }

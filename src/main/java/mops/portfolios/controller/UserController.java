@@ -95,6 +95,7 @@ public class UserController {
                               @RequestParam(required = false) Long entryId) {
     accountService.authorize(model, token);
     model.addAttribute("portfolio", portfolioService.findPortfolioById(portfolioId));
+    model.addAttribute("fileService", fileService);
 
     portfolioService.getPortfoliosTemplatesToView(model, portfolioId, entryId, "portfolioEntry");
 
