@@ -1,6 +1,6 @@
 package mops.portfolios.tools;
 
-import javax.annotation.PostConstruct;
+import javax.persistence.PostLoad;
 import mops.portfolios.domain.group.GroupRepository;
 import mops.portfolios.domain.state.StateService;
 import mops.portfolios.domain.user.UserRepository;
@@ -18,7 +18,8 @@ public class ScheduledDatabaseUpdater {
    *   <code>[scheme]://[domain]/[path]/</code><br>
    *   The String must start with the scheme (e.g. "http", or "https") and end with a slash.
    */
-  private transient String url = "https://raw.githubusercontent.com/Azure/azure-docs-json-samples/master/cosmos-db/cosmos-db-table.json/";
+  private transient String url = "http://localhost:8081/gruppen2/api/updateGroups/";
+  // url retrieved from it-bois APIController commit c844f5d (24.03.2020)
 
   transient GroupRepository groupRepository;
 
@@ -44,7 +45,7 @@ public class ScheduledDatabaseUpdater {
   /**
    * Runs the database updater with a fixed timeout.
    */
-  @PostConstruct
+  @PostLoad
   @Scheduled(fixedRate = 10_000)
   public void updateDatabase() {
     // this.url = "200"; // FIXME: Only call getUpdatesFromJsonObject later here

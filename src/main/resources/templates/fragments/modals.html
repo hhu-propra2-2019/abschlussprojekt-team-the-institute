@@ -48,6 +48,11 @@
      th:insert="~{::abstractModalForm (title='Eintrag hinzufügen',
      content=~{fragments/forms::createPortfolioEntryForm})}"></div>
 
+<div th:id="${modalId}" class="modal fade"
+     th:fragment="createPortfolioFieldModal(portfolioId, entryId, modalId, fieldFragment)"
+     th:insert="~{::abstractModalForm (title='Feld hinzufügen',
+     content=~{fragments/forms::createPortfolioFieldForm})}"></div>
+
 <div id="MODAL_DELETE_PORTFOLIO" class="modal fade" th:fragment="deletePortfolioModal(portfolioId)"
      th:insert="~{::abstractModalForm (title='Portfolio löschen',
      content=~{fragments/forms::deletePortfolioForm})}"></div>

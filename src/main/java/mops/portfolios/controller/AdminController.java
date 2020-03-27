@@ -5,9 +5,9 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
-import mops.portfolios.domain.file.FileService;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryService;
+import mops.portfolios.domain.file.FileService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
@@ -120,7 +120,7 @@ public class AdminController {
                                     @RequestParam("title") String title) {
     accountService.authorize(model, token);
 
-    Entry entry = portfolioService.portfolioEntryCreation(templateId,title);
+    Entry entry = portfolioService.portfolioEntryCreation(templateId, title);
 
     redirect.addAttribute("templateId", templateId);
     redirect.addAttribute("entryId", entry.getId());
@@ -129,7 +129,7 @@ public class AdminController {
   }
 
   /**
-   * Create Template Entry mapping for POST requests.
+   * Create Template Entry Field mapping for POST requests.
    *
    * @param model      The spring model to add the attributes to
    * @param templateId The id of the template
@@ -146,12 +146,11 @@ public class AdminController {
                                     @RequestParam("question") String question,
                                     @RequestParam("fieldType") String fieldType,
                                     @RequestParam(value = "hint", required = false) String hint) {
-
-    System.out.println("=============================");
-    System.out.println("=============================");
     accountService.authorize(model, token);
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    portfolioService.createAndAddField(portfolio, entryId, question, AnswerType.valueOf(fieldType) + ";" + hint);
+
+    AnswerType answerType = AnswerType.valueOf(fieldType);
+    portfolioService.createAndAddField(portfolio, entryId, question, answerType, hint);
     portfolioService.update(portfolio);
 
     redirect.addAttribute("entryId", entryId);
