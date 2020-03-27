@@ -31,7 +31,7 @@ public class Entry {
 
   @OneToMany(
       cascade = CascadeType.ALL,
-      fetch = FetchType.EAGER, //FIXME
+      fetch = FetchType.EAGER,
       orphanRemoval = true
   )
   @OrderBy("id ASC")

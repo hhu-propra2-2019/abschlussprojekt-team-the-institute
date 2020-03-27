@@ -40,7 +40,6 @@ public class DatabaseUpdater {
   /**
    * Use this method to get the updates from Gruppenbildung regarding groups.
    */
-  // TODO: use a better method name. Do this later to avoid merge conflicts
   public void getUpdatesFromJsonObject() {
     IHttpClient httpClient = new HttpClient();
     long updateStatus = stateService.getState(this.serviceName);
