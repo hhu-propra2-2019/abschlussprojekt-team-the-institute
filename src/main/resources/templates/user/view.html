@@ -17,6 +17,33 @@
                     <p><i class="far fa-calendar-plus fa-lg"></i> Eintrag hinzufügen</p>
                 </a>
             </li>
+            <li th:if="${portfolioEntry != null}">
+                <div class="dropdown">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                        <p><i class="far fa-plus-square fa-lg"></i> Feld hinzufügen</p>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_TEXT_FIELD">
+                            <p><i class="fas fa-align-left"></i> Text Feld</p>
+                        </a>
+                        <a class="dropdown-item" href="#" data-toggle="modal"
+                           data-target="#MODAL_CREATE_SINGLECHOICE_FIELD">
+                            <p><i class="fas fa-list-ul"></i> Single Choice Feld</p>
+                        </a>
+                        <a class="dropdown-item" href="#" data-toggle="modal"
+                           data-target="#MODAL_CREATE_MULTICHOICE_FIELD">
+                            <p><i class="fas fa-tasks"></i> Multiple Choice Feld</p>
+                        </a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_SLIDER_FIELD">
+                            <p><i class="fas fa-sliders-h"></i> Range Slider Feld</p>
+                        </a>
+                        <a class="dropdown-item" href="#" data-toggle="modal"
+                           data-target="#MODAL_CREATE_ATTACHEMENT_FIELD">
+                            <p><i class="fas fa-paperclip"></i> Anhang Feld</p>
+                        </a>
+                    </div>
+                </div>
+            </li>
             <li>
                 <a href="#" data-toggle="modal" data-target="#MODAL_DELETE_PORTFOLIO">
                     <p><i class="fas fa-trash-alt fa-lg"></i> Portfolio löschen</p>
@@ -45,7 +72,7 @@
 
     <div class="tab-content">
 
-        <div th:if="${portfolio.getEntries() != null}">
+        <div th:if="${portfolioEntry != null}">
 
 
             <div th:each="field : ${portfolioEntry.getFields()}" th:switch="${fieldType}"
@@ -65,6 +92,7 @@
                         </label>
                         <textarea class="form-control" id="INPUT_TEXT" th:form="'textForm' + ${field.getId()}" name="content" required
                                   th:text="${fieldHint}"></textarea>
+                        <br>
                         <button class="btn btn-primary"  type="submit">Absenden</button>
                     </form>
                 </div>
@@ -84,6 +112,7 @@
                                    th:id="${id}">
                             <label class="form-check-label" th:for="${id}" th:text="${choice}">Choice</label>
                         </div>
+                        <br>
                         <button class="btn btn-primary"  type="submit">Absenden</button>
                     </form>
                 </div>
@@ -104,6 +133,7 @@
                             Choice
                         </label>
                     </div>
+                        <br>
                         <button class="btn btn-primary"  type="submit">Absenden</button>
                     </form>
                 </div>
@@ -119,6 +149,7 @@
                                data-toggle="popover" data-placement="right" name="value"
                                oninput="$(this).attr('data-content', this.value);$(this).popover('show')"
                                th:min="${range[0]}" th:max="${range[1]}" th:value="${range[2]}">
+                        <br>
                         <button class="btn btn-primary"  type="submit">Absenden</button>
                     </form>
                 </div>
@@ -136,6 +167,7 @@
                                    type="file" />
                             <label class="custom-file-label" th:for="'field-' + ${field.getId()}">Datei auswählen</label>
                         </div>
+                        <br>
                         <button class="btn btn-primary"  type="submit">Absenden</button>
                     </form>
 
@@ -155,14 +187,25 @@
 
             </div>
 
-            <button class="btn btn-primary" disabled type="submit">Absenden</button>
-
         </div>
 
     </div>
 
     <div th:replace="fragments/modals :: createPortfolioEntryModal(portfolioId=${portfolio.getId()})"></div>
     <div th:replace="fragments/modals :: deletePortfolioModal(portfolioId=${portfolio.getId()})"></div>
+
+    <div th:if="${portfolioEntry != null}">
+        <div th:replace="fragments/modals :: createPortfolioFieldModal(portfolioId=${portfolio.getId()}, entryId=${portfolioEntry.getId()},
+         modalId = ${'MODAL_CREATE_TEXT_FIELD'}, fieldFragment=~{fragments/entryfields :: addTextField})"></div>
+        <div th:replace="fragments/modals :: createPortfolioFieldModal(portfolioId=${portfolio.getId()}, entryId=${portfolioEntry.getId()},
+         modalId = ${'MODAL_CREATE_SINGLECHOICE_FIELD'}, fieldFragment=~{fragments/entryfields :: addSingleChoiceField})"></div>
+        <div th:replace="fragments/modals :: createPortfolioFieldModal(portfolioId=${portfolio.getId()}, entryId=${portfolioEntry.getId()},
+         modalId = ${'MODAL_CREATE_MULTICHOICE_FIELD'}, fieldFragment=~{fragments/entryfields :: addMultiChoiceField})"></div>
+        <div th:replace="fragments/modals :: createPortfolioFieldModal(portfolioId=${portfolio.getId()}, entryId=${portfolioEntry.getId()},
+         modalId = ${'MODAL_CREATE_SLIDER_FIELD'}, fieldFragment=~{fragments/entryfields :: addSliderField})"></div>
+        <div th:replace="fragments/modals :: createPortfolioFieldModal(portfolioId=${portfolio.getId()}, entryId=${portfolioEntry.getId()},
+         modalId = ${'MODAL_CREATE_ATTACHEMENT_FIELD'}, fieldFragment=~{fragments/entryfields :: addAttachementField})"></div>
+    </div>
 </div>
 
 </body>
