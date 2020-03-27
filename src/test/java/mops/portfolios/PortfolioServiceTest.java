@@ -27,7 +27,6 @@ public class PortfolioServiceTest {
     @Autowired
     PortfolioService portfolioService;
 
-    //test findAllByGroupList
     @Test
     public void findMultiplePortfoliosPerGroupTest() {
         List<Group> groupList = new ArrayList<>();
@@ -60,7 +59,7 @@ public class PortfolioServiceTest {
     public void findNoEntryByIdInEmptyPortfolioTest() {
         Portfolio testPortfolio = new Portfolio();
 
-        Entry testEntry = portfolioService.findEntryById(testPortfolio, 0L);
+        Entry testEntry = portfolioService.findEntryInPortfolioById(testPortfolio, 0L);
 
         assert(testEntry == null);
     }
@@ -74,7 +73,7 @@ public class PortfolioServiceTest {
         entrySet.add(testEntry);
         testPortfolio.setEntries(entrySet);
 
-        Entry testEntry2 = portfolioService.findEntryById(testPortfolio, 7357L);
+        Entry testEntry2 = portfolioService.findEntryInPortfolioById(testPortfolio, 7357L);
 
         assert(testEntry2.equals(testEntry));
     }
@@ -89,7 +88,7 @@ public class PortfolioServiceTest {
         portfolioRepository.save(nonTemplate);
         portfolioRepository.save(template);
 
-        List<Portfolio> templates = portfolioService.getAllTemplates();
+        List<Portfolio> templates = portfolioService.findAllTemplates();
 
         assert(templates.contains(template));
         assertFalse(templates.contains(nonTemplate));
@@ -106,7 +105,7 @@ public class PortfolioServiceTest {
         portfolioRepository.save(nonTemplate);
         portfolioRepository.save(template);
 
-        List<Portfolio> templates = portfolioService.getAllPortfolios();
+        List<Portfolio> templates = portfolioService.findAllPortfolios();
 
         assert(templates.contains(nonTemplate));
         assertFalse(templates.contains(template));
