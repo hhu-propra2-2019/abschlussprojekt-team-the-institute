@@ -122,6 +122,8 @@ konnten wir nur ein Gerüst entwickeln. Bislang ist nur bekannt, dass wir JSON v
 
 
 === Beim Bau des Frontends / der Website
+Wichtig: Wenn "spring.jpa.hibernate.ddl-auto" in application.properties auf "update" gesetzt ist, muss man vor dem Ausführen des Programms den docker-container neu starten. Wir empfehlen die Property auf "create" zu setzten. Dann tritt dieses Problem nicht auf.
+
 . In unserem Mock haben wir Bootstrap verwendet, um neue Elemente anzeigen zu lassen. Dabei traten Probleme auf, was für uns ein Hinweis war, dass wir unser Design vereinfachen sollten.
 .. Am Ende des Projektes hatten wir es geschafft, die grundlegenden Design-Idee umzusetzten, aber unsere Umsetzung, in der das Laden eines neuen Eintrages das Laden einer neuen Seite bedeutet, ist stabiler und Fehlern gegenüber robust.
 . Eine weitere Problematik war, dass wir zum Teil komplizierte Thymeleaf-Logik verwenden, um den Inhalt richtig anzeigen zu können;
@@ -138,6 +140,7 @@ konnten wir nur ein Gerüst entwickeln. Bislang ist nur bekannt, dass wir JSON v
 .. Range-Slider Felder
 .. Data-Upload Felder
 ... Hier auch Bilder
+. Zu den Auswahl-Feldern: Uns ist in den letzten Stunden der Arbeit am Projekt aufgefallen, dass unsere Implementierung nicht richtig funktioniert: Wir hatten die Values der Buttons als Liste an den Controller weitergegeben. Wir waren davon ausgegangen, dass wir eine Liste der Form {,checked,,} erhalten. Also; zweiter von vier Buttons ist gecheckt worden, also erhalten wir, wenn wir auf dieser Liste .split(",") aufrufen ein String-Array der Form {null, "checked", null, null} erhalten. Tatsächlich erhielten wir folgende Liste {"checked"}. Da wir davon ausgegangen waren, wir würde einen Wert für alle Buttons erhalten und dann über die Liste iterieren, erhielten wir einen Bug, der dafür sorgte, dass wir, unabhängig von der Auswahl, bei x ausgewählten Buttons immer die x ersten Buttons gecheckt hatten. Um dies zu lösen, ersetzten wir den Wert der Buttons durch den "Namen" des Buttons und überprüfen dann, welche Namen im der erhaltenen Liste enthalten sind.
 
 === Beim Test
 . Der Test `AccessRestriction` hat mit einem einfachen MockUser nicht funktioniert. Wir wurden dann durch ein 'TodayILearned' in Rocketchat auf `WithMockKeycloakAuth` aufmerksam.
