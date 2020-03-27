@@ -132,9 +132,9 @@ public class DemoDataGenerator {
 
   private transient List<String> templateEntryFieldContents = Arrays.asList(
       AnswerType.TEXT.name() + ";Some hint; ",
-      AnswerType.SINGLE_CHOICE.name() + ";Ja,Nein; , ",
+      AnswerType.SINGLE_CHOICE.name() + ";Ja,Nein;NO,NO",
       AnswerType.MULTIPLE_CHOICE.name()
-              + ";Mehr auf Schüler eingehen,Umfangreicher erklären,Weniger Hausaufgaben; , , ",
+              + ";Mehr auf Schüler eingehen,Umfangreicher erklären,Weniger Hausaufgaben;NO,NO,NO",
       AnswerType.NUMBER_SLIDER.name() + ";1,10,1; ",
       AnswerType.ATTACHEMENT.name() + ";.ascii,.yml,.java; "
   );

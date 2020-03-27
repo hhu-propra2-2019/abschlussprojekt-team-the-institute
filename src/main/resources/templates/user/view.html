@@ -107,7 +107,7 @@
                         <div class="form-check" th:each="choice, iterChoice : ${fieldHint.split(',')}"
                              th:with="id=${choice.replace(' ', '')}">
                             <input class="form-check-input" type="radio"
-                                   name="button" value="checked" required
+                                   name="button" th:value="${id}" required
                                    th:checked="${fieldChecked[iterChoice.index] == 'checked'}"
                                    th:id="${id}">
                             <label class="form-check-label" th:for="${id}" th:text="${choice}">Choice</label>
@@ -124,9 +124,9 @@
                         <u th:text="${fieldQuestion}">Question</u>
                     </label>
                     <div class="form-check" th:each="choice, iterChoice : ${fieldHint.split(',')}"
-                         th:with="id=${choice.replace(' ', '')}">
+                         th:with="id=${choice}">
                         <input class="form-check-input"  type="checkbox"
-                               name="button" value="checked"
+                               name="button" th:value="${id}"
                                th:checked="${fieldChecked[iterChoice.index] == 'checked'}"
                                th:id="${id}">
                         <label class="form-check-label" th:for="${id}" th:text="${choice}">
