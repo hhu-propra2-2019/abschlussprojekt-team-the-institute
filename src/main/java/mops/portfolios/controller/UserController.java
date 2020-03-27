@@ -265,7 +265,7 @@ public class UserController {
 
     // System.out.println(field.getContent());
 
-    entryService.updateEntryFieldCheck(newContent, entry, field, this);
+    entryService.updateEntryFieldCheck(newContent, entryFieldId, entry);
 
     // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute(portfolioIdAttribute, portfolio.getId());

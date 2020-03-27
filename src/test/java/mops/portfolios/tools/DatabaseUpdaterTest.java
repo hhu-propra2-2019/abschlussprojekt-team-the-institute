@@ -60,8 +60,6 @@ public class DatabaseUpdaterTest {
     int logSize = logsList.size();
 
     assertEquals("The service gruppen2 is not reachable: 400 BAD_REQUEST",
-            logsList.get(logSize - 2).getMessage());
-    assertEquals("Nothing received. The received String is null",
             logsList.get(logSize - 1).getMessage());
   }
 
