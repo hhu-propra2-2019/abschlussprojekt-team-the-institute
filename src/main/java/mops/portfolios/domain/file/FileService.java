@@ -2,6 +2,7 @@ package mops.portfolios.domain.file;
 
 import java.io.IOException;
 
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import mops.portfolios.PortfoliosApplication;
@@ -60,9 +61,9 @@ public class FileService {
   }
 
   @SuppressWarnings("PMD")
-  public String getFileName(String fileName) {
+  public String getOriginalFileName(String fileName) {
     if(fileName == null) {
-      return "Keine Datei hochgeladen";
+      return null;
     } else {
       String[] names = fileName.split(";");
       if (names.length == 1) {
@@ -71,5 +72,16 @@ public class FileService {
         return names[1];
       }
     }
+  }
+
+  public String getFileUrl(String attachment) {
+    return fileRepository.getFileUrl(attachment);
+  }
+
+  public Boolean isImage(String fileName) {
+    final String[] IMG_EXTENSIONS = {"png", "jpg", "jpeg", "svg", "gif"};
+    String last = fileName.substring(fileName.lastIndexOf('.') + 1);
+
+    return Arrays.asList(IMG_EXTENSIONS).contains(last);
   }
 }
