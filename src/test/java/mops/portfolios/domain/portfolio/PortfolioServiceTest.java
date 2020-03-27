@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-//@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class PortfolioServiceTest {
 
 
