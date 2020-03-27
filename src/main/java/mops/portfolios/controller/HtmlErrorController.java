@@ -5,6 +5,7 @@ import mops.portfolios.PortfoliosApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +26,12 @@ public class HtmlErrorController implements ErrorController {
   @GetMapping("/error")
   public String handleError(Model model, HttpServletResponse response) {
 
-    model.addAttribute("errorCode", response.getStatus());
-    model.addAttribute("errorMessage", "Some error message");
+    HttpStatus status = HttpStatus.valueOf(response.getStatus());
 
-    logger.warn("an error occured. Status Code: " + response.getStatus());
+    model.addAttribute("errorCode", status.value());
+    model.addAttribute("errorMessage", status.getReasonPhrase());
+
+    logger.warn("an error occured. Status Code: " + status.value());
 
     return "common/error";
   }

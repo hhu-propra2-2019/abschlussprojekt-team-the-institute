@@ -3,7 +3,6 @@ package mops.portfolios.tools;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import mops.portfolios.PortfoliosApplication;
@@ -19,8 +18,7 @@ import org.junit.jupiter.api.Test;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -34,21 +32,21 @@ public class DatabaseUpdaterTest {
   private transient static final Logger logger = (Logger) LoggerFactory.getLogger(PortfoliosApplication.class);
 
 
-  transient GroupRepository groupRepository = mock(GroupRepository.class);
+  private transient GroupRepository groupRepository = mock(GroupRepository.class);
 
-  transient UserRepository userRepository = mock(UserRepository.class);
+  private transient UserRepository userRepository = mock(UserRepository.class);
 
-  transient StateService stateService = mock(StateService.class);
+  private transient StateService stateService = mock(StateService.class);
 
   @BeforeEach
-  public void init() {
+  private void init() {
 
     databaseUpdater = new DatabaseUpdater(groupRepository, userRepository, stateService);
 
   }
 
   @Test
-  public void testClientError() {
+  void testClientError() {
     ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
 
 
@@ -68,7 +66,7 @@ public class DatabaseUpdaterTest {
   }
 
   @Test
-  public void testEmptyJson() {
+  void testEmptyJson() {
     ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
 
     listAppender.start();
@@ -83,7 +81,7 @@ public class DatabaseUpdaterTest {
   }
 
   @Test
-  public void objectNotJson() {
+  void objectNotJson() {
     ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
 
     listAppender.start();
@@ -100,29 +98,29 @@ public class DatabaseUpdaterTest {
   }
 
   @Test
-  public void testUpdateDatabaseEventsIllegalArgument() {
+  void testUpdateDatabaseEventsIllegalArgument() {
     databaseUpdater.url = new Url("http://bla/bla/");
     assertThrows(RuntimeException.class, () -> databaseUpdater.getUpdatesFromJsonObject());
   }
   @Test
-  public void testSuccessfulRequest() {
+  void testSuccessfulRequest() {
     IHttpClient httpClient = new FakeHttpClient();
     databaseUpdater.getGroupUpdatesFromUrl(httpClient, this.url); // takes mocked JSON from the FakeHttpClient
   }
 
   @Test
-  public void GroupListNotModified() {
+  void GroupListNotModified() {
     // as talked with gruppen2, this is how the response will look if not modified
     String response = "{\"status\":4,\"groupList\":[]}";
     JSONObject jsonObject = new JSONObject(response);
 
     boolean result = databaseUpdater.isNotModified(jsonObject);
-    assertEquals(true, result);
+    assertTrue(result);
   }
 
   @SuppressWarnings("PMD")
   @Test
-  public void GroupListIsModified() {
+  void GroupListIsModified() {
     String response = "{\n" +
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
@@ -151,12 +149,12 @@ public class DatabaseUpdaterTest {
     JSONObject jsonObject = new JSONObject(response);
 
     boolean result = databaseUpdater.isNotModified(jsonObject);
-    assertEquals(false, result);
+    assertFalse(result);
   }
 
   @SuppressWarnings("PMD")
   @Test
-  public void extractJsonObject() {
+  void extractJsonObject() {
     String response = "{\n" +
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
@@ -187,7 +185,7 @@ public class DatabaseUpdaterTest {
 
   @SuppressWarnings("PMD")
   @Test
-  public void deletedGroupTest() {
+  void deletedGroupTest() {
     List<User> userList = new ArrayList<>();
     User user = new User();
     user.setName("studentin");
@@ -238,7 +236,7 @@ public class DatabaseUpdaterTest {
 
   @SuppressWarnings("PMD")
   @Test
-  public void updateGroupTest() {
+  void updateGroupTest() {
 
     List<User> userList = new ArrayList<>();
     User user = new User();
@@ -281,8 +279,6 @@ public class DatabaseUpdaterTest {
 
     databaseUpdater.updateDatabaseEvents(response);
 
-    List<Long> groupIds = new ArrayList<>();
-    groupIds.add(2L);
     List<User> users = new ArrayList<>();
     User user1 = new User();
     user1.setName("student");
@@ -302,7 +298,7 @@ public class DatabaseUpdaterTest {
 
   @SuppressWarnings("PMD")
   @Test
-  public void saveNewGroupTest() {
+  void saveNewGroupTest() {
 
     List<Long> groupIds = new ArrayList<>();
     groupIds.add(2L);

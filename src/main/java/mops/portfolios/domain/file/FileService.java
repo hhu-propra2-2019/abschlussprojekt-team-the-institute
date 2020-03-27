@@ -1,16 +1,25 @@
-package mops.portfolios.controller.services;
+package mops.portfolios.domain.file;
 
 import java.io.IOException;
+
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import mops.portfolios.PortfoliosApplication;
+import mops.portfolios.domain.entry.EntryField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@AllArgsConstructor
 public class FileService {
   private static final transient Logger logger =
           LoggerFactory.getLogger(PortfoliosApplication.class);
+
+  @Autowired @NonNull
+  private transient FileRepository fileRepository;
 
   /**
    * Checks whether anything is uploaded (whether file has any content).
@@ -46,5 +55,21 @@ public class FileService {
     return fileBytes;
   }
 
+  public void updateField(MultipartFile file, EntryField field) {
+    fileRepository.saveFile(file, field);
+  }
 
+  @SuppressWarnings("PMD")
+  public String getFileName(String fileName) {
+    if(fileName == null) {
+      return "Keine Datei hochgeladen";
+    } else {
+      String[] names = fileName.split(";");
+      if (names.length == 1) {
+        return names[0];
+      } else{
+        return names[1];
+      }
+    }
+  }
 }

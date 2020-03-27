@@ -36,7 +36,7 @@
     <ul class="nav nav-tabs">
         <li class="nav-item" th:each="entry : ${portfolio.getEntries()}">
             <a class="nav-link" th:href="@{view(portfolioId=${portfolio.getId()},entryId=${entry.getId()})}"
-               th:text="${entry.getTitle()}" th:classappend="${entry.getId() == Entry.getId()} ? 'active'">Entry
+               th:text="${entry.getTitle()}" th:classappend="${entry.getId() == portfolioEntry.getId()} ? 'active'">Entry
                 title</a>
         </li>
     </ul>
@@ -48,7 +48,7 @@
         <div th:if="${portfolio.getEntries() != null}">
 
 
-            <div th:each="field : ${Entry.getFields()}" th:switch="${fieldType}"
+            <div th:each="field : ${portfolioEntry.getFields()}" th:switch="${fieldType}"
                  th:with="
                   AnswerType = ${T(mops.portfolios.domain.portfolio.templates.AnswerType)},
                   fieldQuestion = ${field.getTitle()},
@@ -58,7 +58,7 @@
                   fieldChecked = ${fieldData[2].split(',')}">
 
                 <div th:case="${AnswerType.TEXT}">
-                    <form method="post" th:action="@{/portfolio/user/update(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
+                    <form method="post" th:action="@{/portfolio/user/update(portfolioId=${portfolio.getId()},entryId=${portfolioEntry.getId()},entryFieldId=${field.getId()})}"
                           th:id="'textForm' + ${field.getId()}">
                         <label for="INPUT_TEXT">
                             <u th:text="${fieldQuestion}">Question</u>
@@ -70,7 +70,7 @@
                 </div>
 
                 <div th:case="${AnswerType.SINGLE_CHOICE}">
-                    <form method="post" th:action="@{/portfolio/user/updateRadio(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
+                    <form method="post" th:action="@{/portfolio/user/updateRadio(portfolioId=${portfolio.getId()},entryId=${portfolioEntry.getId()},entryFieldId=${field.getId()})}"
                           th:id="'singleChoice' + ${field.getId()}">
                         <label>
                             <u th:text="${fieldQuestion}">Question</u>
@@ -89,7 +89,7 @@
                 </div>
 
                 <div th:case="${AnswerType.MULTIPLE_CHOICE}">
-                    <form method="post" th:action="@{/portfolio/user/updateRadio(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
+                    <form method="post" th:action="@{/portfolio/user/updateRadio(portfolioId=${portfolio.getId()},entryId=${portfolioEntry.getId()},entryFieldId=${field.getId()})}"
                           th:id="'multipleChoice' + ${field.getId()}">
                     <label>
                         <u th:text="${fieldQuestion}">Question</u>
@@ -109,7 +109,7 @@
                 </div>
 
                 <div th:case="${AnswerType.NUMBER_SLIDER}" th:with="range = ${fieldHint.split(',')}">
-                    <form method="post" th:action="@{/portfolio/user/updateSlider(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
+                    <form method="post" th:action="@{/portfolio/user/updateSlider(portfolioId=${portfolio.getId()},entryId=${portfolioEntry.getId()},entryFieldId=${field.getId()})}"
                           th:id="'singleChoice' + ${field.getId()}">
                         <label for="INPUT_RANGE">
                             <u th:text="${fieldQuestion}">Question</u>
@@ -124,7 +124,7 @@
                 </div>
 
                 <div th:case="${AnswerType.ATTACHEMENT}">
-                    <form method="post" th:action="@{/portfolio/user/updateRadio(portfolioId=${portfolio.getId()},entryId=${Entry.getId()},entryFieldId=${field.getId()})}"
+                    <form method="post" enctype="multipart/form-data" th:action="@{/portfolio/user/uploadFile(portfolioId=${portfolio.getId()},entryId=${portfolioEntry.getId()},entryFieldId=${field.getId()})}"
                           th:id="'singleChoice' + ${field.getId()}">
                         <label>
                             <u th:text="${fieldQuestion}">Question</u>
@@ -132,7 +132,7 @@
                         <br>
                         <div class="custom-file w-50">
                             <input class="custom-file-input" name="file" id="INPUT_FILE" required th:accept="${fieldHint}"
-                                   type="file">
+                                   type="file" th:text="${fileService.getFileName(field.getAttachment())}">
                             <label class="custom-file-label" for="INPUT_FILE">Datei auswählen</label>
                         </div>
                         <button class="btn btn-primary"  type="submit">Absenden</button>
@@ -154,42 +154,6 @@
 
     <div th:replace="fragments/modals :: createPortfolioEntryModal(portfolioId=${portfolio.getId()})"></div>
     <div th:replace="fragments/modals :: deletePortfolioModal(portfolioId=${portfolio.getId()})"></div>
-
-    <!--
-    <div class="card">
-    <h5 class="card-header">Neuen Eintrag erstellen</h5>
-        <div class="card-body text-dark">
-            <h5 class="card-title">Eintrag erstellen</h5>
-            <p class="card-text">Hier kannst du einen neuen Eintrag erstellen:</p>
-            <form th:action="@{/portfolio/user/entry(portfolioId=${portfolio.getId()})}" method="post">
-                <input type="text" name="title" value="titel">
-                <br>
-                <br>
-                <input type="submit" name="action">
-            </form>
-        </div>
-    </div>
-
-    <div class="tab-pane fade" th:each="entry : ${portfolio.getEntries()}"
-         th:id="'tab'+${entry.getId()}">
-
-        <div class="card border-dark w-50 mb-2" th:each="field : ${entry.getFields()}">
-            <h5 class="card-header" th:text="${entry.getTitle()}">Entry title</h5>
-            <div class="card-body text-dark" th:each="field : ${entry.getFields()}">
-                <h5 class="card-title" th:text="${field.getTitle()}">Field title</h5>
-                <p class="card-text" th:text="${field.getContent()}">Field content</p>
-                <form th:action="@{/portfolio/user/update(portfolioId=${portfolio.getId()},entryId=${entry.getId()},entryFieldId=${field.getId()})}" method="post">
-                    <input type="text" name="content" value="content">
-                    <br>
-                    <input type="submit" name="action">
-                </form>
-                <a class="btn btn-primary" th:text="${field.getAttachment()}">Attachement</a>
-            </div>
-            <div class="card-footer" th:text="'Erstellt am ' + ${entry.getCreatedDate()}">Date created</div>
-        </div>
-
-   </div>
-    -->
 </div>
 
 </body>
