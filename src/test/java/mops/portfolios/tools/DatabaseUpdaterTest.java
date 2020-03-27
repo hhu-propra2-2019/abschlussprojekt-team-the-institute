@@ -17,6 +17,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -92,13 +94,12 @@ public class DatabaseUpdaterTest {
 
     assertEquals("An error occured while parsing the JSON data received by the service gruppen2",
             logsList.get(logSize - 1).getMessage());
-    // TODO: check logs instead.
   }
 
   @Test
   void testUpdateDatabaseEventsIllegalArgument() {
     databaseUpdater.url = new Url("http://bla/bla/");
-    assertThrows(RuntimeException.class, () -> databaseUpdater.getUpdatesFromJsonObject());
+    assertThrows(RuntimeException.class, () -> databaseUpdater.execute());
   }
   @Test
   void testSuccessfulRequest() {
@@ -123,7 +124,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": null,\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
@@ -157,7 +158,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": \"Lorem\",\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
@@ -197,7 +198,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": null,\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
@@ -254,7 +255,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": null,\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
@@ -313,7 +314,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": null,\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +

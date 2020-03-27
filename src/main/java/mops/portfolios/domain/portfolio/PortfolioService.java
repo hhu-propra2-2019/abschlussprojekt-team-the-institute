@@ -208,8 +208,7 @@ public class PortfolioService {
   public Portfolio getTemplate(KeycloakAuthenticationToken token,
                                @RequestParam(requestTitle) String title) {
     User user = new User();
-    user.setName(token.getName()); // FIXME: Nutzen wir auch an jeder Stelle diese Methode? \
-    // Geht es ohne user id auch klar?
+    user.setName(token.getName());
 
     Portfolio portfolio = new Portfolio(title, user);
     portfolio.setTemplate(true);
