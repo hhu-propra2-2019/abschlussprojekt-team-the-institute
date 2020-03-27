@@ -126,7 +126,7 @@
                 <div th:case="${AnswerType.ATTACHEMENT}">
 
                     <form method="post" enctype="multipart/form-data" th:action="@{/portfolio/user/uploadFile(portfolioId=${portfolio.getId()},entryId=${portfolioEntry.getId()},entryFieldId=${field.getId()})}"
-                          th:id="'singleChoice' + ${field.getId()}">
+                          th:id="'attachment' + ${field.getId()}">
                         <label>
                             <u th:text="${fieldQuestion}">Question</u>
                         </label>
@@ -144,7 +144,6 @@
                             <img class="mw-100" style="max-height: 240px;" th:if="${fileService.isImage(url)}" th:src="${url}" />
                             <a th:unless="${fileService.isImage(url)}" th:href="${url}" th:text="${fileService.getOriginalFileName(field.getAttachment())}">Attachment</a>
                         </div>
-                        
                     </div>
 
                 </div>

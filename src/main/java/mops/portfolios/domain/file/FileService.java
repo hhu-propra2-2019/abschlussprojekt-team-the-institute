@@ -82,6 +82,6 @@ public class FileService {
     final String[] IMG_EXTENSIONS = {"png", "jpg", "jpeg", "svg", "gif"};
     String last = fileName.substring(fileName.lastIndexOf('.') + 1);
 
-    return Arrays.asList(IMG_EXTENSIONS).contains(last.toLowerCase());
+    return Arrays.asList(IMG_EXTENSIONS).contains(last);
   }
 }
