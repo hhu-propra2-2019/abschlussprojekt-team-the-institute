@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{mopslayout :: html(name='Lernportfolio', title='Upload ansehen', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment"/>
+
+    <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
+        <ul>
+            <li>
+                <a href="list">
+                    <p><i class="fa fa-chevron-circle-left fa-lg"></i> Zurück</p>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</head>
+
+<body th:fragment="bodycontent"
+      th:replace="fragments/defaults :: defaultBody(title='AsciiDoc ansehen', description='Hier kannst du ein hochgeladenes AsciiDoc ansehen.', content=~{::content})">
+
+<div th:fragment="content" th:utext="${html}">Content</div>
+
+</body>
+</html>

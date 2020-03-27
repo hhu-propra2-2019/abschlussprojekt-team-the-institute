@@ -243,7 +243,7 @@ public class PortfolioService {
    * Gets portfolio and checks if it is a template.
    * @return portfolio
    */
-  public Portfolio getPortfolio(KeycloakAuthenticationToken token,
+  public Portfolio getNewPortfolio(KeycloakAuthenticationToken token,
                                 @RequestParam(value = requestTemplateId, required = false)
                                         String templateId,
                                 @RequestParam(value = requestTitle, required = false)
@@ -251,20 +251,41 @@ public class PortfolioService {
                                 @RequestParam("isTemplate") String isTemplate) {
 
     User user = new User();
-    user.setName(token.getName()); //FIXME
+    user.setName(token.getName());
 
     Portfolio portfolio;
     if (isTemplate.equals("true")) {
 
       Portfolio template = findPortfolioById(Long.valueOf(templateId));
-      portfolio = new Portfolio(template.getTitle(), user);
+      portfolio = generateNewPortfolioFromTemplate(template, user);
 
-      //FIXME: clone template into portfolio? how are we going to save answers..
     } else {
       portfolio = new Portfolio(title, user);
     }
 
     portfolio = update(portfolio);
+    return portfolio;
+  }
+
+  /**
+   * Generates a portfolio by cloning a template.
+   *
+   * @param template the template to clone
+   * @param user     the user of the new portfolio
+   */
+  @SuppressWarnings("PMD")
+  public Portfolio generateNewPortfolioFromTemplate(Portfolio template, User user) {
+    Portfolio portfolio = new Portfolio(template.getTitle(), user);
+    for (Entry entry : template.getEntries()) {
+      Entry entryClone = new Entry(entry.getTitle());
+      portfolio.getEntries().add(entryClone);
+      for (EntryField field : entry.getFields()) {
+        EntryField fieldClone = new EntryField();
+        fieldClone.setTitle(field.getTitle());
+        fieldClone.setContent(field.getContent());
+        entryClone.getFields().add(fieldClone);
+      }
+    }
     return portfolio;
   }
 
