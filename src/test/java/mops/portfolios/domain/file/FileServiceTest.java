@@ -1,4 +1,4 @@
-package mops.portfolios.controller.services;
+package mops.portfolios.domain.file;
 
 import lombok.NonNull;
 import mops.portfolios.domain.file.FileRepository;
