@@ -10,8 +10,7 @@ import mops.portfolios.domain.user.User;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.keycloak.representations.AccessToken;
+
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;

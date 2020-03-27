@@ -136,7 +136,7 @@ public class DemoDataGenerator {
       AnswerType.MULTIPLE_CHOICE.name()
               + ";Mehr auf Schüler eingehen,Umfangreicher erklären,Weniger Hausaufgaben; , , ",
       AnswerType.NUMBER_SLIDER.name() + ";1,10,1; ",
-      AnswerType.ATTACHEMENT.name() + ";.ascii,.pdf,.java; "
+      AnswerType.ATTACHEMENT.name() + ";.ascii,.yml,.java; "
   );
   private transient List<String> templateEntryTitles = Arrays.asList(
       "Woche 1",
