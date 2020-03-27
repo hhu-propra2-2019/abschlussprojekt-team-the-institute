@@ -1,7 +1,6 @@
 package mops.portfolios.domain.state;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 
@@ -15,11 +14,11 @@ import static org.mockito.Mockito.when;
 public class StateServiceTest {
 
   private transient StateRepository stateRepository = mock(StateRepository.class);
-  @Autowired
+
   private transient StateService stateService = new StateService(stateRepository);
 
   @Test
-  public void getStateTest() {
+  void getStateTest() {
 
     State state = new State();
     state.setLastState(7257L);
