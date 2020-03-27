@@ -209,7 +209,6 @@ public class PortfolioService {
                                @RequestParam(requestTitle) String title) {
     User user = new User();
     user.setName(token.getName());
-    // Geht es ohne user id auch klar?
 
     Portfolio portfolio = new Portfolio(title, user);
     portfolio.setTemplate(true);

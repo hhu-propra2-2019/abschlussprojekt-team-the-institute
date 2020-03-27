@@ -118,7 +118,6 @@ public class UserController {
     Portfolio portfolio = portfolioService.getPortfolioWithNewEntry(portfolioId, title);
     redirectAttributes.addAttribute(portfolioIdAttribute, portfolio.getId());
 
-    System.out.println("Updated");
     return "redirect:/portfolio/user/view";
   }
 
@@ -262,11 +261,8 @@ public class UserController {
     Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
     EntryField field = entryService.findFieldById(entry, entryFieldId);
 
-    // System.out.println(field.getContent());
-
     entryService.updateEntryFieldCheck(newContent, entryFieldId, entry);
 
-    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute(portfolioIdAttribute, portfolio.getId());
     redirect.addAttribute(entryIdAttribute, entry.getId());
     return "redirect:/portfolio/user/view";
@@ -301,10 +297,8 @@ public class UserController {
 
     entryService.updateEntryFieldSlider(newContent, field);
 
-    //System.out.println(field.getContent());
     entryService.update(entry);
 
-    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute(portfolioIdAttribute, portfolio.getId());
     redirect.addAttribute(entryIdAttribute, entry.getId());
     return "redirect:/portfolio/user/view";

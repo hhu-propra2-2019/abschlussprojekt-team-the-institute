@@ -94,7 +94,6 @@ public class DatabaseUpdaterTest {
 
     assertEquals("An error occured while parsing the JSON data received by the service gruppen2",
             logsList.get(logSize - 1).getMessage());
-    // TODO: check logs instead.
   }
 
   @Test
