@@ -59,6 +59,7 @@ public class FileService {
     fileRepository.saveFile(file, field);
   }
 
+  @SuppressWarnings("PMD")
   public String getFileName(String fileName) {
     if(fileName == null) {
       return "Keine Datei hochgeladen";
