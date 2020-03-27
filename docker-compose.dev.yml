@@ -10,10 +10,16 @@ services:
       - "MYSQL_ROOT_PASSWORD=password"
       - "MYSQL_DATABASE=portfolios"
 
-
-  portfolio:
-    build: .
+  minio:
+    image: minio/minio:latest
+    volumes:
+      - minio:/data
     ports:
-      - "8080:8080"
-    depends_on:
-      - database
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: server /data
+
+volumes:
+  minio:
