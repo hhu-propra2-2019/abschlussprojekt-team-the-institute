@@ -20,7 +20,7 @@ public class ScheduledDatabaseUpdater {
    *   <code>[scheme]://[domain]/[path]/</code><br>
    *   The String must start with the scheme (e.g. "http", or "https") and end with a slash.
    */
-  private transient String url = "http://localhost:8080/gruppen2/api/updateGroups/";
+  private transient String url = "http://localhost:8081/gruppen2/api/updateGroups/";
   // url retrieved from it-bois APIController commit c844f5d (24.03.2020)
 
   transient GroupRepository groupRepository;

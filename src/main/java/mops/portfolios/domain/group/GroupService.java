@@ -5,22 +5,19 @@ import mops.portfolios.domain.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class GroupService {
 
-    transient GroupRepository repository;
+  transient GroupRepository repository;
 
-    @Autowired
-    public GroupService(GroupRepository repository) {
-        this.repository = repository;
-    }
+  @Autowired
+  public GroupService(GroupRepository repository) {
+    this.repository = repository;
+  }
 
-
-    public Group getGroup(Long groupId) {
-        return repository.findById(groupId).get();
-    }
+  public Group getGroup(Long groupId) {
+    return repository.findById(groupId).get();
+  }
 
   /**
    * Gets list of users by groupID.
@@ -32,9 +29,9 @@ public class GroupService {
     return group.getUsers();
   }
 
-    public void saveGroup(Group group) {
-        repository.save(group);
-    }
+  public void saveGroup(Group group) {
+    repository.save(group);
+  }
 
   /**
    * Updates group.

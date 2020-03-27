@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-
 import lombok.RequiredArgsConstructor;
 import mops.portfolios.PortfoliosApplication;
 import mops.portfolios.domain.group.Group;
@@ -72,8 +71,10 @@ public class DatabaseUpdater {
     } catch (IllegalArgumentException argException) {
       logger.error(argException.getMessage());
       // Most likely URL formatted wrong, read logs from Url generation
-    } catch (ResourceAccessException | ConnectException exc) {
-      logger.warn("Could not connect to the host: " + exc.getMessage());
+      return;
+    } catch (Exception exception) {
+      logger.warn("Some Exception occured while connecting to the host", exception.getMessage());
+      // Most likely, the host has refused connection. Check if the set domain and port are correct
       return;
     }
 
@@ -147,9 +148,9 @@ public class DatabaseUpdater {
       Long groupId;
 
       try {
-        String groupUUIdString = group.getString("id");
-        UUID groupUUID = UUID.fromString(groupUUIdString);
-        groupId = this.UUIDtoLong(groupUUID);
+        String groupUuidString = group.getString("id");
+        UUID groupUuid = UUID.fromString(groupUuidString);
+        groupId = this.uuidToLong(groupUuid);
       } catch (Exception exc) {
         logger.warn("An error occured while getting the UUID or converting it into Long", exc);
         return;
@@ -203,7 +204,7 @@ public class DatabaseUpdater {
     return !groupRepository.findAllById(groupIds).equals(new ArrayList<>());
   }
 
-  Long UUIDtoLong(UUID uuid) {
+  Long uuidToLong(UUID uuid) {
     return uuid.getMostSignificantBits() & Long.MAX_VALUE;
   }
 }
