@@ -4,9 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <th:block th:fragment="headcontent">
-        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
-    </th:block>
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment"/>
 
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
@@ -16,7 +14,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#MODAL_ADD_ENTRY">
+                <a href="#" data-toggle="modal" data-target="#MODAL_CREATE_ENTRY">
                     <p><i class="far fa-calendar-plus fa-lg"></i> Eintrag hinzufügen</p>
                 </a>
             </li>
@@ -26,23 +24,36 @@
                         <p><i class="far fa-plus-square fa-lg"></i> Feld hinzufügen</p>
                     </a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_TEXT_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_TEXT_FIELD">
                             <p><i class="fas fa-align-left"></i> Text Feld</p>
                         </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_SINGLECHOICE_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal"
+                           data-target="#MODAL_CREATE_SINGLECHOICE_FIELD">
                             <p><i class="fas fa-list-ul"></i> Single Choice Feld</p>
                         </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_MULTICHOICE_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal"
+                           data-target="#MODAL_CREATE_MULTICHOICE_FIELD">
                             <p><i class="fas fa-tasks"></i> Multiple Choice Feld</p>
                         </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_CREATE_SLIDER_FIELD">
                             <p><i class="fas fa-sliders-h"></i> Range Slider Feld</p>
                         </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#MODAL_ADD_FIELD">
+                        <a class="dropdown-item" href="#" data-toggle="modal"
+                           data-target="#MODAL_CREATE_ATTACHEMENT_FIELD">
                             <p><i class="fas fa-paperclip"></i> Anhang Feld</p>
                         </a>
                     </div>
                 </div>
+            </li>
+            <li>
+                <a href="#" data-toggle="modal" data-target="#MODAL_UPLOAD_TEMPLATE">
+                    <p><i class="fas fa-file-upload fa-lg"></i> Vorlage hochladen</p>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-toggle="modal" data-target="#MODAL_DELETE_TEMPLATE">
+                    <p><i class="fas fa-trash-alt fa-lg"></i> Vorlage löschen</p>
+                </a>
             </li>
         </ul>
     </nav>
@@ -57,13 +68,12 @@
 
     <ul class="nav nav-tabs">
         <li class="nav-item" th:each="entry : ${template.getEntries()}">
-            <a class="nav-link" th:href="@{view(templateId=${template.getId()}, entryId=${entry.getId()})}"
-               th:text="${entry.getTitle()}" th:classappend="${templateEntry.getId() == entry.getId()} ? 'active'">Entry
+            <a class="nav-link" th:href="@{view(templateId=${template.getId()},entryId=${entry.getId()})}"
+              th:text="${entry.getTitle()}" th:classappend="${templateEntry.getId() == entry.getId()} ? 'active'">Entry
                 title</a>
         </li>
     </ul>
 
-    <hr>
     <br>
 
     <div class="tab-content">
@@ -104,19 +114,23 @@
 
         </form>
 
-
     </div>
 
-
-    <div th:replace="fragments/modals :: addEntryModal(templateId=${template.getId()})"></div>
+    <div th:replace="fragments/modals :: createEntryModal(templateId=${template.getId()})"></div>
+    <div th:replace="fragments/modals :: deleteTemplateModal(templateId=${template.getId()})"></div>
+    <div th:replace="fragments/modals :: uploadTemplateModal(templateId=${template.getId()})"></div>
 
     <div th:if="${templateEntry != null}">
-        <div th:replace="fragments/modals :: addFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
-         modalId = ${'MODAL_ADD_TEXT_FIELD'}, fieldFragment=~{fragments/entryfields :: textAdd})"></div>
-        <div th:replace="fragments/modals :: addFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
-         modalId = ${'MODAL_ADD_SINGLECHOICE_FIELD'}, fieldFragment=~{fragments/entryfields :: singlechoiceAdd})"></div>
-        <div th:replace="fragments/modals :: addFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
-         modalId = ${'MODAL_ADD_MULTICHOICE_FIELD'}, fieldFragment=~{fragments/entryfields :: multichoiceAdd})"></div>
+        <div th:replace="fragments/modals :: createFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
+         modalId = ${'MODAL_CREATE_TEXT_FIELD'}, fieldFragment=~{fragments/entryfields :: addTextField})"></div>
+        <div th:replace="fragments/modals :: createFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
+         modalId = ${'MODAL_CREATE_SINGLECHOICE_FIELD'}, fieldFragment=~{fragments/entryfields :: addSingleChoiceField})"></div>
+        <div th:replace="fragments/modals :: createFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
+         modalId = ${'MODAL_CREATE_MULTICHOICE_FIELD'}, fieldFragment=~{fragments/entryfields :: addMultiChoiceField})"></div>
+        <div th:replace="fragments/modals :: createFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
+         modalId = ${'MODAL_CREATE_SLIDER_FIELD'}, fieldFragment=~{fragments/entryfields :: addSliderField})"></div>
+        <div th:replace="fragments/modals :: createFieldModal(templateId=${template.getId()}, entryId=${templateEntry.getId()},
+         modalId = ${'MODAL_CREATE_ATTACHEMENT_FIELD'}, fieldFragment=~{fragments/entryfields :: addAttachementField})"></div>
     </div>
 
 </div>

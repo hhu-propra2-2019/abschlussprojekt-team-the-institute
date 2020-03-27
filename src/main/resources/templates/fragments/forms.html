@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!----------------------------[Admin]---------------------------------------------->
+
+<form method="post" th:fragment="createTemplateForm"
+      th:action="@{createTemplate}">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Titel der Vorlage</span>
+        </div>
+        <input type="text" class="form-control" name="title"
+               placeholder="zB. Propra2 Praktikum" required>
+    </div>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Vorlage erstellen</button>
+</form>
+
+
+<form method="post" th:fragment="createEntryForm"
+      th:action="@{createTemplateEntry(templateId=${templateId})}">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Titel</span>
+        </div>
+        <input type="text" class="form-control" name="title"
+               placeholder="zB. Woche 1, Woche 2, ..." required>
+    </div>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Eintrag hinzufügen</button>
+</form>
+
+
+<form method="post" th:fragment="createFieldForm"
+      th:action="@{createTemplateField(templateId=${templateId}, entryId=${entryId})}">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Frage / Aufgabe</span>
+        </div>
+        <input type="text" class="form-control" name="question"
+               placeholder="zB. Was hat dir an der Vorlesung gefallen?" required>
+    </div>
+
+    <br>
+
+    <div th:replace="${fieldFragment}"></div>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Feld hinzufügen</button>
+</form>
+
+<form method="post" th:fragment="deleteTemplateForm"
+      th:action="@{deleteTemplate(templateId=${templateId})}">
+
+    <p>Möchtest du die Vorlage wirklich löschen?</p>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Löschen</button>
+</form>
+
+<form enctype="multipart/form-data" method="post" th:fragment="uploadTemplateForm"
+      th:action="@{uploadTemplate(templateId=${templateId})}">
+
+    <div class="input-group">
+        <div class="custom-file">
+            <input id="INPUT_FILE" type="file" class="custom-file-input" accept=".adoc,.asciidoc,.asc,.txt" name="file"
+                   oninput="handleUpload()">
+            <label class="custom-file-label" for="INPUT_FILE" id="LABEL_FILE">AsciiDoc Datei auswählen</label>
+        </div>
+        <div class="input-group-append">
+            <button id="BUTTON_UPLOAD" class="input-group-text btn" type="submit"
+                    onclick="document.getElementById('SPINNER_UPLOAD').hidden = false;" disabled>
+                <span id="SPINNER_UPLOAD" class="spinner-border spinner-border-sm" hidden></span>
+                Hochladen
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function handleUpload() {
+
+            let INPUT_FILE = document.getElementById("INPUT_FILE");
+            if (INPUT_FILE.files.length == 0) {
+                return;
+            }
+
+            let file = INPUT_FILE.files[0];
+
+            let LABEL_FILE = document.getElementById("LABEL_FILE");
+            LABEL_FILE.innerHTML = "Datei " + file.name.bold() + " ausgewählt";
+
+            let BUTTON_UPLOAD = document.getElementById("BUTTON_UPLOAD");
+            BUTTON_UPLOAD.disabled = false;
+            BUTTON_UPLOAD.classList.add("btn-primary")
+        }
+    </script>
+
+</form>
+
+<!----------------------------[User]---------------------------------------------->
+
+<form method="post" th:fragment="createPortfolioForm"
+      th:action="@{createPortfolio}">
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#personal">Persönlich</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#template">Mit Vorlage</a>
+        </li>
+    </ul>
+
+    <br>
+
+    <div class="tab-content">
+
+        <div class="tab-pane fade show active" id="personal">
+
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Titel des Portfolios</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Portfolio Name" name="title">
+            </div>
+
+        </div>
+
+        <div class="tab-pane fade" id="template">
+
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="SELECT_TEMPLATE">Vorlage auswählen</label>
+                </div>
+                <select class="custom-select" id="SELECT_TEMPLATE" name="templateId">
+                    <option th:each="template : ${templateList}" th:text="${template.getTitle()}" th:value="${template.getId()}">Template</option>
+                </select>
+            </div>
+
+        </div>
+
+        <input name="isTemplate" id="isTemplate" value="true" hidden onclick="updateIsTemplate()">
+
+        <script>
+            function updateIsTemplate() {
+                let isTemplate = document.getElementById("isTemplate");
+                let templateTab = document.getElementById("template");
+
+                if(templateTab.classList.contains("active") && templateTab.classList.contains("show")) {
+                    isTemplate.value = "true";
+                } else {
+                    isTemplate.value = "false";
+                }
+            }
+        </script>
+
+    </div>
+
+    <hr>
+    <button type="submit" class="btn btn-primary" onclick="updateIsTemplate()">Portfolio erstellen</button>
+
+</form>
+
+<form method="post" th:fragment="createPortfolioEntryForm"
+      th:action="@{createPortfolioEntry(portfolioId=${portfolioId})}">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Titel</span>
+        </div>
+        <input type="text" class="form-control" name="title"
+               placeholder="zB. Woche 1, Woche 2, ..." required>
+    </div>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Eintrag hinzufügen</button>
+</form>
+
+<form method="post" th:fragment="deletePortfolioForm"
+      th:action="@{deletePortfolio(portfolioId=${portfolioId})}">
+
+    <p>Möchtest du das Portfolio wirklich löschen?</p>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Löschen</button>
+</form>
+
+</html>

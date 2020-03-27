@@ -3,9 +3,7 @@
       th:replace="~{mopslayout :: html(name='Lernportfolio', title='Portfolio Liste', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 
 <head>
-    <th:block th:fragment="headcontent">
-        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
-    </th:block>
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment"/>
 
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
@@ -15,7 +13,7 @@
                 </a>
             </li>
             <li>
-                <a href="create">
+                <a href="#" data-toggle="modal" data-target="#MODAL_CREATE_PORTFOLIO">
                     <p><i class="fas fa-book-medical fa-lg"></i> Portfolio erstellen</p>
                 </a>
             </li>
@@ -49,7 +47,6 @@
             <div class="card border-dark w-50 mb-2">
                 <h5 class="card-header">Alle Portfolios:</h5>
                 <div class="card-body text-dark">
-                    <p>TODO: Nach Datum (zuletzt geändert) sortieren falls noch nicht der Fall</p>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item" th:each="portfolio : ${allPortfolios}">
                             <a th:text="${portfolio.getTitle()}" th:href="@{view(portfolioId=${portfolio.getId()})}">Title</a>
@@ -91,6 +88,8 @@
         </div>
 
     </div>
+
+    <div th:replace="fragments/modals :: createPortfolioModal(templateList=${templateList})">Modal</div>
 
 </div>
 

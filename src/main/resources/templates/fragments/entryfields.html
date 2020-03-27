@@ -1,18 +1,21 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<div th:fragment="textAdd">
+<div th:fragment="addTextField">
 
     <div class="input-group">
         <div class="input-group-prepend">
             <span class="input-group-text">Tipp / Erste Zeile</span>
         </div>
-        <textarea class="form-control" name="hint" placeholder="zB. Meiner Meinung nach war die Vorlesung..."></textarea>
+        <textarea class="form-control" name="hint" placeholder="zB. Meiner Meinung nach war die Vorlesung..."
+                  required></textarea>
     </div>
+
+    <input name="fieldType" value="TEXT" hidden>
 
 </div>
 
-<div th:fragment="singlechoiceAdd">
+<div th:fragment="addSingleChoiceField">
 
     <div class="input-group">
         <div class="input-group-prepend">
@@ -20,7 +23,7 @@
                 <input type="radio">
             </div>
         </div>
-        <input type="text" class="form-control">
+        <input type="text" class="form-control" oninput="updateSingleChoiceHint()">
     </div>
 
     <button class="btn" type="button"
@@ -28,9 +31,23 @@
         <i class="fas fa-plus"></i>
     </button>
 
+    <input name="fieldType" value="SINGLE_CHOICE" hidden>
+    <input name="hint" id="HINT_SINGLECHOICE" hidden>
+
+    <script>
+        function updateSingleChoiceHint() {
+            let HINT_SINGLECHOICE = document.getElementById('HINT_SINGLECHOICE');
+            let hint = '';
+            for (let inputs of HINT_SINGLECHOICE.parentElement.getElementsByClassName('form-control')) {
+                hint += (',' + inputs.value);
+            }
+            HINT_SINGLECHOICE.value = hint.replace(',', '');
+        }
+    </script>
+
 </div>
 
-<div th:fragment="multichoiceAdd">
+<div th:fragment="addMultiChoiceField">
 
     <div class="input-group">
         <div class="input-group-prepend">
@@ -38,7 +55,7 @@
                 <input type="checkbox">
             </div>
         </div>
-        <input type="text" class="form-control">
+        <input type="text" class="form-control" oninput="updateMultiChoiceHint()">
     </div>
 
     <button class="btn" type="button"
@@ -46,7 +63,74 @@
         <i class="fas fa-plus"></i>
     </button>
 
+    <input name="fieldType" value="MULTIPLE_CHOICE" hidden>
+    <input name="hint" id="HINT_MULTICHOICE" hidden>
+
+    <script>
+        function updateMultiChoiceHint() {
+            let HINT_MULTICHOICE = document.getElementById('HINT_MULTICHOICE');
+            let hint = '';
+            for (let inputs of HINT_MULTICHOICE.parentElement.getElementsByClassName('form-control')) {
+                hint += (',' + inputs.value);
+            }
+            HINT_MULTICHOICE.value = hint.replace(',', '');
+        }
+    </script>
+
 </div>
+
+<div th:fragment="addSliderField" class="row">
+
+    <div class="input-group col-4">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Min.</span>
+        </div>
+        <input id="INPUT_SLIDER_MIN" type="number" class="form-control" placeholder="1" required
+               oninput="updateSliderHint()">
+    </div>
+
+    <div class="col">
+        <input type="range" class="custom-range" id="INPUT_SLIDER">
+    </div>
+
+
+    <div class="input-group col-4">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Max.</span>
+        </div>
+        <input id="INPUT_SLIDER_MAX" type="number" class="form-control" placeholder="10" required
+               oninput="updateSliderHint()">
+    </div>
+
+    <input name="fieldType" value="NUMBER_SLIDER" hidden>
+    <input name="hint" id="HINT_SLIDER" hidden>
+
+    <script>
+        function updateSliderHint() {
+            let HINT_SLIDER = document.getElementById('HINT_SLIDER');
+            let INPUT_SLIDER_MIN = document.getElementById('INPUT_SLIDER_MIN');
+            let INPUT_SLIDER_MAX = document.getElementById('INPUT_SLIDER_MAX');
+            HINT_SLIDER.value = INPUT_SLIDER_MIN.value + "," + INPUT_SLIDER_MAX.value;
+        }
+    </script>
+
+</div>
+
+<div th:fragment="addAttachementField">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Erlaubte Dateiendungen</span>
+        </div>
+        <input type="text" class="form-control" name="hint"
+               placeholder="zB. .pdf,.ascii,.adoc,.java,..." required>
+    </div>
+
+    <input name="fieldType" value="ATTACHEMENT" hidden>
+
+</div>
+
+<!--------------------------------------------------------------------->
 
 <div th:fragment="textField(question, hint)">
     <label for="INPUT_TEXT">
@@ -63,7 +147,7 @@
     <div class="form-check" th:each="choice : ${hint.split(',')}"
          th:with="id=${choice.replace(' ', '')}">
         <input class="form-check-input" name="radio" required th:id="${id}" type="radio">
-        <label class="form-check-label" th:for="id" th:text="${choice}">
+        <label class="form-check-label" th:for="${id}" th:text="${choice}">
             Choice
         </label>
     </div>

@@ -1,14 +1,18 @@
 package mops.portfolios.demodata;
 
 import com.github.javafaker.Faker;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
-import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.group.Group;
+import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.User;
 
@@ -24,7 +28,7 @@ public class DemoDataGenerator {
   private EntryField generateEntryField(Entry entry) {
     EntryField entryField = new EntryField();
     entryField.setAttachment(faker.shakespeare().hamletQuote());
-    entryField.setContent(faker.shakespeare().kingRichardIIIQuote());
+    entryField.setContent(getRandomElement(templateEntryFieldContents));
     entryField.setTitle(faker.shakespeare().romeoAndJulietQuote());
     return entryField;
   }
@@ -127,11 +131,12 @@ public class DemoDataGenerator {
   //=========================For templates
 
   private transient List<String> templateEntryFieldContents = Arrays.asList(
-      AnswerType.TEXT.name() + ";Some hint",
-      AnswerType.SINGLE_CHOICE.name() + ";Ja,Nein",
-      AnswerType.MULTIPLE_CHOICE.name() + ";Mehr auf Schüler eingehen,Umfangreicher erklären,Weniger Hausaufgaben",
-      AnswerType.NUMBER_SLIDER.name() + ";1,10",
-      AnswerType.ATTACHEMENT.name() + ";.ascii,.pdf,.java"
+      AnswerType.TEXT.name() + ";Some hint; ",
+      AnswerType.SINGLE_CHOICE.name() + ";Ja,Nein; , ",
+      AnswerType.MULTIPLE_CHOICE.name()
+              + ";Mehr auf Schüler eingehen,Umfangreicher erklären,Weniger Hausaufgaben; , , ",
+      AnswerType.NUMBER_SLIDER.name() + ";1,10,1; ",
+      AnswerType.ATTACHEMENT.name() + ";.ascii,.yml,.java; "
   );
   private transient List<String> templateEntryTitles = Arrays.asList(
       "Woche 1",
@@ -150,8 +155,7 @@ public class DemoDataGenerator {
    * Generates a single template EntryField.
    * @return - the EntryField
    */
-
-  EntryField generateTemplateEntryField(Entry entry) {
+  private EntryField generateTemplateEntryField() {
     EntryField entryField = new EntryField();
     entryField.setAttachment(faker.shakespeare().hamletQuote());
     entryField.setContent(getRandomElement(templateEntryFieldContents));
@@ -163,9 +167,12 @@ public class DemoDataGenerator {
    * Fills the template entry with "content".
    * @return - the EntryFields
    */
-  public Set<EntryField> generateTemplateEntryFieldSet(Entry entry) {
-    return IntStream.range(0, 3).mapToObj(
-        value -> generateTemplateEntryField(entry)).collect(Collectors.toSet());
+  public Set<EntryField> generateTemplateEntryFieldSet() {
+    Set<EntryField> fields = new LinkedHashSet<>();
+    for (int i = 0; i < new Random().nextInt(templateEntryFieldContents.size()); i++) {
+      fields.add(generateTemplateEntryField());
+    }
+    return fields;
   }
 
   /**
@@ -175,18 +182,21 @@ public class DemoDataGenerator {
   private Entry generateTemplateEntry(int i) {
     Entry entry = new Entry();
     entry.setTitle(templateEntryTitles.get(i));
-    entry.setFields(generateTemplateEntryFieldSet(entry));
+    entry.setFields(generateTemplateEntryFieldSet());
 
     return entry;
   }
 
   /**
-   * Generates a list of Entries for a template.
+   * Generates a set of Entries for a template.
    * @return - the list
    */
   private Set<Entry> generateTemplateEntrySet() {
-    return IntStream.range(0, 3).mapToObj(
-        this::generateTemplateEntry).collect(Collectors.toSet());
+    Set<Entry> entries = new LinkedHashSet<>();
+    for (int i = 0; i < new Random().nextInt(templateEntryTitles.size()); i++) {
+      entries.add(generateTemplateEntry(i));
+    }
+    return entries;
 
   }
 

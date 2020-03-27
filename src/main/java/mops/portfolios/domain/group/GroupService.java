@@ -1,8 +1,9 @@
 package mops.portfolios.domain.group;
 
+import java.util.List;
 import mops.portfolios.domain.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -21,21 +22,29 @@ public class GroupService {
         return repository.findById(groupId).get();
     }
 
-    public List<User> getUsers(Long groupId) {
-        Group group = repository.findById(groupId).get();
+  /**
+   * Gets list of users by groupID.
+   * @return list of users
+   */
+  public List<User> getUsers(Long groupId) {
+    Group group = repository.findById(groupId).get();
 
-        return group.getUsers();
-    }
+    return group.getUsers();
+  }
 
     public void saveGroup(Group group) {
         repository.save(group);
     }
-    public void updateGroup(Long groupId, List<User> users) {
 
-        Group group = repository.findById(groupId).get();
+  /**
+   * Updates group.
+   */
+  public void updateGroup(Long groupId, List<User> users) {
 
-        group.setUsers(users);
+    Group group = repository.findById(groupId).get();
 
-        repository.save(group);
-    }
+    group.setUsers(users);
+
+    repository.save(group);
+  }
 }

@@ -3,20 +3,17 @@
       th:replace="~{mopslayout :: html(name='Lernportfolio', title='Error', headcontent=~{:: headcontent}, navigation=~{common/navigation:: navigationFragment}, bodycontent=~{:: bodycontent})}">
 
 <head>
-    <th:block th:fragment="headcontent">
-        <th:block th:insert="common/dependencies :: dependencyFragment"></th:block>
-    </th:block>
+    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment"/>
 </head>
 
-<body th:fragment="bodycontent">
+<body th:fragment="bodycontent"
+      th:replace="fragments/defaults :: defaultBody(title='HTTP Error ' + ${errorCode}, description=${errorMessage}, content=~{::content})">
 
-<div class="jumbotron pt-1 font-italic">
-    <h1 class="display-5" th:text="'HTTP Error ' + ${errorCode}">Error code</h1>
-    <p class="lead" th:text="${errorMessage}">Error message</p>
-    <p>TODO: Custom error page or description (for 403, 404,...)</p>
-    <hr class="my-4">
+<div th:fragment="content">
+
     <p>Klicke hier um zurück zur Startseite zu gelangen:</p>
     <a class="btn btn-primary btn-lg" href="/">Zur Startseite</a>
+
 </div>
 
 </body>

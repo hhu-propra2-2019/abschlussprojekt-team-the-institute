@@ -1,9 +1,8 @@
 package mops.portfolios.domain.state;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class StateService {
@@ -15,26 +14,34 @@ public class StateService {
         this.repository = repository;
     }
 
-    public Long getState(String name) {
-        Optional<State> lastState = repository.findById(name);
 
-        if (lastState.isEmpty()) {
-            return 0L;
-        }
+  /**
+   * Gets current state.
+   */
 
-        return lastState.get().getLastState();
+  public Long getState(String name) {
+    Optional<State> lastState = repository.findById(name);
+
+    if (lastState.isEmpty()) {
+      return 0L;
     }
 
-    public void setState(String name, Long value) {
-        State lastState = repository.findById(name).orElse(null);
+    return lastState.get().getLastState();
+  }
 
-        if (lastState == null) {
-            lastState = new State();
-        }
+  /**
+   * Sets new state.
+   */
+  public void setState(String name, Long value) {
+    State lastState = repository.findById(name).orElse(null);
 
-        lastState.setLastState(value);
-        lastState.setId(name);
-
-        repository.save(lastState);
+    if (lastState == null) {
+      lastState = new State();
     }
+
+    lastState.setLastState(value);
+    lastState.setId(name);
+
+    repository.save(lastState);
+  }
 }
