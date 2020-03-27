@@ -129,7 +129,7 @@ public class AdminController {
   }
 
   /**
-   * Create Template Entry mapping for POST requests.
+   * Create Template Entry Field mapping for POST requests.
    *
    * @param model      The spring model to add the attributes to
    * @param templateId The id of the template
@@ -146,12 +146,10 @@ public class AdminController {
                                     @RequestParam("question") String question,
                                     @RequestParam("fieldType") String fieldType,
                                     @RequestParam(value = "hint", required = false) String hint) {
-
-    System.out.println("=============================");
-    System.out.println("=============================");
     accountService.authorize(model, token);
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    portfolioService.createAndAddField(portfolio, entryId, question, AnswerType.valueOf(fieldType) + ";" + hint);
+
+    portfolioService.createAndAddField(portfolio, entryId, question, fieldType, hint);
     portfolioService.update(portfolio);
 
     redirect.addAttribute("entryId", entryId);

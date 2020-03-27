@@ -121,15 +121,20 @@ public class PortfolioService {
    * @param portfolio the portfolio the entry belongs to
    * @param entryId the id of the entry the field is to be added
    * @param title title of the field to be added
-   * @param content content of the field to be added
+   * @param fieldType type of the field to be added
+   * @param hint field content of the field to be added
    */
-  public void createAndAddField(Portfolio portfolio, Long entryId, String title, String content) {
+  public void createAndAddField(Portfolio portfolio, Long entryId, String title,
+                                String fieldType, String hint) {
+
     Entry entry;
     if (findEntryInPortfolioById(portfolio,entryId) != null) {
       entry = findEntryInPortfolioById(portfolio, entryId);
     } else {
       entry = new Entry();
     }
+
+    String content = fieldType + ";" + hint + "; , ";
 
     EntryField field = new EntryField();
     field.setTitle(title);
