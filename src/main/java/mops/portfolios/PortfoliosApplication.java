@@ -1,21 +1,11 @@
 package mops.portfolios;
 
-import java.util.Random;
-import javax.persistence.EntityManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import mops.portfolios.demodata.DemoDataGenerator;
-import mops.portfolios.domain.FileRepository;
-import mops.portfolios.domain.entry.EntryFieldRepository;
-import mops.portfolios.domain.group.GroupRepository;
-import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioRepository;
-import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.state.StateService;
-import mops.portfolios.domain.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,22 +17,22 @@ public class PortfoliosApplication {
 
   private static final Logger log = LoggerFactory.getLogger(PortfoliosApplication.class);
 
-  final @NonNull EntityManager entityManager;
   final @NonNull PortfolioRepository repository;
-  final @NonNull FileRepository fileRepository;
-  final @NonNull EntryFieldRepository entryFieldRepository;
 
   /**
    * Starts the application.
    *
    * @param args - command-line arguments
    */
-  public static void main(String[] args){
+  public static void main(String[] args) {
     SpringApplication.run(PortfoliosApplication.class, args);
   }
 
+  /**
+   * Provides demodata.
+   */
   @Bean
-  public CommandLineRunner demo(StateService stateService, PortfolioService portfolioService) {
+  public CommandLineRunner demo() {
     return (args) -> {
 
       DemoDataGenerator demo = new DemoDataGenerator();

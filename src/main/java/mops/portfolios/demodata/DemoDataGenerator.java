@@ -1,7 +1,6 @@
 package mops.portfolios.demodata;
 
 import com.github.javafaker.Faker;
-
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -12,8 +11,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
-import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.group.Group;
+import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.User;
 
@@ -132,11 +131,12 @@ public class DemoDataGenerator {
   //=========================For templates
 
   private transient List<String> templateEntryFieldContents = Arrays.asList(
-      AnswerType.TEXT.name() + ";Some hint",
-      AnswerType.SINGLE_CHOICE.name() + ";Ja,Nein",
-      AnswerType.MULTIPLE_CHOICE.name() + ";Mehr auf Schüler eingehen,Umfangreicher erklären,Weniger Hausaufgaben",
-      AnswerType.NUMBER_SLIDER.name() + ";1,10",
-      AnswerType.ATTACHEMENT.name() + ";.ascii,.pdf,.java"
+      AnswerType.TEXT.name() + ";Some hint; ",
+      AnswerType.SINGLE_CHOICE.name() + ";Ja,Nein; , ",
+      AnswerType.MULTIPLE_CHOICE.name()
+              + ";Mehr auf Schüler eingehen,Umfangreicher erklären,Weniger Hausaufgaben; , , ",
+      AnswerType.NUMBER_SLIDER.name() + ";1,10,1; ",
+      AnswerType.ATTACHEMENT.name() + ";.ascii,.yml,.java; "
   );
   private transient List<String> templateEntryTitles = Arrays.asList(
       "Woche 1",
