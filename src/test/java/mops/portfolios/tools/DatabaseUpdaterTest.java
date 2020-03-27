@@ -102,7 +102,6 @@ public class DatabaseUpdaterTest {
 
     listAppender.start();
     logger.addAppender(listAppender);
-    IHttpClient httpClient = new HttpClient();
     databaseUpdater.execute();
     listAppender.stop();
 
@@ -112,7 +111,7 @@ public class DatabaseUpdaterTest {
     assertEquals("Some Exception occured while connecting to the host",
             logsList.get(logSize - 1).getMessage());
   }
-  
+
   @Test
   void testSuccessfulRequest() {
     IHttpClient httpClient = new FakeHttpClient();
