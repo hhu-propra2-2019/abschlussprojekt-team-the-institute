@@ -123,7 +123,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": null,\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
@@ -157,7 +157,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": \"Lorem\",\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
@@ -197,7 +197,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": null,\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
@@ -254,7 +254,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": null,\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
@@ -313,7 +313,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": null,\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +

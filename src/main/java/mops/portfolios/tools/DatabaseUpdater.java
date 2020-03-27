@@ -3,6 +3,8 @@ package mops.portfolios.tools;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import mops.portfolios.PortfoliosApplication;
 import mops.portfolios.domain.group.Group;
@@ -132,14 +134,21 @@ public class DatabaseUpdater {
   }
 
   private void processGroupUpdates(JSONObject jsonUpdate) {
-
-
     JSONArray groupList = jsonUpdate.getJSONArray("groupList");
 
     for (Object groupElement : groupList) {
 
       JSONObject group = (JSONObject) groupElement;
-      Long groupId = group.getBigInteger("id").longValue();
+      Long groupId;
+
+      try {
+        String groupUUIdString = group.getString("id");
+        UUID groupUUID = UUID.fromString(groupUUIdString);
+        groupId = this.UUIDtoLong(groupUUID);
+      } catch (Exception exc) {
+        logger.warn("An error occured while getting the UUID or converting it into Long", exc);
+        return;
+      }
 
       String title = null;
 
@@ -189,4 +198,7 @@ public class DatabaseUpdater {
     return !groupRepository.findAllById(groupIds).equals(new ArrayList<>());
   }
 
+  Long UUIDtoLong(UUID uuid) {
+    return uuid.getMostSignificantBits() & Long.MAX_VALUE;
+  }
 }

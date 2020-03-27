@@ -5,9 +5,9 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
-import mops.portfolios.domain.file.FileService;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryService;
+import mops.portfolios.domain.file.FileService;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
 import mops.portfolios.domain.portfolio.templates.AnswerType;
@@ -151,7 +151,8 @@ public class AdminController {
     System.out.println("=============================");
     accountService.authorize(model, token);
     Portfolio portfolio = portfolioService.findPortfolioById(templateId);
-    portfolioService.createAndAddField(portfolio, entryId, question, AnswerType.valueOf(fieldType) + ";" + hint);
+    portfolioService.createAndAddField(portfolio, entryId, question,
+            AnswerType.valueOf(fieldType) + ";" + hint);
     portfolioService.update(portfolio);
 
     redirect.addAttribute("entryId", entryId);
