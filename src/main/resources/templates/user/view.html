@@ -124,6 +124,7 @@
                 </div>
 
                 <div th:case="${AnswerType.ATTACHEMENT}">
+
                     <form method="post" enctype="multipart/form-data" th:action="@{/portfolio/user/uploadFile(portfolioId=${portfolio.getId()},entryId=${portfolioEntry.getId()},entryFieldId=${field.getId()})}"
                           th:id="'singleChoice' + ${field.getId()}">
                         <label>
@@ -131,12 +132,21 @@
                         </label>
                         <br>
                         <div class="custom-file w-50">
-                            <input class="custom-file-input" name="file" id="INPUT_FILE" required th:accept="${fieldHint}"
-                                   type="file" th:text="${fileService.getFileName(field.getAttachment())}">
-                            <label class="custom-file-label" for="INPUT_FILE">Datei auswählen</label>
+                            <input class="custom-file-input" name="file" th:id="'field-' + ${field.getId()}" required
+                                   type="file" />
+                            <label class="custom-file-label" th:for="'field-' + ${field.getId()}">Datei auswählen</label>
                         </div>
                         <button class="btn btn-primary"  type="submit">Absenden</button>
                     </form>
+
+                    <div th:if="${field.getAttachment() != null}" th:with="url=${fileService.getFileUrl(field.getAttachment())}">
+                        <div class="mt-2 overflow-hidden" th:if="${url}">
+                            <img class="mw-100" style="max-height: 240px;" th:if="${fileService.isImage(url)}" th:src="${url}" />
+                            <a th:unless="${fileService.isImage(url)}" th:href="${url}" th:text="${fileService.getOriginalFileName(field.getAttachment())}">Attachment</a>
+                        </div>
+                        
+                    </div>
+
                 </div>
 
                 <div th:case="*">Type not found</div>
