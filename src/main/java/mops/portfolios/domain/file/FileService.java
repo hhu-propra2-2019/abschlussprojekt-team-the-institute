@@ -5,7 +5,6 @@ import java.io.IOException;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import mops.portfolios.PortfoliosApplication;
-import mops.portfolios.domain.file.FileRepository;
 import mops.portfolios.domain.entry.EntryField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

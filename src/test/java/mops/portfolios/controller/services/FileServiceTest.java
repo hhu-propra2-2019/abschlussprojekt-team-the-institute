@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileServiceTest {
 
   private transient MultipartFile multipartFile = new MockMultipartFile("data", "filename.txt", "text/plain", "some xml".getBytes());
-  private transient FileService fileService = new FileService();
+  private transient FileService fileService;
 
 
 
