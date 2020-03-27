@@ -17,8 +17,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -99,8 +97,22 @@ public class DatabaseUpdaterTest {
   @Test
   void testUpdateDatabaseEventsIllegalArgument() {
     databaseUpdater.url = new Url("http://bla/bla/");
-    assertThrows(RuntimeException.class, () -> databaseUpdater.execute());
+
+    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+
+    listAppender.start();
+    logger.addAppender(listAppender);
+    IHttpClient httpClient = new HttpClient();
+    databaseUpdater.execute();
+    listAppender.stop();
+
+    List<ILoggingEvent> logsList = listAppender.list;
+    int logSize = logsList.size();
+
+    assertEquals("Some Exception occured while connecting to the host",
+            logsList.get(logSize - 1).getMessage());
   }
+  
   @Test
   void testSuccessfulRequest() {
     IHttpClient httpClient = new FakeHttpClient();
@@ -341,7 +353,23 @@ public class DatabaseUpdaterTest {
     List<Group> groupsFromRepository = (List<Group>) groupRepository.findAllById(groupIds);
 
     Assert.assertEquals(groups, groupsFromRepository);
+  }
 
+  @Test
+  void testInvalidPort() {
+    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+
+    listAppender.start();
+    logger.addAppender(listAppender);
+    IHttpClient httpClient = new HttpClient();
+    databaseUpdater.getGroupUpdatesFromUrl(httpClient, "http://localhost:8083/gruppen2/");
+    listAppender.stop();
+
+    List<ILoggingEvent> logsList = listAppender.list;
+    int logSize = logsList.size();
+
+    assertEquals("Some Exception occured while connecting to the host",
+            logsList.get(logSize - 1).getMessage());
   }
 
 }
