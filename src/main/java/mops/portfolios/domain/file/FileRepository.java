@@ -72,7 +72,7 @@ public class FileRepository {
 
   /**
    * Get full URL of a file.
-   * @Notice Bucken policy should be set to prefix: *, READ_ONLY
+   * @Notice Bucket policy should be set to prefix: *, READ_ONLY
    *
    * @param objName name of the saved object
    * @return File Url or Null if not found

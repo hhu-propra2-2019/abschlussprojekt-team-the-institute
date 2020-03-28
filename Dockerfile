@@ -6,7 +6,7 @@ RUN gradle bootJar
 FROM openjdk:11-jre-slim
 WORKDIR /code
 COPY --from=BUILD /home/gradle/src/build/libs/*.jar app.jar
-EXPOSE 8080
+EXPOSE 8080 9000
 COPY wait-for-it.sh wait-for-it.sh
 RUN ["chmod", "+x", "wait-for-it.sh"]
 
