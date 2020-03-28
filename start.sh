@@ -1,5 +1,2 @@
-#!/bin/bash
-
-cd "$(dirname "$0")";
-./gradlew composeUp && ./gradlew bootRun
-
+#!/bin/sh
+docker-compose -f docker-compose.prod.yml up --build
