@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 @RolesAllowed({"ROLE_orga", "ROLE_studentin"})
 @AllArgsConstructor
-public class PortfoliosController {
+public class CommonController {
 
   private transient AccountService accountService;
 

@@ -2,8 +2,8 @@ package mops.portfolios.domain.entry;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;

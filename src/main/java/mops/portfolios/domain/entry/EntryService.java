@@ -49,13 +49,8 @@ public class EntryService {
    * Updates entryfield.
    */
   @SuppressWarnings("PMD")
-  public void updateEntryFields(RedirectAttributes redirect,
-                                @RequestParam Long entryId,
-                                @RequestParam Long entryFieldId,
-                                @RequestParam("content") String newContent,
-                                Entry entry) {
+  public void updateEntryFields(Long entryFieldId, String newContent, Entry entry) {
     EntryField field = findFieldById(entry, entryFieldId);
-    System.out.println(field.getContent());
     String[] content = field.getContent().split(";");
     content[1] = newContent;
     field.setContent(content[0] + ";" + content[1] + ";" + content[2]);
@@ -66,13 +61,7 @@ public class EntryService {
    * Updates entryfield when checked.
    */
   @SuppressWarnings("PMD")
-  public void updateEntryFieldCheck(@RequestParam("button") List<String> newContent,
-                                    @RequestParam Long entryFieldId,
-                                    Entry entry) {
-    System.out.println(newContent);
-    System.out.println(newContent.size());
-    EntryField field = findFieldById(entry, entryFieldId);
-    System.out.println(field.getContent());
+  public void updateEntryFieldCheck(List<String> newContent, Entry entry, EntryField field) {
     String[] content = field.getContent().split(";");
     String[] ids = content[1].split(",");
     String[] values = content[2].split(",");
@@ -99,15 +88,11 @@ public class EntryService {
    * Updates slider entryfield.
    */
   @SuppressWarnings("PMD")
-  public void updateEntryFieldSlider(@RequestParam("value") String newContent, EntryField field) {
+  public void updateEntryFieldSlider(String newContent, EntryField field) {
     String[] content = field.getContent().split(";");
     String[] values = content[1].split(",");
     values[2] = newContent;
     field.setContent(content[0] + ";" + values[0] + ","
         + values[1] + "," + values[2] + ";" + content[2]);
-  }
-
-  public Entry findEntryById(Long entryId) {
-    return entryRepository.findById(entryId).get();
   }
 }

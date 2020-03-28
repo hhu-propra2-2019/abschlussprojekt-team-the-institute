@@ -28,7 +28,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @AllArgsConstructor
 public class AdminController {
   private final transient FileService fileService;
-  private final transient EntryService entryService;
   private transient AccountService accountService;
   private transient PortfolioService portfolioService;
   private transient AsciiDocConverter asciiConverter;
