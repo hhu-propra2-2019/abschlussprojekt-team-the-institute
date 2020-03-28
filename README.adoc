@@ -35,3 +35,12 @@ Dozenten erhalten keine Informationen über den Lernfortschritt der Studenten. D
 == Hinweise zur Dokumentation
 
 Die Dokumentation wird in einem eigenen Branch "Documentation" geschrieben. Wir arbeiten dort alle an der Dokumentation und nehmen unsere Probleme und Entscheidungen dort auf.
+
+== How to start and use the application
+
+The application is started by calling `start.sh` from the repository's root directory.
+
+To access the files uploaded to the application one must add minio hostname to /etc/hosts file
+127.0.0.1   minio
+
+This is only necessary for the demo purposes and is not demandened if minio server accessible from the user's host.
