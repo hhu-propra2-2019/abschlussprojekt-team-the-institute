@@ -34,7 +34,7 @@ public class EntryService {
   @SuppressWarnings("PMD")
   public EntryField findFieldById(Entry entry, Long entryFieldId) {
     for (EntryField field : entry.getFields()) {
-      if (field.getId() == entryFieldId) {
+      if (field.getId().equals(entryFieldId)) {
         return field;
       }
     }
