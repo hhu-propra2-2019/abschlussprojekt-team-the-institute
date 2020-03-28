@@ -3,7 +3,7 @@
       th:replace="~{mopslayout :: html(name='Lernportfolio', title='Portfolio Liste', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}">
 
 <head>
-    <th:block th:fragment="headcontent" th:insert="fragments/dependencies :: dependencyFragment"/>
+    <th:block th:fragment="headcontent" th:replace="fragments/dependencies :: dependencyFragment"/>
 
     <nav class="navigation navigation-secondary" is="mops-navigation" th:fragment="navigation">
         <ul>
@@ -44,45 +44,42 @@
 
         <div class="tab-pane fade show active" id="all">
 
-            <div class="card border-dark w-50 mb-2">
-                <h5 class="card-header">Alle Portfolios:</h5>
-                <div class="card-body text-dark">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item" th:each="portfolio : ${allPortfolios}">
-                            <a th:text="${portfolio.getTitle()}" th:href="@{view(portfolioId=${portfolio.getId()})}">Title</a>
-                        </li>
-                    </ul>
-                </div>
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" th:each="portfolio : ${allPortfolios}"
+                   th:href="@{view(portfolioId=${portfolio.getId()})}">
+                    <h5 class="mb-2 text-dark" th:text="${portfolio.getTitle()}">Title</h5>
+                    <p class="mb-1" th:text="${portfolio.getEntries().size()} + ' Einträge'">Some text</p>
+                    <small class="text-muted" th:text="'Vor ' + ${portfolio.getDaysSinceCreation()} + ' Tagen'">3 days
+                        ago</small>
+                </a>
             </div>
 
         </div>
 
         <div class="tab-pane fade" id="private">
 
-            <div class="card border-dark w-50 mb-2">
-                <h5 class="card-header">Private Portfolios:</h5>
-                <div class="card-body text-dark">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item" th:each="portfolio : ${userPortfolios}">
-                            <a th:text="${portfolio.getTitle()}" th:href="@{view(portfolioId=${portfolio.getId()})}">Title</a>
-                        </li>
-                    </ul>
-                </div>
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" th:each="portfolio : ${userPortfolios}"
+                   th:href="@{view(portfolioId=${portfolio.getId()})}">
+                    <h5 class="mb-2 text-dark" th:text="${portfolio.getTitle()}">Title</h5>
+                    <p class="mb-1" th:text="${portfolio.getEntries().size()} + ' Einträge'">Some text</p>
+                    <small class="text-muted" th:text="'Vor ' + ${portfolio.getDaysSinceCreation()} + ' Tagen'">3 days
+                        ago</small>
+                </a>
             </div>
 
         </div>
 
         <div class="tab-pane fade" id="group">
 
-            <div class="card border-dark w-50 mb-2">
-                <h5 class="card-header">Gruppen Portfolios:</h5>
-                <div class="card-body text-dark">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item" th:each="portfolio : ${groupPortfolios}">
-                            <a th:text="${portfolio.getTitle()}" th:href="@{view(portfolioId=${portfolio.getId()})}">Title</a>
-                        </li>
-                    </ul>
-                </div>
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" th:each="portfolio : ${groupPortfolios}"
+                   th:href="@{view(portfolioId=${portfolio.getId()})}">
+                    <h5 class="mb-2 text-dark" th:text="${portfolio.getTitle()}">Title</h5>
+                    <p class="mb-1" th:text="${portfolio.getEntries().size()} + ' Einträge'">Some text</p>
+                    <small class="text-muted" th:text="'Vor ' + ${portfolio.getDaysSinceCreation()} + ' Tagen'">3 days
+                        ago</small>
+                </a>
             </div>
 
         </div>

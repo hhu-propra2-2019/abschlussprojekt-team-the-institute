@@ -27,14 +27,13 @@
 
 <div th:fragment="content">
 
-    <div class="card border-dark w-50 mb-2" th:each="template : ${templateList}">
-        <h5 class="card-header" th:text="${template.getTitle()}">Title</h5>
-        <div class="card-body text-dark">
-            <p class="card-text" th:text="${template.getEntries().size()} + ' Einträge'">Entries</p>
-            <a class="btn btn-primary"
-               th:href="@{view(templateId=${template.getId()})}">Anzeigen</a>
-        </div>
-        <div class="card-footer text-muted" th:text="'Zuletzt geändert am '">Last changed</div>
+    <div class="list-group">
+        <a class="list-group-item list-group-item-action" th:each="template : ${templateList}"
+           th:href="@{view(templateId=${template.getId()})}">
+            <h5 class="mb-2 text-dark" th:text="${template.getTitle()}">Title</h5>
+            <p class="mb-1" th:text="${template.getEntries().size()} + ' Einträge'">Some text</p>
+            <small class="text-muted" th:text="'Vor ' + ${template.getDaysSinceCreation()} + ' Tagen'">3 days ago</small>
+        </a>
     </div>
 
     <div th:replace="fragments/modals :: createTemplateModal">Modal</div>

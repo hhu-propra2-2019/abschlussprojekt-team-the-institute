@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{mopslayout :: html(name='Lernportfolio', title='Upload ansehen', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
+<html lang="en"
+      th:replace="~{mopslayout :: html(name='Lernportfolio', title='Upload ansehen', headcontent=~{:: headcontent}, navigation=~{:: navigation}, bodycontent=~{:: bodycontent})}"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -19,7 +20,11 @@
 <body th:fragment="bodycontent"
       th:replace="fragments/defaults :: defaultBody(title='AsciiDoc ansehen', description='Hier kannst du ein hochgeladenes AsciiDoc ansehen.', content=~{::content})">
 
-<div th:fragment="content" th:utext="${html}">Content</div>
+<div th:fragment="content">
+    <p>Nicht fertig implementiert. Könnte als Text gespeichert werden, oder als Datei in MinIO.</p>
+    <br>
+    <div th:utext="${html}">Content</div>
+</div>
 
 </body>
 </html>
