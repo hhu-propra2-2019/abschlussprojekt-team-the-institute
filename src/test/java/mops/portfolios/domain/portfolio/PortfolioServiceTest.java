@@ -195,7 +195,7 @@ public class PortfolioServiceTest {
 
     when(repository.findById(1L)).thenReturn(Optional.of(portfolio));
 
-    Entry updatedEntry = portfolioService.getEntry(1L, 1L);
+    Entry updatedEntry = portfolioService.findEntryInPortfolioById(portfolio, 1L);
 
     Assert.assertEquals(entry, updatedEntry);
 

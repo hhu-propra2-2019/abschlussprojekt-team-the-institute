@@ -175,10 +175,12 @@ public class UserController {
                              @RequestParam("content") String newContent) {
     accountService.authorize(model, token);
 
-    Entry entry = portfolioService.getEntry(portfolioId, entryId);
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+
+    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
 
     redirect.addAttribute(portfolioIdAttribute, portfolioId);
-    entryService.updateEntryFields(redirect, entryId, entryFieldId, newContent, entry);
+    entryService.updateEntryFields(entryFieldId, newContent, entry);
     redirect.addAttribute(entryIdAttribute, entryId);
 
     return "redirect:/portfolio/user/view";
@@ -261,7 +263,7 @@ public class UserController {
     Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
     EntryField field = entryService.findFieldById(entry, entryFieldId);
 
-    entryService.updateEntryFieldCheck(newContent, entryFieldId, entry);
+    entryService.updateEntryFieldCheck(newContent, entry, field);
 
     redirect.addAttribute(portfolioIdAttribute, portfolio.getId());
     redirect.addAttribute(entryIdAttribute, entry.getId());

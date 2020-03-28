@@ -110,7 +110,7 @@
             let HINT_SLIDER = document.getElementById('HINT_SLIDER');
             let INPUT_SLIDER_MIN = document.getElementById('INPUT_SLIDER_MIN').value;
             let INPUT_SLIDER_MAX = document.getElementById('INPUT_SLIDER_MAX').value;
-            HINT_SLIDER.value = INPUT_SLIDER_MIN + "," + INPUT_SLIDER_MAX + ","  + INPUT_SLIDER_MIN;
+            HINT_SLIDER.value = INPUT_SLIDER_MIN + "," + INPUT_SLIDER_MAX + "," + INPUT_SLIDER_MIN;
         }
     </script>
 
@@ -132,59 +132,51 @@
 
 <!--------------------------------------------------------------------->
 
-<div th:fragment="textField(question, hint)">
+<div th:fragment="showTextField(question, hint)">
     <label for="INPUT_TEXT">
         <u th:text="${question}">Question</u>
     </label>
-    <textarea class="form-control" id="INPUT_TEXT" required
-              th:placeholder="${hint}"></textarea>
+    <textarea class="form-control w-50" id="INPUT_TEXT" th:placeholder="${hint}"></textarea>
 </div>
 
-<div th:fragment="singlechoiceField(question, hint)">
+<div th:fragment="showSinglechoiceField(question, hint)">
     <label>
         <u th:text="${question}">Question</u>
     </label>
-    <div class="form-check" th:each="choice : ${hint.split(',')}"
-         th:with="id=${choice.replace(' ', '')}">
-        <input class="form-check-input" name="radio" required th:id="${id}" type="radio">
-        <label class="form-check-label" th:for="${id}" th:text="${choice}">
-            Choice
-        </label>
+    <div class="form-check" th:each="choice,iter : ${hint.split(',')}" th:with="id='RADIO-'+${iter.index}">
+        <input class="form-check-input" name="radio" type="radio" th:id="${id}">
+        <label class="form-check-label" th:for="${id}" th:text="${choice}">Choice</label>
     </div>
 </div>
 
-<div th:fragment="multichoiceField(question, hint)">
+<div th:fragment="showMultichoiceField(question, hint)">
     <label>
         <u th:text="${question}">Question</u>
     </label>
-    <div class="form-check" th:each="choice : ${hint.split(',')}"
-         th:with="id=${choice.replace(' ', '')}">
-        <input class="form-check-input" required th:id="${id}" type="checkbox">
-        <label class="form-check-label" th:for="${id}" th:text="${choice}">
-            Choice
-        </label>
+    <div class="form-check" th:each="choice,iter : ${hint.split(',')}" th:with="id='CHECKBOX-'+${iter.index}">
+        <input class="form-check-input" type="checkbox" th:id="${id}">
+        <label class="form-check-label" th:for="${id}" th:text="${choice}">Choice</label>
     </div>
 </div>
 
-<div th:fragment="sliderField(question, hint)" th:with="range = ${hint.split(',')}">
+<div th:fragment="showSliderField(question, hint)" th:with="range = ${hint.split(',')}">
     <label for="INPUT_RANGE">
         <u th:text="${question}">Question</u>
     </label>
     <br>
-    <input class="custom-range w-50" type="range" id="INPUT_RANGE" required
+    <input class="custom-range w-50" type="range" id="INPUT_RANGE"
            data-toggle="popover" data-placement="right"
            oninput="$(this).attr('data-content', this.value);$(this).popover('show')"
            th:max="${range[1]}" th:min="${range[0]}" th:value="${range[0]}">
 </div>
 
-<div th:fragment="attachementField(question, hint)">
+<div th:fragment="showAttachementField(question, hint)">
     <label>
         <u th:text="${question}">Question</u>
     </label>
     <br>
     <div class="custom-file w-50">
-        <input class="custom-file-input" id="INPUT_FILE" required th:accept="${hint}"
-               type="file">
+        <input class="custom-file-input" id="INPUT_FILE" type="file" th:accept="${hint}">
         <label class="custom-file-label" for="INPUT_FILE">Datei auswählen</label>
     </div>
 </div>
