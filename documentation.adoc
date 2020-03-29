@@ -164,6 +164,8 @@ Dazu mussten wir diese in einer Liste speichern.
 
 == Datenbankdesign
 
+image::DB-Diagramm%20vereinfacht.PNG[]
+
 === Entities
 
 ==== Portfolio
