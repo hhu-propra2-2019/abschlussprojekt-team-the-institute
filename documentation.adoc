@@ -162,6 +162,38 @@ Dazu mussten wir diese in einer Liste speichern.
 .. Teilweise lag es daran, dass wir diese nicht abgefangen haben.
 .. Sonst war häufiger das Problem die richtigen Sachen zu mocken und bei allem daran zu denken, dass man mit `when(...).thenReturn(...)` arbeiten muss.
 
+== Datenbankdesign
+
+=== Entities
+
+==== Portfolio
+Die Portfolio-Entity stellt ein gesamtes Portfolio in der Datenbank dar.
+Es soll entweder einer UserId oder eine GruppenId in den entsprechenden Feldern gespeichert werden, je nachdem, ob es sich um ein Gruppen- oder Userportfolio handelt.
+Durch den boolean-Wert isTemplate wird festgelegt, ob es sich um eine Vorlage handelt, oder um ein echtes Portfolio.
+Durch eine Collection von Entries wird eine One-To-Many Relation mit der Entry-Entity erzeugt. So können zu jedem Portfolio beliebig viele Einträge in der Datenbank gespeichert werden.
+
+==== Entry
+Die Entry-Entity stellt einen einzelnen Eintrag in einem Portfolio dar und sollen einen Rahmen darstellen, in dem der eigentliche Inhalt der Einträge gespeichert wird. 
+Dieser Inhalt wird dann in den EntryFields gespeichert, zu denen die Entry-Entity eine One-To-Many-Relation hat (siehe EntryField). 
+Jedem Entry gehört immer auch zu einem Portfolio, und pro Portfolio können beliebig viele Einträge gespeichert werden.
+Außerdem wird in jedem Entry sowohl das Datum der Erstellung, als auch das Datum, an dem er zuletzt bearbeitet wurde, gespeichert.
+
+==== EntryField
+Entry-Fields stellen die einzelnen Fragen in einem Portfolioeintrag dar und beinhalten einen Titel, in dem die Fragestellung formuliert werden soll, den Inhalt, in dem die Antwort gespeichert wird, und die Möglichkeit, einen Anhang zu speichern.
+
+==== Group
+Die Group-Entity stellt in der Datenbank die Gruppen dar, die unserem Modul vom Gruppenbildungs-Modul übergeben werden. 
+Gruppen haben eine id, die in Form eines Longs gespeichert wird, einen Namen (title) und eine Liste von Nutzern. Zwischen Group und User besteht eine Many-To-Many-Relation, zwischen Group und Portfolio besteht eine One-To-Many-Relation
+
+==== User
+Die User-Entity stellt einen einzelnen Nutzer in unserer Datenbank dar.
+Nutzer können in beliebig vielen Gruppen sein und beliebig viele Portfolios anlegen.
+Es wird in der Entity nur ein Username gespeichert, der einem einzigartigen Namen in Keycloak entspricht.
+
+
+==== State
+Der State speichert eine Versionsnummer der Daten in der Gruppen-Tabelle für die Synchronisation mit dem Gruppenbildungs-Modul. Die Versionsnummer wird im Attribut lastState gespeichert. Es bestehen keine Relationen zu anderen Entitäten.
+
 == Qualitätsszenarien
 
 
