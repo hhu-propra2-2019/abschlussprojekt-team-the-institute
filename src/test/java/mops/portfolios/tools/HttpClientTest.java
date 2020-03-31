@@ -28,7 +28,7 @@ public class HttpClientTest {
   void testResponseBody() {
     HttpClient httpClient = new HttpClient();
     String body = httpClient.get("https://raw.githubusercontent.com/leachim6/hello-world/master/t/plain-text.txt");
-    Assertions.assertEquals("Hello World!\n", body);
+    Assertions.assertEquals("Hello World\n", body);
   }
 
   @Test
