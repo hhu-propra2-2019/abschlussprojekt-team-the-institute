@@ -1,6 +1,9 @@
 package mops.portfolios.domain.entry;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +16,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
@@ -31,7 +33,7 @@ public class Entry {
 
   @OneToMany(
       cascade = CascadeType.ALL,
-      fetch = FetchType.EAGER, //FIXME
+      fetch = FetchType.EAGER,
       orphanRemoval = true
   )
   @OrderBy("id ASC")

@@ -1,14 +1,11 @@
 package mops.portfolios.domain.entry;
 
 import java.util.List;
-import java.util.Objects;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import mops.portfolios.controller.UserController;
-import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
-import mops.portfolios.domain.portfolio.templates.AnswerType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,23 +16,25 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @NoArgsConstructor
 public class EntryService {
 
-  @NonNull @Autowired
+  @NonNull
+  @Autowired
   transient EntryRepository entryRepository;
 
-  @NonNull @Autowired
+  @NonNull
+  @Autowired
   transient EntryFieldRepository entryFieldRepository;
 
-  @NonNull @Autowired
+  @NonNull
+  @Autowired
   transient PortfolioService portfolioService;
 
   /**
    * Finds field.
-   *
    */
   @SuppressWarnings("PMD")
   public EntryField findFieldById(Entry entry, Long entryFieldId) {
     for (EntryField field : entry.getFields()) {
-      if (field.getId() == entryFieldId) {
+      if (field.getId().equals(entryFieldId)) {
         return field;
       }
     }
@@ -48,14 +47,9 @@ public class EntryService {
 
   /**
    * Updates entryfield.
-   *
    */
   @SuppressWarnings("PMD")
-  public void updateEntryFields(RedirectAttributes redirect,
-                                @RequestParam Long entryId,
-                                @RequestParam Long entryFieldId,
-                                @RequestParam("content") String newContent,
-                                Entry entry) {
+  public void updateEntryFields(Long entryFieldId, String newContent, Entry entry) {
     EntryField field = findFieldById(entry, entryFieldId);
     String[] content = field.getContent().split(";");
     content[1] = newContent;
@@ -67,15 +61,16 @@ public class EntryService {
    * Updates entryfield when checked.
    */
   @SuppressWarnings("PMD")
-  public void updateEntryFieldCheck(@RequestParam("button") List<String> newContent,
-                                    Entry entry, EntryField field,
-                                    UserController userController) {
+  public void updateEntryFieldCheck(List<String> newContent, Entry entry, EntryField field) {
     String[] content = field.getContent().split(";");
+    String[] ids = content[1].split(",");
     String[] values = content[2].split(",");
     int i = 0;
-    for (String updatedContent : newContent) {
-      if (updatedContent.equals("checked")) {
-        values[i] = updatedContent;
+    for (String id : ids) {
+      if (newContent.contains(id)) {
+        values[i] = "checked";
+      } else {
+        values[i] = "NO";
       }
       i++;
     }
@@ -91,18 +86,13 @@ public class EntryService {
 
   /**
    * Updates slider entryfield.
-   *
    */
   @SuppressWarnings("PMD")
-  public void updateEntryFieldSlider(@RequestParam("value") String newContent, EntryField field) {
+  public void updateEntryFieldSlider(String newContent, EntryField field) {
     String[] content = field.getContent().split(";");
     String[] values = content[1].split(",");
     values[2] = newContent;
     field.setContent(content[0] + ";" + values[0] + ","
-            + values[1] + "," + values[2] + ";" + content[2]);
-  }
-
-  public Entry findEntryById(Long entryId) {
-    return entryRepository.findById(entryId).get();
+        + values[1] + "," + values[2] + ";" + content[2]);
   }
 }

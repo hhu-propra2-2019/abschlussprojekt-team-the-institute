@@ -5,12 +5,14 @@ import mops.portfolios.domain.group.GroupRepository;
 import mops.portfolios.domain.state.StateService;
 import mops.portfolios.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 @EnableScheduling
+@ConditionalOnProperty(value = "app.scheduling.enable", havingValue = "true", matchIfMissing = true)
 public class ScheduledDatabaseUpdater {
 
   /**
@@ -18,7 +20,7 @@ public class ScheduledDatabaseUpdater {
    *   <code>[scheme]://[domain]/[path]/</code><br>
    *   The String must start with the scheme (e.g. "http", or "https") and end with a slash.
    */
-  private transient String url = "http://localhost:8081/gruppen2/api/updateGroups/";
+  private transient String url = "http://localhost:8080/gruppen2/api/updateGroups/";
   // url retrieved from it-bois APIController commit c844f5d (24.03.2020)
 
   transient GroupRepository groupRepository;
@@ -48,8 +50,7 @@ public class ScheduledDatabaseUpdater {
   @PostLoad
   @Scheduled(fixedRate = 10_000)
   public void updateDatabase() {
-    // this.url = "200"; // FIXME: Only call getUpdatesFromJsonObject later here
-    databaseUpdater.getGroupUpdatesFromUrl(new HttpClient(), this.url);
+    databaseUpdater.execute();
   }
 
 }

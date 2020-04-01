@@ -1,5 +1,9 @@
 package mops.portfolios.domain.portfolio;
 
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -16,6 +20,7 @@ import lombok.Setter;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.user.User;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Data
@@ -29,6 +34,9 @@ public class Portfolio {
   private @Getter Long groupId;
 
   private @Setter @Getter boolean isTemplate;
+
+  private final java.sql.Timestamp createdDate = new java.sql.Timestamp(
+      Calendar.getInstance().getTime().getTime());
 
   @OneToMany(
       cascade = CascadeType.ALL,
@@ -48,5 +56,10 @@ public class Portfolio {
   public Portfolio(String title, Group group) {
     this.title = title;
     this.groupId = group.getId();
+  }
+
+  public long getDaysSinceCreation() {
+    long difference = new Date().getTime() - getCreatedDate().getTime();
+    return difference / (1000 * 60 * 60 * 24);
   }
 }

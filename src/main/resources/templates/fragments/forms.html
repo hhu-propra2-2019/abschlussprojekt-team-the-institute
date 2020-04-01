@@ -68,7 +68,7 @@
 
     <div class="input-group">
         <div class="custom-file">
-            <input id="INPUT_FILE" type="file" class="custom-file-input" accept=".adoc,.asciidoc,.asc,.txt" name="file"
+            <input id="INPUT_FILE" type="file" class="custom-file-input" accept=".adoc" name="file"
                    oninput="handleUpload()">
             <label class="custom-file-label" for="INPUT_FILE" id="LABEL_FILE">AsciiDoc Datei auswählen</label>
         </div>
@@ -179,6 +179,25 @@
 
     <hr>
     <button type="submit" class="btn btn-primary">Eintrag hinzufügen</button>
+</form>
+
+<form method="post" th:fragment="createPortfolioFieldForm"
+      th:action="@{createPortfolioField(portfolioId=${portfolioId}, entryId=${entryId})}">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Frage / Aufgabe</span>
+        </div>
+        <input type="text" class="form-control" name="question"
+               placeholder="zB. Was hat mir an der Vorlesung gefallen?" required>
+    </div>
+
+    <br>
+
+    <div th:replace="${fieldFragment}"></div>
+
+    <hr>
+    <button type="submit" class="btn btn-primary">Feld hinzufügen</button>
 </form>
 
 <form method="post" th:fragment="deletePortfolioForm"

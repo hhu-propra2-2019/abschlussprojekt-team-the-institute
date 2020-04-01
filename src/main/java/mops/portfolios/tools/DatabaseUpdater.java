@@ -1,8 +1,10 @@
 package mops.portfolios.tools;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import mops.portfolios.PortfoliosApplication;
 import mops.portfolios.domain.group.Group;
@@ -18,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 @Service
 @RequiredArgsConstructor
@@ -40,11 +43,11 @@ public class DatabaseUpdater {
   /**
    * Use this method to get the updates from Gruppenbildung regarding groups.
    */
-  // TODO: use a better method name. Do this later to avoid merge conflicts
-  public void getUpdatesFromJsonObject() {
+  // TODO: use a better method name Do this later to avoid merge conflicts
+  public void execute() {
     IHttpClient httpClient = new HttpClient();
     long updateStatus = stateService.getState(this.serviceName);
-    String requestUrl = this.url.toString(); // + updateStatus; FIXME: add status
+    String requestUrl = this.url.toString() + updateStatus;
     getGroupUpdatesFromUrl(httpClient, requestUrl);
   }
 
@@ -68,6 +71,11 @@ public class DatabaseUpdater {
     } catch (IllegalArgumentException argException) {
       logger.error(argException.getMessage());
       // Most likely URL formatted wrong, read logs from Url generation
+      return;
+    } catch (Exception exception) {
+      logger.warn("Some Exception occured while connecting to the host", exception.getMessage());
+      // Most likely, the host has refused connection. Check if the set domain and port are correct
+      return;
     }
 
     updateDatabaseEvents(responseBody);
@@ -132,14 +140,21 @@ public class DatabaseUpdater {
   }
 
   private void processGroupUpdates(JSONObject jsonUpdate) {
-
-
     JSONArray groupList = jsonUpdate.getJSONArray("groupList");
 
     for (Object groupElement : groupList) {
 
       JSONObject group = (JSONObject) groupElement;
-      Long groupId = group.getBigInteger("id").longValue();
+      Long groupId;
+
+      try {
+        String groupUuidString = group.getString("id");
+        UUID groupUuid = UUID.fromString(groupUuidString);
+        groupId = this.uuidToLong(groupUuid);
+      } catch (Exception exc) {
+        logger.warn("An error occured while getting the UUID or converting it into Long", exc);
+        return;
+      }
 
       String title = null;
 
@@ -189,4 +204,7 @@ public class DatabaseUpdater {
     return !groupRepository.findAllById(groupIds).equals(new ArrayList<>());
   }
 
+  Long uuidToLong(UUID uuid) {
+    return uuid.getMostSignificantBits() & Long.MAX_VALUE;
+  }
 }

@@ -92,14 +92,26 @@ public class DatabaseUpdaterTest {
 
     assertEquals("An error occured while parsing the JSON data received by the service gruppen2",
             logsList.get(logSize - 1).getMessage());
-    // TODO: check logs instead.
   }
 
   @Test
   void testUpdateDatabaseEventsIllegalArgument() {
     databaseUpdater.url = new Url("http://bla/bla/");
-    assertThrows(RuntimeException.class, () -> databaseUpdater.getUpdatesFromJsonObject());
+
+    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+
+    listAppender.start();
+    logger.addAppender(listAppender);
+    databaseUpdater.execute();
+    listAppender.stop();
+
+    List<ILoggingEvent> logsList = listAppender.list;
+    int logSize = logsList.size();
+
+    assertEquals("Some Exception occured while connecting to the host",
+            logsList.get(logSize - 1).getMessage());
   }
+
   @Test
   void testSuccessfulRequest() {
     IHttpClient httpClient = new FakeHttpClient();
@@ -123,7 +135,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": null,\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
@@ -157,7 +169,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": \"Lorem\",\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
@@ -197,7 +209,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": null,\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
@@ -254,7 +266,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": null,\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
@@ -313,7 +325,7 @@ public class DatabaseUpdaterTest {
             "  \"status\": 4,\n" +
             "  \"groupList\": [\n" +
             "    {\n" +
-            "      \"id\": 2,\n" +
+            "      \"id\": \"0c69708c-6a48-4cfe-a5d8-c9e2b8220a80\",\n" +
             "      \"title\": null,\n" +
             "      \"description\": null,\n" +
             "      \"members\": [\n" +
@@ -340,7 +352,23 @@ public class DatabaseUpdaterTest {
     List<Group> groupsFromRepository = (List<Group>) groupRepository.findAllById(groupIds);
 
     Assert.assertEquals(groups, groupsFromRepository);
+  }
 
+  @Test
+  void testInvalidPort() {
+    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+
+    listAppender.start();
+    logger.addAppender(listAppender);
+    IHttpClient httpClient = new HttpClient();
+    databaseUpdater.getGroupUpdatesFromUrl(httpClient, "http://localhost:8083/gruppen2/");
+    listAppender.stop();
+
+    List<ILoggingEvent> logsList = listAppender.list;
+    int logSize = logsList.size();
+
+    assertEquals("Some Exception occured while connecting to the host",
+            logsList.get(logSize - 1).getMessage());
   }
 
 }

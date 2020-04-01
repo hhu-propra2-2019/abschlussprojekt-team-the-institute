@@ -7,13 +7,14 @@ import java.util.stream.Stream;
 import javax.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import mops.portfolios.AccountService;
-import mops.portfolios.domain.file.FileService;
 import mops.portfolios.domain.entry.Entry;
 import mops.portfolios.domain.entry.EntryField;
 import mops.portfolios.domain.entry.EntryService;
+import mops.portfolios.domain.file.FileService;
 import mops.portfolios.domain.group.Group;
 import mops.portfolios.domain.portfolio.Portfolio;
 import mops.portfolios.domain.portfolio.PortfolioService;
+import mops.portfolios.domain.portfolio.templates.AnswerType;
 import mops.portfolios.domain.user.UserService;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -65,11 +66,10 @@ public class UserController {
     String userName = accountService.getUserName(token);
 
     List<Group> groups = userService.getGroupsByUserName(userName);
-    // TODO Implement optional sublisting with method overload in portfolioService
     List<Portfolio> groupPortfolios = portfolioService.findAllByGroupList(groups);
     List<Portfolio> userPortfolios = portfolioService.findAllByUserId(userName);
     List<Portfolio> allPortfolios = Stream.of(userPortfolios, groupPortfolios)
-            .flatMap(Collection::stream).collect(Collectors.toList());
+        .flatMap(Collection::stream).collect(Collectors.toList());
 
     List<Portfolio> templateList = portfolioService.findAllTemplates();
 
@@ -103,7 +103,7 @@ public class UserController {
   }
 
   /**
-   * Create Template Entry mapping for POST requests.
+   * Create portfolio entry mapping for POST requests.
    *
    * @param model The spring model to add the attributes to
    * @return The page to load
@@ -118,29 +118,36 @@ public class UserController {
     Portfolio portfolio = portfolioService.getPortfolioWithNewEntry(portfolioId, title);
     redirectAttributes.addAttribute(portfolioIdAttribute, portfolio.getId());
 
-    System.out.println("Updated");
     return "redirect:/portfolio/user/view";
   }
 
-
   /**
-   * Create Template Entry mapping for POST requests.
+   * Create portfolio field mapping for POST requests.
    *
-   * @param model The spring model to add the attributes to
+   * @param model       The spring model to add the attributes to
+   * @param portfolioId The id of the portfolio
+   * @param entryId     The id of the entry
+   * @param question    The question (title) of the new field
+   * @param hint        The hint (data) of the new field
    * @return The page to load
    */
-  @SuppressWarnings("PMD")
-  @PostMapping("/createField")
-  public String createField(Model model,
-                            KeycloakAuthenticationToken token, RedirectAttributes redirect,
-                            @RequestParam Long portfolioId, @RequestParam Long entryId,
-                            @RequestParam("question") String question) {
+  @PostMapping("/createPortfolioField")
+  public String createPortfolioField(Model model,
+                                     KeycloakAuthenticationToken token, RedirectAttributes redirect,
+                                     @RequestParam Long portfolioId,
+                                     @RequestParam Long entryId,
+                                     @RequestParam("question") String question,
+                                     @RequestParam("fieldType") String fieldType,
+                                     @RequestParam(value = "hint", required = false) String hint) {
     accountService.authorize(model, token);
-    Entry entry = portfolioService.getNewEntry(entryId,
-            question, portfolioService.findPortfolioById(portfolioId));
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
 
-    redirect.addAttribute("templateId", portfolioService.findPortfolioById(portfolioId).getId());
-    redirect.addAttribute(entryIdAttribute, entry.getId());
+    AnswerType answerType = AnswerType.valueOf(fieldType);
+    portfolioService.createAndAddField(portfolio, entryId, question, answerType, hint);
+    portfolioService.update(portfolio);
+
+    redirect.addAttribute("entryId", entryId);
+    redirect.addAttribute("portfolioId", portfolioId);
     return "redirect:/portfolio/user/view";
   }
 
@@ -168,17 +175,18 @@ public class UserController {
                              @RequestParam("content") String newContent) {
     accountService.authorize(model, token);
 
-    Entry entry = portfolioService.getEntry(portfolioId, entryId);
+    Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
+
+    Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
 
     redirect.addAttribute(portfolioIdAttribute, portfolioId);
-    entryService.updateEntryFields(redirect, entryId, entryFieldId, newContent, entry);
+    entryService.updateEntryFields(entryFieldId, newContent, entry);
     redirect.addAttribute(entryIdAttribute, entryId);
 
     return "redirect:/portfolio/user/view";
   }
 
 
-   
   /**
    * Create Portfolio mapping for POST requests.
    *
@@ -192,7 +200,7 @@ public class UserController {
   public String createPortfolio(Model model,
                                 KeycloakAuthenticationToken token, RedirectAttributes redirect,
                                 @RequestParam(value = "templateId", required = false)
-                                          String templateId,
+                                    String templateId,
                                 @RequestParam(value = "title", required = false) String title,
                                 @RequestParam("isTemplate") String isTemplate) {
     accountService.authorize(model, token);
@@ -208,16 +216,16 @@ public class UserController {
   /**
    * Create Portfolio Entry mapping for POST requests.
    *
-   * @param model      The spring model to add the attributes to
+   * @param model       The spring model to add the attributes to
    * @param portfolioId The id of the portfolio
-   * @param title      The title of the new entry
+   * @param title       The title of the new entry
    * @return The page to load
    */
   @PostMapping("/createPortfolioEntry")
   public String createPortfolioEntry(Model model,
-                                    KeycloakAuthenticationToken token, RedirectAttributes redirect,
-                                    @RequestParam Long portfolioId,
-                                    @RequestParam("title") String title) {
+                                     KeycloakAuthenticationToken token, RedirectAttributes redirect,
+                                     @RequestParam Long portfolioId,
+                                     @RequestParam("title") String title) {
     accountService.authorize(model, token);
 
     Entry entry = portfolioService.portfolioEntryCreation(portfolioId, title);
@@ -230,35 +238,33 @@ public class UserController {
 
   /**
    * Post Mapping to update EntryField Content.
-   * @param model - Spring MVC model
-   * @param token - KeycloakAuthenticationToken
-   * @param redirect - injects RedirectAttributes
-   * @param portfolioId - Id of current portfolio
-   * @param entryId - Id of current entry
+   *
+   * @param model        - Spring MVC model
+   * @param token        - KeycloakAuthenticationToken
+   * @param redirect     - injects RedirectAttributes
+   * @param portfolioId  - Id of current portfolio
+   * @param entryId      - Id of current entry
    * @param entryFieldId - Id of updated EntryField
-   * @param newContent - new content of entryfield
+   * @param newContent   - new content of entryfield
    * @return - redirects to /view
    */
   @SuppressWarnings("PMD")
   @PostMapping("/updateRadio")
   public String updateRadio(Model model,
                             KeycloakAuthenticationToken token,
-                             RedirectAttributes redirect,
+                            RedirectAttributes redirect,
                             @RequestParam Long portfolioId,
-                             @RequestParam Long entryId,
+                            @RequestParam Long entryId,
                             @RequestParam Long entryFieldId,
-                             @RequestParam("button") List<String> newContent) {
+                            @RequestParam("button") List<String> newContent) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
     Entry entry = portfolioService.findEntryInPortfolioById(portfolio, entryId);
     EntryField field = entryService.findFieldById(entry, entryFieldId);
 
-    // System.out.println(field.getContent());
+    entryService.updateEntryFieldCheck(newContent, entry, field);
 
-    entryService.updateEntryFieldCheck(newContent, entry, field, this);
-
-    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute(portfolioIdAttribute, portfolio.getId());
     redirect.addAttribute(entryIdAttribute, entry.getId());
     return "redirect:/portfolio/user/view";
@@ -266,24 +272,25 @@ public class UserController {
 
   /**
    * Post Mapping to update EntryField Content.
-   * @param model - Spring MVC model
-   * @param token - KeycloakAuthenticationToken
-   * @param redirect - injects RedirectAttributes
-   * @param portfolioId - Id of current portfolio
-   * @param entryId - Id of current entry
+   *
+   * @param model        - Spring MVC model
+   * @param token        - KeycloakAuthenticationToken
+   * @param redirect     - injects RedirectAttributes
+   * @param portfolioId  - Id of current portfolio
+   * @param entryId      - Id of current entry
    * @param entryFieldId - Id of updated EntryField
-   * @param newContent - new content of entryfield
+   * @param newContent   - new content of entryfield
    * @return - redirects to /view
    */
   @SuppressWarnings("PMD")
   @PostMapping("/updateSlider")
   public String updateSlider(Model model,
-                            KeycloakAuthenticationToken token,
-                            RedirectAttributes redirect,
-                            @RequestParam Long portfolioId,
-                            @RequestParam Long entryId,
-                            @RequestParam Long entryFieldId,
-                            @RequestParam("value") String newContent) {
+                             KeycloakAuthenticationToken token,
+                             RedirectAttributes redirect,
+                             @RequestParam Long portfolioId,
+                             @RequestParam Long entryId,
+                             @RequestParam Long entryFieldId,
+                             @RequestParam("value") String newContent) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
@@ -292,10 +299,8 @@ public class UserController {
 
     entryService.updateEntryFieldSlider(newContent, field);
 
-    //System.out.println(field.getContent());
     entryService.update(entry);
 
-    // Sind portfiolioId != portfolio.getId() && entryId != entry.getId() ?
     redirect.addAttribute(portfolioIdAttribute, portfolio.getId());
     redirect.addAttribute(entryIdAttribute, entry.getId());
     return "redirect:/portfolio/user/view";
@@ -304,19 +309,19 @@ public class UserController {
   /**
    * Upload Template mapping for POST requests.
    *
-   * @param model      The spring model to add the attributes to
+   * @param model       The spring model to add the attributes to
    * @param portfolioId The id of the portfolio
    * @return The page to load
    */
   @SuppressWarnings("PMD")
   @PostMapping("/uploadFile")
   public String uploadFile(Model model,
-                               KeycloakAuthenticationToken token,
-                               RedirectAttributes redirect,
-                               @RequestParam Long portfolioId,
-                               @RequestParam Long entryId,
-                               @RequestParam Long entryFieldId,
-                               @RequestParam("file") MultipartFile file) {
+                           KeycloakAuthenticationToken token,
+                           RedirectAttributes redirect,
+                           @RequestParam Long portfolioId,
+                           @RequestParam Long entryId,
+                           @RequestParam Long entryFieldId,
+                           @RequestParam("file") MultipartFile file) {
     accountService.authorize(model, token);
 
     Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
@@ -339,12 +344,11 @@ public class UserController {
 
   /**
    * Delete Portfolio mapping for POST requests.
-   *
    */
   @PostMapping("/deletePortfolio")
   public String deletePortfolio(Model model,
-                               KeycloakAuthenticationToken token,
-                               @RequestParam Long portfolioId) {
+                                KeycloakAuthenticationToken token,
+                                @RequestParam Long portfolioId) {
     accountService.authorize(model, token);
     portfolioService.deletePortfolioById(portfolioId);
 

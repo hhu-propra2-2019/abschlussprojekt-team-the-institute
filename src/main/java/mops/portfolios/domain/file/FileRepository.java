@@ -6,6 +6,7 @@ import io.minio.errors.*;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.UUID;
 import mops.portfolios.PortfoliosApplication;
 import mops.portfolios.domain.entry.EntryField;
@@ -58,24 +59,23 @@ public class FileRepository {
    */
   public void saveFile(MultipartFile file, EntryField entryField) {
     String objName = UUID.randomUUID().toString() + ";" + file.getOriginalFilename();
+    System.out.println(file.getOriginalFilename());
     try {
-      minioClient.putObject(bucketName, objName, file.getOriginalFilename());
+      minioClient.putObject(bucketName, objName, file.getInputStream(), file.getSize(), new HashMap<>(), null, file.getContentType());
     } catch (Exception e) {
       logger.info(e.toString());
     }
     entryField.setAttachment(objName);
     entryFieldRepository.save(entryField);
-    System.out.println(entryField.getContent());
     System.out.println(entryField.getAttachment());
-    System.out.println(file.getName());
   }
 
   /**
    * Get full URL of a file.
-   * @Notice Bucken policy should be set to prefix: *, READ_ONLY
+   * @Notice Bucket policy should be set to prefix: *, READ_ONLY
    *
    * @param objName name of the saved object
-   * @return
+   * @return File Url or Null if not found
    */
   public String getFileUrl(String objName) {
     try {
@@ -85,6 +85,6 @@ public class FileRepository {
         | ErrorResponseException | InternalException | InvalidResponseException e) {
       logger.info(e.toString());
     }
-    return "";
+    return null;
   }
 }
